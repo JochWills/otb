@@ -17,20 +17,21 @@ images/         all photography
 
 ## 1. Swap in the real photos
 
-The `images/` folder currently holds **soft colour placeholders**, each with its filename
-printed faintly in the corner. Replace each file with a real photo, keeping the **same
-filename**, and nothing else needs to change.
+The `images/` folder started out with **soft colour placeholders**, each with its filename
+printed faintly in the corner. Two are done; the rest still need real photos dropped in.
+
+**Done:**
+- `hero.jpg` — real garden photo.
+- The six room cards — each now has its own folder of real photos under
+  `images/rooms/<room>/1.jpg, 2.jpg, ...` (see CLAUDE.md for the convention and the
+  slug-to-room mapping). Clicking a room photo opens a lightbox with all of that room's
+  shots.
+
+**Still placeholder — replace the file, keep the filename, nothing else changes:**
 
 | File | What goes here | Suggested size |
 |---|---|---|
-| `hero.jpg` | The strongest wide shot — garden or house exterior | 2000 × 1250 |
 | `garden.jpg` | The rose garden, **portrait crop** (it renders tall) | 900 × 1200 |
-| `room-king.jpg` | King room with sofa bed | 1200 × 800 |
-| `room-twin.jpg` | Twin room | 1200 × 800 |
-| `room-family.jpg` | Two-bedroom family unit | 1200 × 800 |
-| `room-double.jpg` | Garden double | 1200 × 800 |
-| `room-selfcater.jpg` | Self-catering room | 1200 × 800 |
-| `room-compact.jpg` | Compact single | 1200 × 800 |
 | `breakfast.jpg` | Breakfast / dining | 1200 × 900 |
 | `braai.jpg` | Braai and entertainment area | 1200 × 900 |
 | `beach.jpg` | The bay / beachfront, **wide crop** (21:9 band) | 1600 × 900 |
@@ -42,6 +43,10 @@ landscape shots in the wide slots.
 
 Save as JPEG at roughly 80% quality and keep each file under about 400 KB. The existing
 photos on the old site can be pulled straight out of the browser (right-click → Save image).
+
+To add more photos to an existing room, drop them into that room's `images/rooms/<room>/`
+folder as the next number and add the path to that room's `data-photos` list in
+`index.html` — see CLAUDE.md.
 
 ---
 
@@ -70,9 +75,12 @@ site is hosted on a different domain.
 I built this from the copy and details on the current site plus their public listings.
 Four items are worth a quick check:
 
-- **Rooms 4, 5 and 6** — "Garden double", "Self-catering room" and "Compact single" are
-  described from the general room copy rather than a per-room page. Confirm the real names,
-  bed configurations and which rooms have kitchenettes.
+- **Room copy vs. the real photos** — which photo folder belongs to which room type has
+  been confirmed with the owner, but the written descriptions haven't been checked against
+  the photos themselves. In particular: the Garden double's copy doesn't mention a
+  kitchenette but its photos show a full one (sink + stovetop); the Self-catering room's
+  photos show a smaller kitchenette nook than that. Worth a quick owner check — see
+  CLAUDE.md for detail.
 - **Check-in from 14:00, check-out by 10:00** — taken from their booking listings, not
   their own site.
 - **Breakfast at R110 per person**, not served 16 December – 7 January.
