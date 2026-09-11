@@ -54,7 +54,7 @@
 <header class="site-head" id="siteHead">
   <div class="shell head-inner">
 
-    <a class="brand" href="#top" aria-label="On The Bay B&amp;B, home">
+    <a class="brand" href="index.html" aria-label="On The Bay B&amp;B, home">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
         <circle cx="16" cy="16" r="14.4" fill="none" stroke="currentColor" stroke-width="1"/>
         <path d="M16 8.6a7.4 7.4 0 1 1-7.4 7.4A5.7 5.7 0 0 1 16 11.4a4.1 4.1 0 0 1 4.1 4.1A2.9 2.9 0 0 1 16 18.4"
@@ -67,8 +67,18 @@
     </a>
 
     <nav class="nav" id="nav" aria-label="Main">
-      <a href="#stay">The house</a>
-      <a href="#rooms">Rooms</a>
+      <a href="index.html">Home</a>
+      <div class="nav-item">
+        <a href="rooms/index.html" class="nav-trigger">Rooms <svg class="nav-caret" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-dropdown">
+          <a href="rooms/king-sofa.html">King with sofa bed</a>
+          <a href="rooms/twin.html">Twin with extra single</a>
+          <a href="rooms/family-unit.html">Two-bedroom family unit</a>
+          <a href="rooms/garden-double.html">Garden double</a>
+          <a href="rooms/self-catering.html">Self-catering room</a>
+          <a href="rooms/compact-single.html">Compact single</a>
+        </div>
+      </div>
       <a href="#around">Around us</a>
       <a href="#gallery">Gallery</a>
       <a href="#find">Find us</a>
@@ -76,7 +86,7 @@
 
     <div class="head-actions">
       <a class="head-tel" href="tel:+27415833190">041 583 3190</a>
-      <a class="btn btn-solid btn-sm" href="#callback">Request a callback</a>
+      <a class="btn btn-solid btn-sm" href="https://book.nightsbridge.com/26870" target="_blank" rel="noopener">Book Now</a>
       <button class="burger" id="burger" aria-expanded="false" aria-controls="nav" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
@@ -89,7 +99,7 @@
 
 <!-- ─────────────────────────  HERO  ───────────────────────── -->
 <section class="hero" id="top">
-  <img class="hero-img" src="images/hero.jpg" alt="The garden and guest wing at On The Bay B&amp;B" fetchpriority="high">
+  <img class="hero-img" src="images/hero-3.jpg" alt="The garden path leading to the guest cottage at On The Bay B&amp;B" fetchpriority="high">
   <div class="hero-scrim" aria-hidden="true"></div>
 
   <div class="shell hero-inner">
@@ -100,8 +110,8 @@
       Six rooms, each with its own entrance and patio, set around an English rose garden.
     </p>
     <div class="hero-cta js-rise" style="--d:270ms">
-      <a class="btn btn-solid" href="#callback">Request a callback</a>
-      <a class="btn btn-ghost" href="https://wa.me/27837970894" rel="noopener">Message us on WhatsApp</a>
+      <a class="btn btn-solid" href="#rooms">See rooms</a>
+      <a class="btn btn-ghost" href="https://book.nightsbridge.com/26870" target="_blank" rel="noopener">Check availability</a>
     </div>
   </div>
 
@@ -144,7 +154,7 @@
     </div>
 
     <figure class="split-fig">
-      <img src="images/garden.jpg" alt="The English garden at On The Bay, planted with over ninety rose bushes" loading="lazy">
+      <img src="images/garden.webp" alt="The English garden at On The Bay, planted with over ninety rose bushes" loading="lazy">
       <figcaption>Over ninety rose bushes, and the sound of the bay behind them.</figcaption>
     </figure>
 
@@ -165,129 +175,119 @@
 
     <div class="rooms">
 
-      <article class="room">
+      <a class="room" href="rooms/king-sofa.html">
         <div class="room-img">
-          <button class="room-img-btn" type="button" data-alt="King room with sofa bed"
-                  data-photos='["images/rooms/king-sofa/1.jpg","images/rooms/king-sofa/2.jpg","images/rooms/king-sofa/3.jpg"]'>
-            <img src="images/rooms/king-sofa/1.jpg" alt="King room with sofa bed" loading="lazy">
-            <span class="room-img-count">3 photos</span>
-          </button>
+          <img src="images/rooms/king-sofa/1.webp" alt="King room with sofa bed" loading="lazy">
+          <span class="room-img-count">9 photos</span>
         </div>
         <div class="room-body">
           <h3>King with sofa bed</h3>
           <p>One king-size bed with a sofa bed suitable for a child under 12. Opens onto its own patio.</p>
-          <ul class="spec">
-            <li>1 king bed + sofa bed</li>
-            <li>Sleeps 2 + 1 child</li>
-            <li>En-suite shower</li>
-          </ul>
-          <button class="link-enq" data-room="King with sofa bed">Enquire about this room</button>
+          <div class="room-tag">
+            <ul class="spec">
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 12V8a2 2 0 0 1 2-2h4v6"/></svg>1 king bed + sofa bed</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2 + 1 child</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
+            </ul>
+            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+          </div>
         </div>
-      </article>
+      </a>
 
-      <article class="room">
+      <a class="room" href="rooms/twin.html">
         <div class="room-img">
-          <button class="room-img-btn" type="button" data-alt="Twin room with an extra single bed"
-                  data-photos='["images/rooms/twin/1.jpg","images/rooms/twin/2.jpg","images/rooms/twin/3.jpg","images/rooms/twin/4.jpg"]'>
-            <img src="images/rooms/twin/1.jpg" alt="Twin room with an extra single bed" loading="lazy">
-            <span class="room-img-count">4 photos</span>
-          </button>
+          <img src="images/rooms/twin/1.webp" alt="Twin room with an extra single bed" loading="lazy">
+          <span class="room-img-count">6 photos</span>
         </div>
         <div class="room-body">
           <h3>Twin with extra single</h3>
           <p>Two single beds plus a single suitable for a child under 12 &mdash; or a king with a single bed for a child.</p>
-          <ul class="spec">
-            <li>2 singles, or king + single</li>
-            <li>Sleeps 2 + 1 child</li>
-            <li>En-suite shower</li>
-          </ul>
-          <button class="link-enq" data-room="Twin with extra single">Enquire about this room</button>
+          <div class="room-tag">
+            <ul class="spec">
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 12V8a2 2 0 0 1 2-2h4v6"/></svg>2 singles, or king + single</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2 + 1 child</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
+            </ul>
+            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+          </div>
         </div>
-      </article>
+      </a>
 
-      <article class="room room-feature">
+      <a class="room" href="rooms/family-unit.html">
         <div class="room-img">
-          <button class="room-img-btn" type="button" data-alt="Two-bedroom family unit"
-                  data-photos='["images/rooms/family-unit/1.jpg"]'>
-            <img src="images/rooms/family-unit/1.jpg" alt="Two-bedroom family unit" loading="lazy">
-          </button>
+          <img src="images/rooms/family-unit/1.webp" alt="Two-bedroom family unit" loading="lazy">
+          <span class="room-img-count">11 photos</span>
         </div>
         <div class="room-body">
           <h3>Two-bedroom family unit</h3>
-          <p>
-            Two bedrooms, each with its own entrance, sharing one en-suite bathroom. Each bedroom has its
-            own smart TV, and the kitchenette has a fridge, microwave and tea and coffee facilities. Book it
-            as one family unit, or as two separate single rooms.
-          </p>
-          <ul class="spec">
-            <li>King, double or twin beds</li>
-            <li>Sleeps up to 4</li>
-            <li>Kitchenette</li>
-            <li>Shared en-suite</li>
-          </ul>
-          <button class="link-enq" data-room="Two-bedroom family unit">Enquire about this room</button>
+          <p>Two bedrooms with their own entrances, sharing one en-suite bathroom and a kitchenette. Book as one family unit, or as two separate rooms.</p>
+          <div class="room-tag">
+            <ul class="spec">
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 12V8a2 2 0 0 1 2-2h4v6"/></svg>King, double or twin beds</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps up to 4</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>Shared en-suite</li>
+            </ul>
+            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+          </div>
         </div>
-      </article>
+      </a>
 
-      <article class="room">
+      <a class="room" href="rooms/garden-double.html">
         <div class="room-img">
-          <button class="room-img-btn" type="button" data-alt="Garden double room"
-                  data-photos='["images/rooms/garden-double/1.jpg","images/rooms/garden-double/2.jpg","images/rooms/garden-double/3.jpg","images/rooms/garden-double/4.jpg"]'>
-            <img src="images/rooms/garden-double/1.jpg" alt="Garden double room" loading="lazy">
-            <span class="room-img-count">4 photos</span>
-          </button>
+          <img src="images/rooms/garden-double/1.jpg" alt="Garden double room" loading="lazy">
+          <span class="room-img-count">4 photos</span>
         </div>
         <div class="room-body">
           <h3>Garden double</h3>
           <p>A double room looking onto the rose garden, with a private entrance and patio of its own.</p>
-          <ul class="spec">
-            <li>1 double bed</li>
-            <li>Sleeps 2</li>
-            <li>En-suite shower</li>
-          </ul>
-          <button class="link-enq" data-room="Garden double">Enquire about this room</button>
+          <div class="room-tag">
+            <ul class="spec">
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 12V8a2 2 0 0 1 2-2h4v6"/></svg>1 double bed</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
+            </ul>
+            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+          </div>
         </div>
-      </article>
+      </a>
 
-      <article class="room">
+      <a class="room" href="rooms/self-catering.html">
         <div class="room-img">
-          <button class="room-img-btn" type="button" data-alt="Self-catering room with kitchenette"
-                  data-photos='["images/rooms/self-catering/1.jpg","images/rooms/self-catering/2.jpg","images/rooms/self-catering/3.jpg"]'>
-            <img src="images/rooms/self-catering/1.jpg" alt="Self-catering room with kitchenette" loading="lazy">
-            <span class="room-img-count">3 photos</span>
-          </button>
+          <img src="images/rooms/self-catering/1.webp" alt="Self-catering room with kitchenette" loading="lazy">
+          <span class="room-img-count">7 photos</span>
         </div>
         <div class="room-body">
           <h3>Self-catering room</h3>
           <p>Set up for longer stays, with the facilities to put together a light meal without going out.</p>
-          <ul class="spec">
-            <li>Double or twin beds</li>
-            <li>Sleeps 2</li>
-            <li>Kitchenette</li>
-          </ul>
-          <button class="link-enq" data-room="Self-catering room">Enquire about this room</button>
+          <div class="room-tag">
+            <ul class="spec">
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 12V8a2 2 0 0 1 2-2h4v6"/></svg>Double or twin beds</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M15 6v12M5 10h6M5 14h4"/></svg>Kitchenette</li>
+            </ul>
+            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+          </div>
         </div>
-      </article>
+      </a>
 
-      <article class="room">
+      <a class="room" href="rooms/compact-single.html">
         <div class="room-img">
-          <button class="room-img-btn" type="button" data-alt="Compact single room"
-                  data-photos='["images/rooms/compact-single/1.jpg","images/rooms/compact-single/2.jpg","images/rooms/compact-single/3.jpg"]'>
-            <img src="images/rooms/compact-single/1.jpg" alt="Compact single room" loading="lazy">
-            <span class="room-img-count">3 photos</span>
-          </button>
+          <img src="images/rooms/compact-single/1.webp" alt="Compact single room" loading="lazy">
+          <span class="room-img-count">4 photos</span>
         </div>
         <div class="room-body">
           <h3>Compact single</h3>
           <p>A smaller room for one person, or a couple on a short stay. En-suite, with everything you need for a night or two.</p>
-          <ul class="spec">
-            <li>Single or double bed</li>
-            <li>Sleeps 1&ndash;2</li>
-            <li>En-suite shower</li>
-          </ul>
-          <button class="link-enq" data-room="Compact single">Enquire about this room</button>
+          <div class="room-tag">
+            <ul class="spec">
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 12V8a2 2 0 0 1 2-2h4v6"/></svg>Single or double bed</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 1&ndash;2</li>
+              <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
+            </ul>
+            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+          </div>
         </div>
-      </article>
+      </a>
 
     </div>
 
@@ -309,31 +309,6 @@
         when supply is short.
       </p>
     </div>
-
-  </div>
-</section>
-
-<!-- ─────────────────────────  BREAKFAST + BRAAI  ───────────────────────── -->
-<section class="band band-sand">
-  <div class="shell duo">
-
-    <article class="duo-card">
-      <img src="images/breakfast.jpg" alt="Breakfast served at On The Bay" loading="lazy">
-      <div>
-        <h3 class="h-min">Breakfast</h3>
-        <p>Breakfast is available at R110 per person, on request when you book.</p>
-        <p class="fine">Not served between 16 December and 7 January.</p>
-      </div>
-    </article>
-
-    <article class="duo-card">
-      <img src="images/braai.jpg" alt="The shared braai and entertainment area" loading="lazy">
-      <div>
-        <h3 class="h-min">Braai and entertainment area</h3>
-        <p>Use the shared braai area, or ask us to set up an individual braai at your room.</p>
-        <p class="fine">Just let us know the day before.</p>
-      </div>
-    </article>
 
   </div>
 </section>
@@ -402,7 +377,7 @@
       <h2 class="h-sec">A look around</h2>
     </header>
 
-    <div class="grid-gal" id="gal">
+    <div class="grid-gal grid-gal-mosaic" id="gal">
       <button class="gal-item" data-full="images/gallery-1.jpg"><img src="images/gallery-1.jpg" alt="The garden" loading="lazy"></button>
       <button class="gal-item" data-full="images/gallery-2.jpg"><img src="images/gallery-2.jpg" alt="A guest room" loading="lazy"></button>
       <button class="gal-item" data-full="images/gallery-3.jpg"><img src="images/gallery-3.jpg" alt="Roses in the garden" loading="lazy"></button>
@@ -580,8 +555,8 @@
     </div>
 
     <nav class="foot-nav" aria-label="Footer">
-      <a href="#stay">The house</a>
-      <a href="#rooms">Rooms</a>
+      <a href="index.html">Home</a>
+      <a href="rooms/index.html">Rooms</a>
       <a href="#around">Around us</a>
       <a href="#gallery">Gallery</a>
       <a href="#find">Find us</a>

@@ -12,9 +12,9 @@
   --chalk:      #EFF2EA;
   --paper:      #F8F9F4;
   --sand:       #E7DCCA;
-  --rose:       #A83B54;
-  --rose-deep:  #8C2E44;
-  --rose-tint:  #F2E4E2;
+  --rose:       #F9CB5F;
+  --rose-deep:  #F2AD0D;
+  --rose-tint:  #FBEED0;
   --sea:        #4F8F8B;
   --line:       rgba(28,58,49,.15);
   --line-light: rgba(255,255,255,.22);
@@ -97,7 +97,7 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   text-decoration:none; cursor:pointer;
   transition:background-color .18s ease, color .18s ease, border-color .18s ease;
 }
-.btn-solid{ background:var(--rose); color:#fff; }
+.btn-solid{ background:var(--rose); color:#000; }
 .btn-solid:hover{ background:var(--rose-deep); }
 .btn-ghost{ background:transparent; color:#fff; border-color:rgba(255,255,255,.55); }
 .btn-ghost:hover{ background:rgba(255,255,255,.14); border-color:#fff; }
@@ -136,13 +136,58 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .nav{ display:flex; gap:clamp(14px,2vw,28px); }
 .nav a{
   text-decoration:none; font-size:var(--t--1); font-weight:500;
-  padding:6px 0; position:relative;
+  padding:6px 0; position:relative; white-space:nowrap;
 }
 .nav a::after{
   content:""; position:absolute; left:0; right:100%; bottom:0; height:1.5px;
   background:currentColor; transition:right .22s ease;
 }
 .nav a:hover::after{ right:0; }
+
+/* "Rooms" nav item — a real link (still goes straight to the rooms
+   listing page on click) that also reveals a hover dropdown of all six
+   rooms, so a visitor can jump straight to one without landing on the
+   listing page first. Ported in spirit from the reference site's own
+   nav__trigger/nav__dropdown pattern; hover-only by design, so it keeps
+   the site's no-extra-JS approach — see the mobile override below for how
+   touch devices get the same list without relying on hover. */
+.nav-item{ position:relative; }
+.nav-trigger{ display:inline-flex; align-items:center; gap:5px; }
+.nav-caret{ width:9px; height:9px; opacity:.7; transition:transform .2s ease; }
+.nav-item:hover .nav-caret,
+.nav-item:focus-within .nav-caret{ transform:rotate(180deg); }
+
+/* invisible bridge over the gap between the trigger and the dropdown
+   below it — without this, moving the pointer straight down from "Rooms"
+   toward the panel crosses a dead zone that's over neither element, so
+   :hover drops for a moment and the panel starts fading out mid-transit.
+   This sits exactly in that gap (same height as the dropdown's
+   margin-top) and, as generated content of .nav-item, keeps counting as
+   part of it the whole way down. */
+.nav-item::after{ content:""; position:absolute; top:100%; left:0; right:0; height:14px; }
+
+.nav-dropdown{
+  position:absolute; top:100%; left:0; margin-top:14px; z-index:95;
+  min-width:230px; padding:8px; display:flex; flex-direction:column;
+  background:var(--paper); color:var(--ink); border:1px solid var(--line);
+  border-radius:10px; box-shadow:0 26px 46px -26px rgba(28,58,49,.4);
+  opacity:0; visibility:hidden; transform:translateY(6px);
+  transition:opacity .2s ease, transform .2s ease, visibility .2s;
+}
+.nav-item:hover .nav-dropdown,
+.nav-item:focus-within .nav-dropdown{
+  opacity:1; visibility:visible; transform:translateY(0);
+}
+.nav-dropdown a{
+  padding:.7em .8em; border-radius:6px; font-size:var(--t--1); font-weight:500;
+  color:var(--ink); white-space:nowrap;
+}
+.nav-dropdown a::after{ display:none; }
+/* background-only feedback — no accent-colour text here, so it doesn't
+   read as "gone yellow" against --rose's current warm-gold value */
+.nav-dropdown a:hover,
+.nav-dropdown a:focus-visible{ background:var(--chalk); }
+.nav-dropdown a[aria-current="page"]{ background:var(--chalk); font-weight:600; }
 
 .head-actions{ display:flex; align-items:center; gap:14px; }
 .head-tel{ text-decoration:none; font-size:var(--t--1); font-weight:600; }
@@ -173,6 +218,19 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   font-size:var(--t--1); letter-spacing:.13em; margin:0 0 1.1em;
   color:rgba(255,255,255,.85);
 }
+/* small uppercase label + short rule, sitting above the title on the
+   room-page hero — the same "label + line" shape as `.eyebrow` further
+   down the page, just white-on-photo and with the rule drawn in instead
+   of relying on a border, since there's no element below to border. */
+.hero-eyebrow{
+  display:flex; align-items:center; gap:14px;
+  font:700 12px/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(255,255,255,.86); margin:0 0 1em;
+}
+.hero-eyebrow::after{
+  content:""; flex:1 1 auto; max-width:70px; height:1px;
+  background:rgba(255,255,255,.55);
+}
 .hero-title{
   font-family:var(--serif); font-weight:300;
   font-size:clamp(2.5rem, 7.2vw, 5.2rem);
@@ -186,6 +244,37 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   max-width:46ch; color:rgba(255,255,255,.92); margin-bottom:2em;
 }
 .hero-cta{ display:flex; flex-wrap:wrap; gap:12px; }
+
+/* short banner variant — room detail pages. Same hero/hero-img/hero-scrim
+   markup as the homepage hero, just a lot less tall and with the title
+   pinned to the bottom instead of a full title+lede+CTA stack. */
+.hero--room{ min-height:min(58svh,500px); }
+.hero--room .hero-inner{
+  min-height:min(58svh,500px);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding-top:140px; padding-bottom:clamp(36px,6vh,60px);
+}
+.hero--room .hero-title{ font-size:clamp(2.1rem,5.6vw,3.6rem); margin:0 0 .3em; max-width:20ch; }
+/* a short single-line subtitle, not the long-form paragraph .hero-lede is
+   sized for on the homepage — smaller, no bottom margin (title/eyebrow
+   above already carry the spacing), plain sans weight for contrast
+   against the serif title. */
+.hero--room .hero-lede{
+  font:600 clamp(1rem,1.6vw,1.1875rem)/1.5 var(--sans);
+  max-width:42ch; margin:0; color:rgba(255,255,255,.92);
+}
+/* the base .hero-scrim above is tuned for the homepage's full-height,
+   green-toned garden hero — its percentage stops reach full darkness
+   gradually over a ~94vh box. Reused as-is on this much shorter banner,
+   those same stops compress into a fast ramp that reads as a heavy,
+   green-tinted wash over the whole photo rather than a gentle darkening
+   at the edges (which is what actually showed up: room photos looking
+   dull/off-colour, not just "a bit darker"). This override swaps it for
+   a plain neutral (no green) black gradient, lighter overall, that only
+   really darkens the bottom strip the title sits on. */
+.hero--room .hero-scrim{
+  background:linear-gradient(180deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,.04) 32%, rgba(0,0,0,.6) 100%);
+}
 
 /* fact ribbon */
 .ribbon{
@@ -253,36 +342,220 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .facts-tight{ margin-top:1.4em; }
 
 /* ---------- rooms ---------- */
-.rooms{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
-.room{ background:var(--paper); display:flex; flex-direction:column; position:relative; }
-.room-feature{ background:var(--sand); }
-.room-feature::before{ content:""; position:absolute; inset:0 0 auto 0; height:3px; background:var(--rose); z-index:1; }
+/* cards float with their own border/shadow, rather than the flat hairline-
+   tile grid this used before — a deliberate departure from the site's
+   otherwise sharp-cornered, shadowless language, asked for specifically to
+   match a reference room-card layout (relaxedcityliving.co.za/rooms) */
+.rooms{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,2.2vw,28px); }
+.room{
+  background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+  display:flex; flex-direction:column; position:relative;
+  text-decoration:none; color:inherit;
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.room:hover{ transform:translateY(-5px); box-shadow:0 26px 44px -28px rgba(28,58,49,.4); }
 .room-img{ overflow:hidden; position:relative; }
-.room-img img{ width:100%; aspect-ratio:3/2; object-fit:cover; transition:transform .5s ease; }
-.room:hover .room-img img{ transform:scale(1.03); }
-.room-img-btn{ display:block; width:100%; padding:0; border:0; background:none; cursor:zoom-in; position:relative; }
+.room-img img{ width:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .6s ease; }
+.room:hover .room-img img{ transform:scale(1.045); }
+
 .room-img-count{
   position:absolute; right:10px; bottom:10px; z-index:1;
   padding:.32em .75em; border-radius:100px;
   background:rgba(16,34,28,.72); color:#fff;
-  font:600 11px/1 var(--sans); letter-spacing:.02em;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  font:600 11px/1 var(--sans); letter-spacing:.04em;
   pointer-events:none;
 }
 .room-body{ padding:clamp(20px,2.4vw,30px); display:flex; flex-direction:column; flex:1; }
 .room-body h3{ font-family:var(--serif); font-weight:500; font-size:var(--t-2); margin:0 0 .4em; line-height:1.15; }
 .room-body p{ color:var(--ink-soft); font-size:var(--t--1); line-height:1.62; }
 
-.spec{ list-style:none; margin:auto 0 1.1em; padding:1em 0 0; border-top:1px solid var(--line); display:grid; gap:.35em; }
-.spec li{ font-size:var(--t--1); color:var(--ink-mute); display:flex; gap:.6em; }
-.spec li::before{ content:""; width:5px; height:5px; margin-top:.62em; background:var(--sea); flex:none; border-radius:50%; }
-.room-feature .spec{ border-top-color:rgba(28,58,49,.22); }
+/* spec list — a vertical icon+text stack, used both bare (room detail
+   page intro) and inside a .room-tag row (cards, paired with "View room") */
+.spec{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.5em; }
+.spec li{ font-size:var(--t--1); color:var(--ink-mute); display:flex; align-items:center; gap:.55em; }
+.spec svg{ width:15px; height:15px; flex:none; opacity:.72; }
 
-.link-enq{
-  background:none; border:0; padding:0; cursor:pointer;
-  font:600 var(--t--1)/1.4 var(--sans); color:var(--rose);
-  border-bottom:1px solid currentColor; align-self:flex-start;
+.room-tag{
+  margin-top:auto; border-top:1px solid var(--line); padding-top:.9em;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:1.2em; flex-wrap:wrap;
 }
-.link-enq:hover{ color:var(--rose-deep); }
+.room-tag .spec{ flex:none; }
+
+/* not a link of its own — the whole .room card is one — just styled like
+   one, since the card is the click target */
+.room-view{
+  display:inline-flex; align-items:center; gap:.45em; flex:none;
+  font:600 var(--t--1)/1.4 var(--sans); color:var(--ink-soft);
+  transition:gap .22s ease, color .22s ease;
+}
+.room:hover .room-view{ gap:.7em; color:var(--rose); }
+
+/* ---------- room detail page ---------- */
+/* the rooms LISTING page (rooms/index.html) still opens straight into its
+   first band with no tall .hero to absorb the fixed header, so it still
+   needs a flat top-padding to clear the ~100px fixed header plus a little
+   breathing room. Individual room pages no longer need this — they now
+   open with their own .hero--room banner (see above), so .room-top just
+   takes the normal .band padding like any other section. */
+.page-top{ padding-top:140px; }
+/* the hero banner right above already gives this section a strong visual
+   break (the photo edge + its shadow), so it doesn't need the full flat
+   .band top padding a page-opening section has to fight — left at the
+   .band default this was ~64-124px of dead air before the breadcrumb
+   chip even started. Only trims the top; the bottom padding (separating
+   this section from "Other rooms" below) is untouched. */
+.hero--room + .room-top{ padding-top:clamp(28px,4vw,48px); }
+/* rounded "chip" bar rather than plain inline text — a small circular
+   home-icon badge (paper-on-chalk, echoing the .bookbox-icon circles)
+   followed by the trail; the current page is a plain non-link span,
+   set bolder/darker than the Home/Rooms links so it reads as "you are
+   here" rather than another clickable step. */
+.crumb{
+  display:inline-flex; align-items:center; gap:.6em;
+  margin:0 0 1.6em; padding:.4em 1.1em .4em .4em;
+  border-radius:100px; background:var(--chalk);
+  font-size:var(--t--1);
+}
+.crumb-icon{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px; height:30px; border-radius:50%; flex:none;
+  background:var(--paper); color:var(--ink-soft);
+}
+.crumb-icon svg{ width:14px; height:14px; }
+.crumb a{ font-weight:600; color:var(--ink-mute); text-decoration:none; }
+.crumb a:hover{ color:var(--rose); }
+.crumb-current{ font-weight:700; color:var(--ink); }
+
+/* small uppercase section label, used above the description/photos on a
+   room page and above the "Rooms" section elsewhere — ported from the
+   reference site's own `.eyebrow` treatment */
+.eyebrow{
+  display:block; margin:0 0 .9em;
+  font:700 .72rem/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-mute);
+}
+
+/* two-column room-detail layout: a sticky booking box on the left,
+   description + gallery on the right — modelled on
+   relaxedcityliving.co.za's room pages, mirrored so the box that actually
+   drives a booking is the first thing read, not an afterthought at the
+   end of the scroll */
+.roomlayout{
+  display:grid; grid-template-columns:340px minmax(0,1fr);
+  gap:clamp(28px,5vw,56px); align-items:start;
+}
+.roomlayout-main p{ color:var(--ink-soft); }
+.roomlayout-aside{ position:sticky; top:116px; }
+
+.bookbox{
+  background:var(--paper); border:1px solid var(--line); border-radius:24px;
+  box-shadow:0 30px 54px -32px rgba(28,58,49,.4);
+  overflow:hidden;
+}
+
+/* photo header panel: icon + title + "plan your stay" eyebrow over a real
+   wave photo, a faint ripple doodle in the corner, and a wave seam into
+   the body below instead of a hard edge. The wave seam isn't CSS — it's
+   baked into images/bookbox-wave.webp's own alpha channel (owner-supplied,
+   pre-cut to that shape), so `.bookbox-head-img` just needs to sit behind
+   everything and let the card's own --paper background show through where
+   the photo is transparent. */
+.bookbox-head{
+  position:relative; overflow:hidden;
+  /* locked to the source photo's own ratio (bookbox-wave.webp is
+     900x301) — this used to have no explicit height at all, just
+     padding + content, which left `object-fit:cover` to crop the photo
+     by however much the box's own aspect ratio (width varies a LOT:
+     ~340px on the fixed-width desktop aside vs. the full page width once
+     .roomlayout collapses to one column under 900px, while the height
+     stayed pinned to content) happened to differ from the photo's own.
+     At the widths in between — just past that collapse, where the aside
+     is suddenly ~700-800px wide but the box was still only ~105px tall —
+     the crop zoomed in far enough that the wave line rode up through the
+     "Plan your stay" subtitle, washing it out to near-invisible. Matching
+     the box's ratio to the photo's means `cover` never has anything to
+     crop, so the wave sits at the same fraction of the box at every
+     width. min-height is just a floor so a very narrow phone can't
+     squeeze it shorter than the icon+heading content needs. */
+  aspect-ratio:900/301; min-height:100px;
+  padding:1.7rem 1.7rem 2rem;
+  /* var(--paper), not a dark fallback — the photo's own alpha cuts the
+     wave shape, and what that cutout reveals is this element's own
+     background (the .bookbox-body sitting below is a separate box, not
+     behind it), so this has to match the body for the two to read as one
+     continuous card rather than a dark strip between photo and body */
+  background:var(--paper); color:#fff;
+}
+.bookbox-head-img{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover; object-position:center bottom;
+}
+/* only darkens the top portion behind the icon/heading — confined well
+   clear of the wave cutout lower down, so it can never leave a residual
+   tint over the paper that shows through there */
+.bookbox-head-scrim{
+  position:absolute; top:0; left:0; right:0; height:58%;
+  background:linear-gradient(180deg, rgba(10,30,35,.5) 0%, rgba(10,30,35,0) 100%);
+}
+.bookbox-head-top{ position:relative; display:flex; align-items:flex-start; gap:.8em; }
+.bookbox-head-icon{ width:25px; height:25px; flex:none; margin-top:.2em; opacity:.95; }
+.bookbox-head h3{
+  font-family:var(--serif); font-weight:700; font-size:1.5rem; line-height:1.15;
+  margin:0 0 .32em; letter-spacing:-.01em;
+  text-shadow:0 2px 10px rgba(10,30,35,.3);
+}
+.bookbox-head-sub{
+  margin:0; font:700 .68rem/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(255,255,255,.8);
+}
+/* three ripple lines, echoing the water below */
+.bookbox-head-waves{ position:absolute; right:14px; bottom:34px; width:78px; height:44px; z-index:1; pointer-events:none; }
+.bookbox-head-waves path{ fill:none; stroke:rgba(255,255,255,.55); stroke-width:2; stroke-linecap:round; }
+
+/* condensed (Sept 2026): the box used to end with a second "Enquire about
+   this room" outline button plus a rule-flanked WhatsApp line below the
+   facts — removed at the owner's request to shorten the card, since the
+   floating .wa-float button already covers WhatsApp sitewide and the
+   Nightsbridge button is the one action that actually matters here. What's
+   below is tightened accordingly (smaller icon circles, tighter row/section
+   gaps, no bottom padding held for a footnote that no longer exists). */
+.bookbox-body{ padding:1.5rem 1.7rem 1.6rem; }
+
+.bookbox-facts{ margin:0 0 1.3rem; display:grid; gap:.85em; }
+.bookbox-facts .row{ display:flex; align-items:center; justify-content:space-between; gap:1em; }
+.bookbox-facts dt{ display:flex; align-items:center; gap:.75em; color:var(--ink-mute); font-size:var(--t--1); font-weight:500; }
+.bookbox-icon{
+  display:grid; place-items:center; flex:none; width:34px; height:34px;
+  border-radius:50%; background:rgba(28,58,49,.08); color:var(--ink);
+}
+.bookbox-icon svg{ width:16px; height:16px; }
+.bookbox-facts dd{ margin:0; font-weight:700; font-size:var(--t-0); color:var(--ink); text-align:right; }
+/* a light rule ahead of the check-in row, separating "what the room is"
+   facts from "when you can have it" facts */
+.bookbox-facts .row-stay{ padding-top:.85em; border-top:1px solid var(--line); }
+
+.bookbox-btn{
+  display:flex; align-items:center; justify-content:center; gap:.45em;
+  width:100%; padding:1em .9rem; border-radius:100px;
+  font:700 .9rem/1.2 var(--sans); text-decoration:none;
+}
+.bookbox-btn svg{ width:16px; height:16px; flex:none; }
+.bookbox-btn-solid{ background:var(--rose); color:var(--ink); transition:background-color .2s ease; }
+.bookbox-btn-solid:hover{ background:var(--rose-deep); }
+
+.room-more{ display:flex; flex-wrap:wrap; gap:10px 14px; }
+.room-more-link{
+  padding:.68em 1.2em; border:1px solid var(--line); border-radius:100px;
+  font-size:var(--t--1); font-weight:600; color:var(--ink-soft); text-decoration:none;
+  transition:border-color .2s ease, color .2s ease;
+}
+.room-more-link:hover{ border-color:var(--rose); color:var(--rose); }
+
+/* ---------- rooms listing page ---------- */
+.guide{ max-width:68ch; }
+.cta-band{ display:flex; align-items:center; justify-content:space-between; gap:clamp(24px,4vw,48px); flex-wrap:wrap; }
+.cta-band .lede{ margin-bottom:0; }
 
 /* ---------- amenities ---------- */
 .amen{ margin-top:clamp(44px,6vw,76px); }
@@ -296,13 +569,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   fill:none; stroke:var(--sea); stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round;
 }
 .amen-note{ font-size:var(--t--1); color:var(--ink-mute); border-left:2px solid var(--sea); padding-left:14px; max-width:52ch; }
-
-/* ---------- duo (breakfast / braai) ---------- */
-.duo{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,40px); }
-.duo-card{ display:grid; grid-template-columns:132px 1fr; gap:22px; align-items:center; }
-.duo-card img{ width:132px; height:132px; object-fit:cover; border-radius:var(--r); }
-.duo-card p{ margin-bottom:.5em; color:var(--ink-soft); font-size:var(--t--1); }
-.duo-card .fine{ margin-bottom:0; }
 
 /* ---------- around ---------- */
 .around-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(32px,6vw,80px); }
@@ -330,16 +596,44 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .gal-item{ padding:0; border:0; background:none; cursor:zoom-in; overflow:hidden; border-radius:var(--r); }
 .gal-item img{ width:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .45s ease, filter .45s ease; }
 .gal-item:hover img{ transform:scale(1.04); filter:saturate(1.08); }
-.gal-item:nth-child(1),
-.gal-item:nth-child(4),
-.gal-item:nth-child(5){ grid-column:span 2; }
-.gal-item:nth-child(1) img,
-.gal-item:nth-child(4) img,
-.gal-item:nth-child(5) img{ aspect-ratio:8/3; }
 
-.lb{ position:relative; border:0; padding:0; background:transparent; max-width:min(94vw,1100px); overflow:visible; }
+/* homepage gallery only: the 1st/4th/5th tile runs wide (2 cols, still
+   just 1 row — an 8/3 banner-ish crop). Hand-tuned for exactly 6 photos,
+   so it's scoped to `.grid-gal-mosaic` rather than left as a bare
+   `.grid-gal` default — a `.grid-gal` with a different photo count (every
+   room page) needs a different pattern, see `.grid-gal-feature` below. */
+.grid-gal-mosaic .gal-item:nth-child(1),
+.grid-gal-mosaic .gal-item:nth-child(4),
+.grid-gal-mosaic .gal-item:nth-child(5){ grid-column:span 2; }
+.grid-gal-mosaic .gal-item:nth-child(1) img,
+.grid-gal-mosaic .gal-item:nth-child(4) img,
+.grid-gal-mosaic .gal-item:nth-child(5) img{ aspect-ratio:8/3; }
+
+/* room-page galleries: just the first photo as a big 2×2 feature tile,
+   ported from the reference site's gallery (their `.gallery
+   button:first-child{grid-column:span 2;grid-row:span 2}`). Every other
+   tile stays a plain 1×1 cell at the grid's default 4/3 aspect ratio, so
+   the two rows the feature tile spans line up with the grid's own auto
+   rows — and unlike the mosaic above, this generalises to any photo
+   count, not just a fixed set of six. */
+.grid-gal-feature .gal-item{ grid-column:span 1; grid-row:span 1; }
+.grid-gal-feature .gal-item img{ aspect-ratio:4/3; }
+.grid-gal-feature .gal-item:first-child{ grid-column:span 2; grid-row:span 2; }
+
+/* must be `fixed`, not `relative` — `<dialog>`'s own UA stylesheet
+   expects `position:fixed` to centre itself in the viewport via
+   `inset:0; margin:auto`. Overriding that to `relative` (as this used to)
+   boxes the dialog into whatever positioned ancestor wraps the gallery
+   instead of the viewport — cropped/offset image, backdrop not covering
+   the screen, and (since the browser scrolls a just-shown modal into
+   view, and a `relative` dialog sitting mid-page isn't "in view" yet) a
+   jarring scroll-to-top on open. `fixed`+`inset:0`+`margin:auto` keeps it
+   viewport-centred regardless of scroll position, which also makes the
+   open-time scroll-jump a non-issue since the dialog never needs
+   scrolling into view. */
+.lb{ position:fixed; inset:0; margin:auto; border:0; padding:0; background:transparent; max-width:min(94vw,1100px); overflow:visible; }
 .lb::backdrop{ background:rgba(16,34,28,.9); }
-.lb img{ width:100%; height:auto; border-radius:var(--r); }
+.lb img{ display:block; width:auto; height:auto; max-width:100%; max-height:90vh; border-radius:var(--r); }
 .lb-close{
   position:absolute; top:12px; right:12px; z-index:2;
   width:40px; height:40px; border-radius:50%;
@@ -347,16 +641,22 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   color:#fff; font-size:1.6rem; line-height:1; cursor:pointer;
 }
 .lb-close:hover{ background:rgba(16,34,28,.92); }
+/* fixed to the viewport, not `.lb` — `.lb`'s own width/height shrink to
+   fit whichever photo is showing (capped by max-width/max-height), so a
+   narrower portrait shot made `absolute`-positioned arrows creep inward
+   with it instead of staying put; `fixed` with a flat edge offset keeps
+   them anchored to the sides of the screen regardless of the current
+   photo's aspect ratio. */
 .lb-nav{
-  position:absolute; top:50%; transform:translateY(-50%); z-index:2;
+  position:fixed; top:50%; transform:translateY(-50%); z-index:2;
   width:44px; height:44px; border-radius:50%;
   background:rgba(16,34,28,.72); border:0; color:#fff;
   font-size:1.7rem; line-height:1; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
 }
 .lb-nav:hover{ background:rgba(16,34,28,.92); }
-.lb-prev{ left:12px; }
-.lb-next{ right:12px; }
+.lb-prev{ left:clamp(10px,3vw,28px); }
+.lb-next{ right:clamp(10px,3vw,28px); }
 .lb-count{
   position:absolute; left:50%; bottom:12px; transform:translateX(-50%); z-index:2;
   margin:0; padding:.35em .9em; border-radius:100px;
@@ -445,10 +745,31 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   .ribbon li{ border-top:1px solid var(--line-light); padding-inline:var(--gut); }
   .ribbon li:nth-child(-n+2){ border-top:0; }
   .ribbon li:nth-child(odd){ border-left:0; }
-  .duo{ grid-template-columns:1fr; }
+
+  /* minmax(0,1fr), not a bare 1fr — a grid item's default min-width is
+     "auto", which still respects a deep descendant's intrinsic content
+     width (e.g. anything nowrap); a bare 1fr track will happily grow
+     past the viewport to fit that instead of letting it wrap, pushing
+     the whole page into horizontal scroll. minmax(0,…) is what actually
+     lets the track (and everything in it) shrink below its content. */
+  .roomlayout{ grid-template-columns:minmax(0,1fr); }
+  .roomlayout-aside{ position:static; margin-bottom:clamp(24px,4vw,40px); }
 }
 
-@media (max-width:760px){
+/* header/nav switches to the burger menu at a much wider breakpoint than
+   the rest of the mobile layout below (1024px, not 760px). The desktop
+   nav has five links plus a phone number and a solid button all in one
+   row — measured against the available header width, that only has
+   ~13px of slack left over at 900px viewport (the point the rest of the
+   page collapses to a single column at), which is basically zero margin:
+   the moment webfont metrics come out even slightly wider than expected
+   (a real browser vs. this dev setup, fonts not yet loaded, etc.) it
+   wraps mid-link ("Around us" splitting into "Around" / "us") and the
+   header grows tall enough to eat into the hero title below it. 1024px
+   leaves a safe ~100px+ of slack instead. Kept as its own media query
+   rather than folding into the block below so the rest of that block's
+   breakpoint (where cards/galleries/forms go single-column) is untouched. */
+@media (max-width:1024px){
   html{ scroll-padding-top:74px; }
   .nav{
     position:absolute; inset:100% 0 auto 0;
@@ -466,15 +787,27 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   .head-actions .btn{ display:none; }
   .site-head.stuck .nav{ background:var(--paper); }
 
+  /* no hover on touch, so the "Rooms" dropdown just renders open and
+     inline instead — a plain indented sub-list under the Rooms link,
+     rather than the floating hover panel used at desktop widths */
+  .nav-caret{ display:none; }
+  .nav-dropdown{
+    position:static; opacity:1; visibility:visible; transform:none;
+    margin:0 0 4px; padding:0 0 4px 16px; border:0; box-shadow:none;
+    background:none; border-radius:0;
+  }
+  .nav-dropdown a{ padding:10px 0; font-size:var(--t--1); color:var(--ink-mute); }
+}
+
+@media (max-width:760px){
   .rooms{ grid-template-columns:1fr; }
 
   .amen-list{ grid-template-columns:repeat(2,1fr); }
   .grid-gal{ grid-template-columns:repeat(2,1fr); }
-  .gal-item:nth-child(n){ grid-column:span 1; }
-  .gal-item:nth-child(n) img{ aspect-ratio:4/3; }
+  .grid-gal-mosaic .gal-item:nth-child(n){ grid-column:span 1; }
+  .grid-gal-mosaic .gal-item:nth-child(n) img{ aspect-ratio:4/3; }
+  .grid-gal-feature .gal-item:first-child{ grid-column:span 2; grid-row:span 1; }
   .f-row, .f-row:has(.field-narrow){ grid-template-columns:1fr; }
-  .duo-card{ grid-template-columns:96px 1fr; gap:16px; }
-  .duo-card img{ width:96px; height:96px; }
 }
 
 @media (max-width:460px){

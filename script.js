@@ -5,18 +5,24 @@
   /* one orchestrated entrance on load */
   requestAnimationFrame(function () { document.body.classList.add('ready'); });
 
-  /* header turns solid as soon as the page moves */
+  /* header turns solid as soon as the page moves — except on pages with no
+     tall .hero banner to scroll past (e.g. the room pages), which stay solid */
   var head = document.getElementById('siteHead');
   if (head) {
-    var ticking = false;
-    var setState = function () {
-      head.classList.toggle('stuck', window.scrollY > 56);
-      ticking = false;
-    };
-    setState();
-    window.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(setState); }
-    }, { passive: true });
+    var hasHero = !!document.querySelector('.hero');
+    if (hasHero) {
+      var ticking = false;
+      var setState = function () {
+        head.classList.toggle('stuck', window.scrollY > 56);
+        ticking = false;
+      };
+      setState();
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(setState); }
+      }, { passive: true });
+    } else {
+      head.classList.add('stuck');
+    }
   }
 
   /* mobile menu */
@@ -36,22 +42,17 @@
     });
   }
 
-  /* "Enquire about this room" → scroll to the form and preselect the room */
+  /* arriving from a room page's (or the rooms listing page's) "Enquire
+     about this room" link — index.html?room=Room+Name#callback — preselects
+     that room in the callback form's dropdown */
   var select = document.getElementById('f-room');
-  document.querySelectorAll('.link-enq').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var wanted = btn.getAttribute('data-room');
-      if (select) {
-        Array.prototype.forEach.call(select.options, function (o) {
-          if (o.text.trim() === wanted) select.value = o.value || o.text;
-        });
-      }
-      var target = document.getElementById('callback');
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      var name = document.getElementById('f-name');
-      if (name) setTimeout(function () { name.focus({ preventScroll: true }); }, 550);
+  var selectRoomOption = function (wanted) {
+    if (!select || !wanted) return;
+    Array.prototype.forEach.call(select.options, function (o) {
+      if (o.text.trim() === wanted) select.value = o.value || o.text;
     });
-  });
+  };
+  selectRoomOption(new URLSearchParams(window.location.search).get('room'));
 
   /* leaving date can never precede arriving date */
   var inp = document.getElementById('f-in');
@@ -66,7 +67,8 @@
     });
   }
 
-  /* lightbox — gallery grid and per-room photo sets, with prev/next */
+  /* lightbox — powers any .gal-item grid on the page (the homepage gallery,
+     and each room page's own photo grid), with prev/next through that grid */
   var lb = document.getElementById('lb');
   var lbImg = document.getElementById('lbImg');
   var lbClose = document.getElementById('lbClose');
@@ -111,15 +113,6 @@
     });
     galItems.forEach(function (item, i) {
       item.addEventListener('click', function () { open(gallerySet, i); });
-    });
-
-    /* per-room thumbnails — each room gets its own photo set */
-    document.querySelectorAll('.room-img-btn').forEach(function (btn) {
-      var photos;
-      try { photos = JSON.parse(btn.getAttribute('data-photos') || '[]'); } catch (e) { photos = []; }
-      var alt = btn.getAttribute('data-alt') || '';
-      var set = photos.map(function (src) { return { src: src, alt: alt }; });
-      btn.addEventListener('click', function () { open(set, 0); });
     });
 
     if (lbClose) lbClose.addEventListener('click', function () { lb.close(); });

@@ -3,8 +3,9 @@
 Static site. No build step, no framework, no database. Upload the folder and it runs.
 
 ```
-index.html      the whole site (single page, anchor nav)
+index.html      the main site (single page, anchor nav)
 thanks.html     shown after a callback request is sent
+rooms/          rooms listing page (index.html), plus one page per room
 styles.css
 script.js
 favicon.svg
@@ -21,19 +22,18 @@ The `images/` folder started out with **soft colour placeholders**, each with it
 printed faintly in the corner. Two are done; the rest still need real photos dropped in.
 
 **Done:**
-- `hero.jpg` — real garden photo.
-- The six room cards — each now has its own folder of real photos under
-  `images/rooms/<room>/1.jpg, 2.jpg, ...` (see CLAUDE.md for the convention and the
-  slug-to-room mapping). Clicking a room photo opens a lightbox with all of that room's
-  shots.
+- `hero.jpg` and `garden.jpg` (now `garden.webp`) — real photos.
+- Five of the six room cards — each has its own folder of real photos under
+  `images/rooms/<room>/1.webp, 2.webp, ...` (still `.jpg` for `garden-double`, which is
+  still pending its reshoot — see CLAUDE.md). Each room card on the homepage links through
+  to its own page under `rooms/` with a full photo gallery and more detail; clicking a
+  gallery photo (on the homepage's own "A look around" gallery, or on any room page) opens
+  a lightbox with all of that grid's shots.
 
 **Still placeholder — replace the file, keep the filename, nothing else changes:**
 
 | File | What goes here | Suggested size |
 |---|---|---|
-| `garden.jpg` | The rose garden, **portrait crop** (it renders tall) | 900 × 1200 |
-| `breakfast.jpg` | Breakfast / dining | 1200 × 900 |
-| `braai.jpg` | Braai and entertainment area | 1200 × 900 |
 | `beach.jpg` | The bay / beachfront, **wide crop** (21:9 band) | 1600 × 900 |
 | `gallery-1.jpg` … `gallery-6.jpg` | Six mixed shots | 1000 × 750 |
 | `og-image.jpg` | Preview image for WhatsApp / Facebook shares | 1200 × 630 |
@@ -45,8 +45,11 @@ Save as JPEG at roughly 80% quality and keep each file under about 400 KB. The e
 photos on the old site can be pulled straight out of the browser (right-click → Save image).
 
 To add more photos to an existing room, drop them into that room's `images/rooms/<room>/`
-folder as the next number and add the path to that room's `data-photos` list in
-`index.html` — see CLAUDE.md.
+folder as the next number, **then update up to three places**: the room's own gallery grid
+in `rooms/<room>.html`, and (if it's a new photo #1) the thumbnail on that room's card on
+the homepage (`index.html`) and on the rooms listing page (`rooms/index.html`). See
+CLAUDE.md for the full convention — there's no shared data source between them, so each
+needs editing by hand.
 
 ---
 
@@ -110,9 +113,17 @@ Two external things load over the network:
   `#A83B54`, sea `#4F8F8B`. Drawn from the two things that actually define the place: an
   English rose garden and the bay behind it.
 - **Type** — Fraunces for headings, Karla for everything else.
-- **Structure** — one page. Hero → the house → six rooms → breakfast and braai → what's
-  around → gallery → callback → find us. The callback request is reachable from the fixed
-  header, the hero, every room card, and its own section.
+- **Room cards** — rounded, shadowed cards that lift on hover, with an
+  icon-led spec list. Styled after
+  another local guest house's room-card layout (relaxedcityliving.co.za/rooms)
+  at the owner's request, so they read a little softer than the rest of the
+  site's flatter, sharp-cornered look — that contrast is intentional.
+- **Structure** — one main page, plus a page per room. Hero → the house → six rooms →
+  breakfast and braai → what's around → gallery → callback → find us. Each room card links
+  to its own page (`rooms/<room>.html`) with a full gallery and more detail. The callback
+  request is reachable from the fixed header, every room card and room page, and its own
+  section. The hero's own two buttons point elsewhere — "See rooms" scrolls to the room
+  grid, "Check availability" opens the Nightsbridge booking site in a new tab.
 - **Motion** — one entrance sequence on the hero, and nothing else that isn't a response to
   a click or hover. `prefers-reduced-motion` is respected throughout.
 - **Accessibility** — skip link, visible focus rings, labelled form fields, alt text on
