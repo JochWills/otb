@@ -192,8 +192,17 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .head-actions{ display:flex; align-items:center; gap:14px; }
 .head-tel{ text-decoration:none; font-size:var(--t--1); font-weight:600; }
 
-.burger{ display:none; width:40px; height:36px; background:none; border:0; cursor:pointer; padding:8px 6px; }
+/* explicit color, not just inherited from .site-head — form controls
+   (button/input/select) don't inherit `color` from ancestors the way a
+   plain `<a>` or `<span>` does, so without this the bars fell back to the
+   browser's own default button text colour (dark) even while the header
+   itself was still in its transparent, white-text state over the hero
+   photo, making the icon unreadably dark against a dark photo. Only
+   needs the explicit light value here — the dark .stuck state below
+   overrides it back to --ink once the header goes solid. */
+.burger{ display:none; width:40px; height:36px; background:none; border:0; cursor:pointer; padding:8px 6px; color:#fff; }
 .burger span{ display:block; height:1.6px; background:currentColor; margin:5px 0; transition:transform .25s ease, opacity .2s ease; }
+.site-head.stuck .burger{ color:var(--ink); }
 .burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(6.6px) rotate(45deg); }
 .burger[aria-expanded="true"] span:nth-child(2){ opacity:0; }
 .burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-6.6px) rotate(-45deg); }
@@ -580,6 +589,12 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .dist li span{ color:rgba(239,242,234,.78); font-size:var(--t--1); }
 .dist li b{ font-family:var(--serif); font-weight:500; white-space:nowrap; }
 .trips p{ color:rgba(239,242,234,.8); }
+/* .eyebrow's default colour (--ink-mute) is tuned for the paper/chalk
+   bands elsewhere on the page — unreadably dark against this section's
+   --ink background, so it needs the same light override every other
+   piece of text in .trips already gets */
+.trips .eyebrow{ color:rgba(239,242,234,.75); }
+.chips-group-label{ margin-top:1.6em; }
 
 .chips{ list-style:none; margin:1.4em 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
 .chips li{
@@ -587,9 +602,12 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   border:1px solid var(--line-light); border-radius:100px;
   color:rgba(239,242,234,.9);
 }
-
-.wide-fig{ margin:clamp(40px,6vw,72px) 0 0; }
-.wide-fig img{ width:100%; aspect-ratio:21/9; object-fit:cover; border-radius:var(--r); }
+/* some chips are plain place names, others (operators with their own
+   site) are links — same pill either way, `a` just adds the underline
+   affordance on hover so it doesn't look identical to the non-clickable
+   ones until you're right on it */
+.chips a{ text-decoration:none; }
+.chips a:hover{ text-decoration:underline; }
 
 /* ---------- gallery ---------- */
 .grid-gal{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(8px,1.2vw,16px); }

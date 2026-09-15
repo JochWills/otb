@@ -59,10 +59,17 @@ them:
   as the other five (see "Photo processing conventions") and update both
   the homepage card and `rooms/garden-double.html` (see below).
 
-**Still placeholder, needs real photos:** `beach.jpg`, `gallery-1.jpg` …
-`gallery-6.jpg`, `og-image.jpg`. Same
+**Still placeholder, needs real photos:** `gallery-1.jpg` … `gallery-6.jpg`,
+`og-image.jpg`. Same
 swap-in-place approach as the README describes: replace the file, keep the
 filename, no HTML/CSS changes needed for those.
+
+`beach.jpg` (a placeholder gradient) and the `.wide-fig` figure that displayed
+it — a full-width band under the "What's around us" distances/trips grid —
+were removed entirely (Sept 2026) at the owner's request, rather than left
+for a future photo swap-in. If a similar wide banner photo is wanted there
+again later, it needs new markup, not just a dropped-in file — `.wide-fig`
+no longer exists in styles.css.
 
 ## Room cards → room detail pages
 

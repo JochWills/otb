@@ -34,7 +34,6 @@ printed faintly in the corner. Two are done; the rest still need real photos dro
 
 | File | What goes here | Suggested size |
 |---|---|---|
-| `beach.jpg` | The bay / beachfront, **wide crop** (21:9 band) | 1600 × 900 |
 | `gallery-1.jpg` … `gallery-6.jpg` | Six mixed shots | 1000 × 750 |
 | `og-image.jpg` | Preview image for WhatsApp / Facebook shares | 1200 × 630 |
 
