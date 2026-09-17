@@ -675,50 +675,77 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    case a future section wants a dark band again, but neither is used
    here any more), an eyebrow + wavy-clipped photo panel above the
    existing two-column facts/chips grid. */
-.around{ position:relative; }
+/* This section opens tighter than the rest of the site on purpose: the
+   photo panel is flush with the very top of the band (see below), so the
+   usual full `--band` of top padding above the eyebrow left the text
+   stranded a long way down the photo. Roughly half of --band, still
+   scaling with it. The bottom keeps the standard --band. */
+.around{ position:relative; padding-top:clamp(36px,4.5vw,62px); }
 .around-top{ margin-bottom:clamp(16px,2vw,28px); }
 .around-top .sec-head{
   margin-bottom:0; display:flex; flex-direction:column; justify-content:center;
-  min-height:clamp(170px,16vw,240px);
-  /* .around-photo bleeds in from the right independently of this column
-     (see the full-bleed comment below), so nothing here automatically
-     keeps text off it the way a normal grid/flex sibling would — without
-     an explicit cap, .lede's own 60ch default max-width let it run wide
-     enough to genuinely disappear under the photo at some viewport
-     widths. This number is picked to clear the photo's left edge with
-     comfortable margin, not derived from it. */
-  max-width:460px;
+  /* The photo starts at the section's top edge, above where this column
+     starts, so what has to be reserved here is only the part of the
+     photo's height that hangs below .around's own padding-top — i.e. at
+     least (photo height - that padding), so .around-grid below clears
+     the wave's deepest point. The wave bottoms out at the very bottom
+     of the photo's box (it runs off the right edge as the photo's
+     bottom edge, rather than tapering away to the left), so the FULL
+     height has to be cleared, not just part of it.
+
+     Hence the shape below: the photo's own 16.5vw, less roughly the
+     4.5vw padding above it, with floor/ceiling that clear the photo's
+     own clamp ends. Deliberately a few px generous at every width
+     rather than exact — over-reserving adds a little air, under-
+     reserving overlaps. Verified to clear at 1000/1100/1280/1440/1920/
+     2560. Re-derive this whenever the photo's height clamp changes. */
+  min-height:clamp(140px,calc(16.5vw - 55px),305px);
+  /* .around-photo is absolutely positioned (see below), so nothing here
+     automatically keeps text off it the way a normal grid/flex sibling
+     would — without an explicit cap, .lede's own 60ch default max-width
+     let it run wide enough to genuinely disappear under the photo at
+     some viewport widths. The vw term is what keeps it clear of the
+     photo's left edge on narrower desktops, where a flat 460px would
+     overlap. Above ~1330px the photo's left edge stops tracking the
+     viewport (see its `left` below), so the text keeps a constant ~488px
+     of room and the flat 460px cap takes over. */
+  max-width:min(460px,32vw);
 }
 .around-eyebrow{ display:flex; align-items:center; gap:12px; }
 .around-eyebrow::after{ content:""; flex:1 1 auto; max-width:56px; height:1px; background:var(--line); }
 
-/* Full-bleed to the true right edge of the viewport, on purpose, matching
-   the mockup exactly — .around-photo sits outside .shell as a sibling
-   (see index.html) rather than as a grid column inside it, `position:
-   absolute` against `.around{position:relative}`, anchored `right:0`.
-   `top:var(--band)` — the same top-padding token every other `.band`
-   section uses — is deliberate, not an arbitrary offset: an absolutely
-   positioned element's `top` ignores its container's own padding
-   entirely, so the photo needs an explicit value to land level with
-   `.shell`'s content (which gets `--band` for free, as normal padding).
-   Reusing the token itself, rather than a separately hand-picked number,
-   is what keeps the photo's top edge lined up with the section's own
-   standard top padding instead of drifting out of sync with it — an
-   earlier hand-picked `clamp(48px,6vw,96px)` was smaller than `--band`,
-   which put the photo above where the text naturally starts and left a
-   visible dead gap between the header and the photo that didn't match
-   the gap every other section opens with. `.around-top .sec-head`'s own
-   `min-height` (above) just needs to match `.around-photo`'s height now
-   (not height *plus* this offset) — both boxes start from the same
-   `--band` distance down, so reserving the photo's height alone is
-   enough to keep `.around-grid` below it from starting too soon. Width
-   is capped at 62vw so the photo doesn't creep left over the text column
-   at very wide viewports, where the section's own max content width caps
-   `.shell` long before 62vw of a huge screen would collide with it
-   anyway. */
+/* The photo panel bleeds to the viewport's right edge and is flush with
+   the top of the band. It's a sibling of .shell rather than a grid
+   column inside it (see index.html), for two reasons: it has to sit
+   above .shell's own top padding, and it has to escape .shell's width
+   cap to reach the viewport edge.
+
+   `top:0` puts it level with the top of the band, and is the reason
+   .around's padding-top is halved above — an absolutely positioned
+   element's `top` ignores its container's padding entirely, so the
+   photo starts at the colour boundary while the text below still gets
+   normal padding.
+
+   `left` is the only non-obvious one. A plain percentage of the section
+   would keep sliding right forever on wide screens while .shell stays
+   capped at --maxw and centred, so the text column's breathing room
+   would *shrink* as the window grew (at 3000px it'd be down to ~310px
+   from ~490px at 1440px). The max() pins the photo's left edge to 40%
+   of .shell's own content box once --maxw kicks in — `(100% - --maxw)/2`
+   is .shell's left offset, plus 40% of its width — so the gap between
+   the text and the photo is constant on any screen wider than about
+   1330px. Below that .shell is gutter-bound rather than --maxw-bound,
+   the first term underestimates, and the plain 40% wins. */
 .around-photo{
-  position:absolute; top:var(--band); right:0; margin:0;
-  width:min(62vw,1400px); height:clamp(170px,16vw,240px);
+  position:absolute; top:0; right:0; margin:0;
+  left:max(40%, calc((100% - var(--maxw)) / 2 + var(--maxw) * 0.4));
+  /* Tuned so the box stays near 3.5:1 across the desktop range (~3.4 at
+     1920, ~3.5 at 1440, ~3.6 at 1100), because that is the aspect the
+     clip path was traced at — objectBoundingBox normalises to the box,
+     so the wave stretches with it and a squatter box visibly steepens
+     the descent. This is why the height is NOT a free style knob: check
+     the aspect, not just whether the height "looks right". */
+  height:clamp(170px,16.5vw,360px);
 }
 .around-photo-img{
   width:100%; height:100%; object-fit:cover;
@@ -981,19 +1008,23 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 
 @media (max-width:900px){
   .split, .around-grid, .cb{ grid-template-columns:1fr; }
-  /* .around-photo's desktop full-bleed (position:absolute, right:0) has
-     no room to work with at this width — back to a normal-flow, full-
-     width block above the text, and .sec-head's min-height (which exists
-     only to reserve space under the absolute photo) is no longer needed
-     once the photo is back in flow ahead of it. */
+  /* .around-photo's desktop layout (absolute, spanning the right half of
+     the section) has no room to work with at this width — back to a
+     normal-flow, full-width block above the text. .sec-head's min-height
+     exists only to reserve space under the absolute photo, and its
+     max-width only to keep the lede clear of it, so both drop away once
+     the photo is back in flow ahead of it. The section's halved
+     padding-top goes back to the standard --band too: the photo is no
+     longer pinned above it, so there's nothing to compensate for. */
+  .around{ padding-top:var(--band); }
   .around-top{ margin-bottom:28px; }
-  .around-top .sec-head{ min-height:0; }
+  .around-top .sec-head{ min-height:0; max-width:none; }
   /* position:relative, not static — .around-photo-caption is positioned
      absolute against it, so losing the positioning context here (static
      would fall through to .around{position:relative} instead, the
      section itself) sent the caption flying up into the cream space
      above the photo the first time this was tried. */
-  .around-photo{ position:relative; top:auto; right:auto; width:100%; height:min(55vw,260px); margin-bottom:28px; }
+  .around-photo{ position:relative; top:auto; left:auto; right:auto; width:100%; height:min(55vw,260px); margin-bottom:28px; }
   .split-fig{ position:static; }
   .split-fig img{ aspect-ratio:16/10; }
   .find-grid{ grid-template-columns:1fr; }

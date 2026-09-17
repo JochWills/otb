@@ -353,7 +353,58 @@
 <section class="band band-paper around" id="around">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <clipPath id="aroundWave" clipPathUnits="objectBoundingBox">
-      <path d="M0,0 C0.06,0.08 0.12,0.12 0.09,0.22 C0.06,0.32 0.01,0.36 0.03,0.46 C0.05,0.56 0.20,0.54 0.22,0.66 C0.24,0.78 0.40,0.86 0.54,1 L1,1 L1,0 Z"/>
+      <!-- A wave crest rolling off to the right, traced from the owner's
+           mockup. The key structural point, and what every earlier
+           version of this path got wrong: the curve does not taper away
+           down the LEFT edge and leave a straight bottom. It sweeps down
+           from the top-left corner and then *becomes* the photo's bottom
+           edge, undulating gently — one trough, then rising — as it runs
+           off the right edge of the page. That is what reads as water;
+           a diagonal cut with a flat bottom reads as a torn corner.
+
+           Three segments, split at the curve's own extrema: the whole
+           descent from the top-left corner down to the TROUGH at
+           (0.60,1) is ONE cubic; then trough to CREST at (0.86,0.885);
+           then crest out to the right edge, dipping slightly. That
+           second, gentler undulation (crest + dip) is easy to miss and
+           is most of what makes it read as moving water rather than a
+           single scoop.
+
+           TWO RULES KEEP THIS SMOOTH, and breaking either one is what
+           made earlier versions look subtly lumpy even when the overall
+           shape was right:
+
+           1. Split only at extrema. At the trough and the crest the
+              tangent is horizontal on both sides, so the join is
+              unambiguous and the curvature is naturally near-symmetric
+              across it. A join placed mid-curve is only tangent-
+              continuous — curvature still jumps, and the eye reads that
+              jump as a flat spot. An earlier version split the descent
+              in the middle for tracing convenience and had a visible
+              kink there for exactly this reason.
+
+           2. Keep each segment's three control-polygon legs similar in
+              length. A leg much shorter than its neighbours crams that
+              segment's curvature into a tight bend at one end. The same
+              earlier version had legs of 0.26 / 0.39 / 0.13, and the
+              short last leg is precisely where it pinched.
+
+           So: don't add control points to "refine" this. More segments
+           means more curvature discontinuities. The descent is a single
+           long cubic on purpose — a cubic has no internal joins at all,
+           which is why it can't develop a kink no matter how the shape
+           is tuned. It costs a little tracing accuracy (it runs ~0.03
+           of the box height deeper than the mockup around x=0.45, i.e.
+           single-digit pixels) and that trade is deliberate. Top and right edges stay
+           flush; the path closes through the box's own corners.
+
+           One caveat when editing: objectBoundingBox normalises to the
+           box, so this shape stretches with .around-photo's aspect
+           ratio. It was traced at roughly 3.5:1 and the live box ranges
+           about 2.9:1 (1440px) to 4.4:1 (2560px), so it reads slightly
+           steeper on narrow screens and flatter on wide ones. That's
+           inherent, not a bug to chase with breakpoint-specific paths. -->
+      <path d="M0,0 C0.10,0.55 0.33,1 0.58,1 C0.70,1 0.74,0.89 0.88,0.89 C0.935,0.89 0.95,0.906 1,0.915 L1,0 Z"/>
     </clipPath>
   </svg>
 

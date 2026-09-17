@@ -564,50 +564,84 @@ band wants them, but nothing on the site uses either any more — grep
 before assuming they're dead weight worth deleting, in case that's
 changed by the time this is read.
 
-- **`.around-photo` is full-bleed to the true right edge of the viewport
-  — a second, more precise mockup made this explicit** (the first pass
-  had it as a `.around-top` grid column, contained within `.shell` like
-  everything else on the site; the owner's follow-up screenshot showed it
-  actually bleeding past that, flush to both the top of the section and
-  the browser's right edge, plus a fuller wave shape and tighter spacing
-  below — all three fixed in the same pass). Structurally this means
-  `.around-photo` is a **sibling of `.shell`**, not a grid item inside
-  it — `<section class="around">` → `<figure class="around-photo">` (full
-  viewport-width sibling) then `<div class="shell">` (everything else,
-  still normally gutter-constrained). `.around{position:relative}` +
-  `.around-photo{position:absolute; right:0}` is what achieves the bleed
-  — `right:0` resolves against `.around`'s own padding box, ignoring
-  `.band`'s usual side gutter entirely (intentional, matches the mockup —
-  the text column below it still gets the section's normal padding
-  normally, since it's unaffected inside `.shell`).
-  **`top:var(--band)`** — reusing the exact same top-padding token every
-  `.band` section already gets, not a separately hand-picked number — is
-  what the `top` value settled on, after two earlier attempts got this
-  wrong in opposite directions: `top:0` put the photo flush against the
-  header with no gap at all; a hand-picked `top:clamp(48px,6vw,96px)`
-  (meant to add breathing room) was *smaller* than `--band`, so it left
-  the photo sitting above where `.shell`'s own padding-driven content
-  naturally starts — a visible dead gap between the header and the photo
-  that didn't match the gap every other section opens with, since an
-  absolutely positioned element's `top` ignores its container's padding
-  entirely and needs an explicit value to land level with content that
-  gets that padding for free. Reusing `--band` itself, rather than a
-  fresh number tuned by eye, guarantees the photo's top edge always
-  tracks whatever the sitewide section padding is — including if
-  `--band` itself is ever retuned later — instead of two independent
-  values that happen to look right together only by coincidence today.
-  `.around-top .sec-head`'s own `min-height:clamp(170px,16vw,240px)`
-  only needs to match `.around-photo`'s height now (not height *plus*
-  an offset) — both boxes start from the same `--band` distance down, so
-  reserving the photo's height alone keeps `.around-grid` below it from
-  starting too soon. The mobile breakpoint drops all of this back to a
-  plain static, full-width block ahead of the text (`position:relative`
-  — *not* `static`, see the callout below — `width:100%`, `min-height:0`
-  on `.sec-head` since nothing needs reserving once the photo is back in
-  flow, and no `top` offset either,
-  it's back to sitting flush above the text like every other stacked
-  mobile section) — DOM order alone (the `<figure>` comes before `<div class="shell">`
-  in index.html) puts it above the text on mobile with no extra CSS.
+- **`.around-photo` bleeds to the viewport's right edge and is flush
+  with the top of the band.** This has been through four shapes, each
+  one owner-approved at the time, so check the current state before
+  assuming any given value is a considered choice rather than a
+  leftover:
+  1. a `.around-top` grid column contained inside `.shell`;
+  2. full-bleed right (`right:0`, `width:min(62vw,1400px)`,
+     `top:var(--band)`), from a second mockup;
+  3. pulled back off the bleed — `left:50%` and a right edge level with
+     `.shell`'s margin — plus `top:0` and less padding above the
+     eyebrow, from a screenshot markup ("in line with the right margin
+     of the section, not all the way to the end of the page");
+  4. **current**: back to full-bleed right at the owner's request ("the
+     picture can go to the edge of the page"), keeping #3's `top:0` and
+     reduced padding, and with the wave redrawn to clone a new mockup
+     (see the clip-path entry below — that redraw is the substantive
+     part of this change, not the bleed).
+
+  Note #3 → #4 reversed #2 → #3 on the bleed specifically. The owner
+  changed their mind after seeing both; neither is "wrong", so don't
+  treat the current one as settled law either.
+
+  Structurally it's a **sibling of `.shell`**, not a grid item inside it
+  — `<section class="around">` → `<figure class="around-photo">` then
+  `<div class="shell">`. Two independent reasons, both load-bearing: it
+  has to escape `.shell`'s width cap to reach the viewport edge, and it
+  has to sit *above* `.shell`'s own top padding, which a child of
+  `.shell` structurally cannot do.
+  - **`top:0`** puts the photo level with the band's colour boundary.
+    An absolutely positioned element's `top` ignores its container's
+    padding entirely, which is exactly what's wanted — the photo starts
+    at the section's edge while the text below still gets normal
+    padding.
+  - **`left:max(40%, calc((100% - var(--maxw)) / 2 + var(--maxw) * 0.4))`**
+    is the only genuinely non-obvious value here. A plain `40%` would
+    keep sliding right forever as the window grew while `.shell` stayed
+    capped at `--maxw` and centred — so the gap between the text column
+    and the photo would *shrink* on wide screens (measured: ~490px at
+    1440px down to ~310px at 3000px, i.e. it gets worse exactly where
+    there's most room). The `max()` pins the left edge to 40% of
+    `.shell`'s own content box once `--maxw` kicks in —
+    `(100% - --maxw)/2` is `.shell`'s left offset, plus 40% of its width
+    — making the gap constant above ~1330px (verified: 28px at 1440,
+    1920 and 2560). Below that `.shell` is gutter-bound rather than
+    `--maxw`-bound, the first term underestimates, and the plain `40%`
+    wins. **If this is ever simplified back to a bare percentage, the
+    wide-screen regression comes straight back and is easy to miss,
+    because it only shows above the width most people test at.**
+  - **`.around`'s `padding-top` is halved** (`clamp(36px,4.5vw,62px)`,
+    roughly half `--band`, same vw factor) — directly requested ("make
+    the amount of white padding space above the 'Location' eyebrow
+    less"), and it only works *because* of `top:0`: with the photo
+    pinned above the padding, shrinking the padding pulls the text up
+    without moving the photo.  The bottom keeps the standard `--band`.
+  - **`.around-top .sec-head{min-height}` reserves vertical space for
+    the photo** so `.around-grid` below can't collide with it. It needs
+    to be at least (photo height − `.around`'s padding-top), and since
+    the wave bottoms out at the very bottom of the photo's box (it runs
+    off the right edge *as* the bottom edge, rather than tapering away
+    to the left), the **full** height has to be cleared — an earlier
+    version only reserved part of it, which was correct for the old
+    taper-to-the-left wave and would overlap now. Hence its current
+    shape, `clamp(140px, calc(16.5vw - 55px), 305px)`: the photo's own
+    `16.5vw` less roughly the `4.5vw` padding above it. Deliberately a
+    few px generous at every width rather than exact — over-reserving
+    adds a little air, under-reserving overlaps. **Re-derive it whenever
+    the photo's height clamp changes**, which, per the entry below, now
+    happens whenever the clip path is retraced.
+
+  The mobile breakpoint drops all of this back to a plain full-width
+  block ahead of the text (`position:relative` — *not* `static`, see the
+  callout below — `width:100%`, `top`/`left`/`right` all `auto`) and
+  undoes the desktop-only compensations with it: `.around`'s
+  `padding-top` goes back to `var(--band)` (nothing is pinned above it
+  any more) and `.sec-head` drops both `min-height` and `max-width`
+  (nothing to reserve space under or stay clear of). DOM order alone
+  (the `<figure>` comes before `<div class="shell">` in index.html) puts
+  the photo above the text on mobile with no extra CSS.
 - **Mobile gotcha: `.around-photo` needs `position:relative`, not
   `static`, even though it's back in normal document flow there.**
   `.around-photo-caption` is `position:absolute` against it — drop to
@@ -629,17 +663,68 @@ changed by the time this is read.
   pixel-space path recalculated per breakpoint. The path traces a full
   closed shape starting and ending at the box's own top-left corner (so
   the top and right edges render flush, un-clipped, and only the
-  left/bottom boundary curves) rather than just cutting the left edge —
-  went through three revisions chasing the mockup's one smooth continuous
-  diagonal sweep: v1 had small in-out wobbles that read as a scalloped
-  edge; v2 (once the photo went full-bleed) had a single sharp reversal
-  that read as a pronounced bulge/cove rather than a flowing curve; v3
-  softened that reversal's amplitude, which is what's live now. If the
-  wave shape ever needs redrawing, edit the `d=` path's control points
-  directly — there's no build step generating it — and check it in the
-  browser, not just as a mental model of the coordinates: small numeric
-  wobbles that look fine in the path data can still read as a visible
-  flaw once filled with a busy photo.
+  left/bottom boundary curves) rather than just cutting the left edge.
+  **The current path is traced point-by-point off an owner-supplied
+  mockup, and the thing it gets right is structural, not cosmetic: the
+  curve does not taper away down the left edge and leave a straight
+  bottom.** It sweeps down from the top-left corner and then *becomes*
+  the photo's bottom edge, undulating — trough, crest, slight dip — as
+  it runs off the right edge of the page. That is what reads as water.
+  Every version before v6 was a diagonal cut with a flat bottom, which
+  reads as a torn corner no matter how well the diagonal itself is
+  drawn — so if this ever looks wrong again, check that structural
+  property first before fiddling with control points.
+
+  Four segments: (1) the descent from the corner, opening up as it
+  falls; (2) the flattening into the bottom edge, bottoming out in a
+  **trough at x≈0.60**; (3) a rise to a **crest at x≈0.86**; (4) a
+  slight dip again out to the right edge. That second, gentler
+  undulation in (3)/(4) is easy to miss and is most of what makes it
+  read as moving water — v6 stopped at the trough and ran straight off
+  the edge, and looked notably deader for it.
+
+  Segment (2) ends with its control point at `y=1` exactly, forcing a
+  horizontal tangent at the trough — that's what makes the bottom of the
+  dip read as a settled low point rather than a corner.
+
+  **The clip path is only half of the shape; `.around-photo`'s aspect
+  ratio is the other half.** `objectBoundingBox` normalises to the box,
+  so the traced curve stretches with it — the same path in a squatter
+  box visibly steepens the descent and was, at one point, the entire
+  reason a correct path still didn't match the mockup. The path was
+  traced at ~3.5:1, which is why the photo's `height` clamp is tuned to
+  hold roughly that across the desktop range rather than picked to look
+  good on its own. **Changing the height is changing the wave.**
+
+  **Seven revisions so far, with a different failure mode each time** —
+  all seven looked plausible as coordinates and only revealed themselves
+  on screen, so redraw this against a screenshot, never against a mental
+  model of the numbers:
+  - v1: small in-out wobbles → read as a **scalloped** edge.
+  - v2 (once the photo went full-bleed): a single sharp reversal → read
+    as a pronounced **bulge/cove**, not a flowing curve.
+  - v3: softened that reversal's amplitude.
+  - v4: added a deliberate crest near the top, but its first control
+    point pulled too far sideways out of the corner (`C0.06,0.12 …`) →
+    the whole top-left read as a **round scoop bitten out of the
+    corner**, more like a large border-radius than water.
+  - v5: "the face of a breaking wave" — near-vertical exit from the
+    corner, monotonically increasing curvature, no reversal anywhere.
+    Clean, and approved at the time, but still a diagonal-with-flat-
+    bottom, which is what the mockup that produced v6 rejected.
+  - v6: the rolling-crest structure — the right idea, but invented
+    rather than traced: it ran straight off the right edge after the
+    trough, missing the crest, and it was paired with a 2.9:1 box that
+    stretched it vertically.
+  - v7 (live): traced off the mockup, plus the aspect-ratio fix.
+
+  Every join is C1-continuous — each segment's first control point is
+  the reflection of the previous segment's last through the shared
+  anchor, so the tangent never breaks. That's cheap to preserve
+  arithmetically and worth checking by hand when editing, since a broken
+  tangent is one of the things that reads as a "kink" in the filled
+  shape. There's no build step generating any of this; edit the `d=`
+  attribute's control points directly in index.html.
 - **`.around-photo`'s height is set with `height`, not `min-height`** —
   worth remembering, this one is a real gotcha, independent of the
   full-bleed rework above. With only a `min-height` on an otherwise-
@@ -654,17 +739,20 @@ changed by the time this is read.
   remains true now that the photo is absolutely positioned rather than a
   grid item, since `height:clamp(...)` is what both the desktop absolute
   box and the `.around-top .sec-head` spacer's `min-height` are tuned to
-  match. The clamp value itself has been sized down once already, from
-  `clamp(220px,23vw,320px)` to the current `clamp(170px,16vw,240px)` — the
-  first value came from matching the *un-shrunk* text block's height, but
-  once the panel was actually full-bleed and flush against the header (no
-  longer just a same-height grid column sitting level with the text), that
-  height read as too tall/dominant against the mockup — sitting "high up"
-  and overpowering the text beside it rather than reading as a compact
-  companion to it. If this needs tuning again, don't just re-match the
-  text block's height mechanically; check it against a screenshot, since
-  the flush-top positioning changes how tall it can be before it stops
-  looking proportional.
+  match. The clamp has been retuned four times: `clamp(220px,23vw,320px)`
+  → `clamp(170px,16vw,240px)` → `clamp(190px,18vw,270px)` →
+  `clamp(210px,20vw,320px)` → the current `clamp(170px,16.5vw,360px)`.
+  The first four were all tuned by eye ("too tall", "too small", "reads
+  smaller in a narrower box"). **The fifth was derived instead, and that
+  is the approach to keep:** the clip path is traced at ~3.5:1 and
+  `objectBoundingBox` stretches it to whatever aspect the box actually
+  has, so the height is whatever holds the box near 3.5:1 across the
+  desktop range — measured 3.35 at 950px, 3.54 at 1440px, 3.42 at
+  1920px, 3.89 at 2560px. Tuning this by eye again will silently distort
+  the wave. **This number is a function of the box's width and the clip
+  path's traced aspect, not of the text block's height** — don't
+  re-derive it from the text, and check the measured aspect rather than
+  whether the height "looks right".
 - **`images/aroundus.webp` is the real photo** (Sept 2026, owner-supplied
   — Ironman cyclists on the coast road, matching the section's own
   Ironman-focused lede copy). Source: `images/aroundus.jpg`, kept as the
@@ -698,20 +786,26 @@ changed by the time this is read.
   in the `<figcaption>`) to sit under whichever line is currently last —
   no change needed there when the copy above it changed from two lines to
   three.
-- **`.around-top .sec-head` carries an explicit `max-width:460px`** —
-  this is a real bug fix, not a style choice, caught while widening the
-  caption/rotating it (unrelated change, same editing session) and
-  re-screenshotting at a few viewport widths out of habit. `.lede`'s
-  sitewide default (`max-width:60ch`) is generous enough that, combined
-  with `.around-photo`'s independent full-bleed-from-the-right sizing
-  (nothing about the text column's width automatically accounts for the
-  photo — they're not grid siblings any more, see the full-bleed
-  explanation above), the paragraph could run wide enough to disappear
-  *underneath* the photo at some viewport widths rather than wrapping
-  clear of it. `460px` was picked empirically (checked clear at 1100px,
-  1800px and 2400px viewports) rather than derived from `.around-photo`'s
-  own sizing — if `.around-photo`'s width or position ever changes, re-
-  check this number still clears it rather than assuming it still will.
+- **`.around-top .sec-head` carries an explicit
+  `max-width:min(460px,32vw)`** — this is a real bug fix, not a style
+  choice, caught while rotating the caption (unrelated change, same
+  editing session) and re-screenshotting at a few viewport widths out of
+  habit. `.lede`'s sitewide default (`max-width:60ch`) is generous
+  enough that, combined with `.around-photo`'s independent absolute
+  positioning (nothing about the text column's width automatically
+  accounts for the photo — they're not grid siblings, see above), the
+  paragraph could run wide enough to disappear *underneath* the photo at
+  some viewport widths rather than wrapping clear of it. The two terms
+  do different jobs: the vw term keeps it clear of the photo's left edge
+  on narrower desktops, the `460px` stops the measure getting
+  uncomfortably long on wide ones (above ~1330px the photo's left edge
+  stops tracking the viewport, so the available room goes constant and
+  the flat cap takes over). **The vw term has had to be retuned every
+  time `.around-photo`'s `left` changed** (40vw when the photo started
+  at 50%, 32vw now that it starts at 40%) — it is empirical, not derived
+  from the photo, so re-measure rather than assume. Current clearances,
+  measured: 30px at 1000, 33px at 1100, 52px at 1280, 28px at 1440/1920/
+  2560.
 - **The "Close by" list icons are new hand-drawn line icons** (beach
   umbrella, paper-plane/airport, graduation cap, flag, a stylised
   elephant), same stroke conventions as the rest of the site's inline
