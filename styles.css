@@ -9,7 +9,18 @@
   --ink:        #1C3A31;
   --ink-soft:   #2F5145;
   --ink-mute:   #5B7568;
-  --chalk:      #EFF2EA;
+  /* Warm linen. Was #EFF2EA, a cool grey-green, changed Sept 2026 at the
+     owner's request. Two reasons it reads better: every other accent on
+     the site is warm (--rose gold, --sand, the --rose-tint band), so the
+     cool grey-green was the one cold note; and #EFF2EA sat almost
+     exactly level with --rose-tint in lightness (ΔL 0.016), so the
+     gallery/contact seam barely registered. This separates from both
+     neighbours — ΔL 0.10 from --paper, 0.02 from --rose-tint — while
+     keeping 10.5:1 contrast for --ink text.
+     NOTE this token is not only a background: it is also the light TEXT
+     colour on the dark footer and .band-deep, and the fill of the .chips
+     pills. Check all four when changing it. */
+  --chalk:      #F1ECE1;
   --paper:      #F8F9F4;
   --sand:       #E7DCCA;
   --rose:       #F9CB5F;
@@ -37,11 +48,26 @@
   --band: clamp(64px, 9vw, 124px);
   --maxw: 1220px;
   --r: 3px;
+  /* Height of the fixed header. Drives BOTH .head-inner's min-height and
+     html's scroll-padding-top, which must agree exactly: the header is
+     fixed, so an anchor jump has to stop that far down or the section
+     lands either behind the header or below it. These used to be three
+     independent hand-set numbers (76px header, 88px desktop
+     scroll-padding, 74px mobile) and every anchor link was visibly off —
+     12px of the previous section showing through on desktop, 2px of the
+     target tucked under the header on mobile. The header is the same
+     height at every width, so there is no breakpoint override any more.
+     If the header's height ever changes, change it HERE. */
+  --head-h: 76px;
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
 
-html{ scroll-behavior:smooth; scroll-padding-top:88px; -webkit-text-size-adjust:100%; }
+/* No extra breathing room is added on top of --head-h on purpose: every
+   section is a .band with its own var(--band) of top padding, so landing
+   the section's edge flush under the header still leaves its content
+   comfortably clear. */
+html{ scroll-behavior:smooth; scroll-padding-top:var(--head-h); -webkit-text-size-adjust:100%; }
 @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
 
 body{
@@ -125,7 +151,7 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 
 .head-inner{
   display:flex; align-items:center; gap:clamp(16px,3vw,40px);
-  min-height:76px; padding-block:12px;
+  min-height:var(--head-h); padding-block:12px;
 }
 
 .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; margin-right:auto; }
@@ -191,7 +217,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .nav-dropdown a[aria-current="page"]{ background:var(--chalk); font-weight:600; }
 
 .head-actions{ display:flex; align-items:center; gap:14px; }
-.head-tel{ text-decoration:none; font-size:var(--t--1); font-weight:600; }
 
 /* explicit color, not just inherited from .site-head — form controls
    (button/input/select) don't inherit `color` from ancestors the way a
@@ -534,6 +559,22 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   font:700 .72rem/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
   color:var(--ink-mute);
 }
+/* Section eyebrow with a short rule trailing the label — started life as
+   .around-eyebrow on "What's around us" and is now on every section
+   heading on the homepage.
+
+   Opt-in via this extra class rather than restyling every .eyebrow,
+   because .eyebrow is deliberately also used for SMALLER labels that
+   should stay plain: "Room type" on each room card, "About the room" on
+   the room detail pages, and the .chips-group-label headings. Adding
+   the rule to those would put a trailing line inside every card.
+
+   --line is a translucent ink (rgba(28,58,49,.15)), so the rule reads
+   correctly on paper, chalk and rose-tint bands alike without needing a
+   per-band variant. It would need one on a dark band — nothing uses
+   .band-deep any more, but worth knowing if that comes back. */
+.eyebrow-rule{ display:flex; align-items:center; gap:12px; }
+.eyebrow-rule::after{ content:""; flex:1 1 auto; max-width:56px; height:1px; background:var(--line); }
 
 /* two-column room-detail layout: a sticky booking box on the left,
    description + gallery on the right — modelled on
@@ -680,8 +721,16 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    usual full `--band` of top padding above the eyebrow left the text
    stranded a long way down the photo. Roughly half of --band, still
    scaling with it. The bottom keeps the standard --band. */
-.around{ position:relative; padding-top:clamp(36px,4.5vw,62px); }
-.around-top{ margin-bottom:clamp(16px,2vw,28px); }
+.around{
+  position:relative; padding-top:clamp(36px,4.5vw,62px);
+  /* The gap between the "Close by" and "Worth the drive" columns. It's a
+     variable because the lede above them is width-matched to the "Close
+     by" column, and that match is computed from this value — see
+     .around-top .sec-head's max-width. Change it here only. */
+  --around-gap:clamp(32px,6vw,80px);
+}
+/* Smaller than it was, bringing .around-grid up with it. */
+.around-top{ margin-bottom:clamp(10px,1.2vw,18px); }
 .around-top .sec-head{
   margin-bottom:0; display:flex; flex-direction:column; justify-content:center;
   /* The photo starts at the section's top edge, above where this column
@@ -693,26 +742,39 @@ p{ margin:0 0 1.05em; max-width:66ch; }
      bottom edge, rather than tapering away to the left), so the FULL
      height has to be cleared, not just part of it.
 
-     Hence the shape below: the photo's own 16.5vw, less roughly the
-     4.5vw padding above it, with floor/ceiling that clear the photo's
-     own clamp ends. Deliberately a few px generous at every width
-     rather than exact — over-reserving adds a little air, under-
-     reserving overlaps. Verified to clear at 1000/1100/1280/1440/1920/
-     2560. Re-derive this whenever the photo's height clamp changes. */
-  min-height:clamp(140px,calc(16.5vw - 55px),305px);
-  /* .around-photo is absolutely positioned (see below), so nothing here
-     automatically keeps text off it the way a normal grid/flex sibling
-     would — without an explicit cap, .lede's own 60ch default max-width
-     let it run wide enough to genuinely disappear under the photo at
-     some viewport widths. The vw term is what keeps it clear of the
-     photo's left edge on narrower desktops, where a flat 460px would
-     overlap. Above ~1330px the photo's left edge stops tracking the
-     viewport (see its `left` below), so the text keeps a constant ~488px
-     of room and the flat 460px cap takes over. */
-  max-width:min(460px,32vw);
+     This restates the photo's own height clamp and the section's own
+     padding-top clamp verbatim and subtracts them, rather than being a
+     third hand-tuned clamp approximating the difference. That is
+     deliberate: the hand-tuned version silently under-reserved the
+     moment the photo's height changed, and the photo grew straight
+     through "Worth the drive" below it. Written this way the reservation
+     tracks both automatically. The +8px is just air.
+     KEEP THE TWO CLAMPS BELOW IDENTICAL to .around-photo's height and
+     .around's padding-top. */
+  min-height:calc(clamp(170px,16.5vw,360px) - clamp(36px,4.5vw,62px) + 8px);
+  /* Width-matched to the "Close by" column below it, and DERIVED from
+     .around-grid's own track sizing rather than eyeballed: that grid is
+     `.9fr 1.1fr` with --around-gap between, so its left column is
+     0.9/2.0 = 45% of what's left after the gap. If those tracks ever
+     change, change this 0.45 to match — they are one decision in two
+     places, which is the cost of the lede not being a grid item itself.
+
+     This also has to keep the lede clear of .around-photo, which is
+     absolutely positioned and which nothing here accounts for
+     automatically (.lede's own 60ch default is wide enough to run clean
+     underneath it). The column width happens to clear it comfortably at
+     every width checked — 950/1100/1280/1440/1600/1920/2560 — but that
+     is a verified coincidence, not something the formula guarantees.
+     Re-measure if the photo's `left`, height or clip path changes. */
+  max-width:calc((100% - var(--around-gap)) * .45);
 }
-.around-eyebrow{ display:flex; align-items:center; gap:12px; }
-.around-eyebrow::after{ content:""; flex:1 1 auto; max-width:56px; height:1px; background:var(--line); }
+/* A little smaller than the sitewide .lede (--t-1, 1.3125rem). Off the
+   type scale on purpose: --t-0 (1.0625rem) is the next step down and
+   drops it to plain body size, which loses the lede's role as an intro.
+   This sits between the two. */
+.around-top .lede{ font-size:1.1875rem; }
+/* (the eyebrow rule that used to live here as .around-eyebrow is now the
+   shared .eyebrow-rule, up with .eyebrow) */
 
 /* The photo panel bleeds to the viewport's right edge and is flush with
    the top of the band. It's a sibling of .shell rather than a grid
@@ -741,25 +803,41 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   left:max(40%, calc((100% - var(--maxw)) / 2 + var(--maxw) * 0.4));
   /* Tuned so the box stays near 3.5:1 across the desktop range (~3.4 at
      1920, ~3.5 at 1440, ~3.6 at 1100), because that is the aspect the
-     clip path was traced at — objectBoundingBox normalises to the box,
-     so the wave stretches with it and a squatter box visibly steepens
-     the descent. This is why the height is NOT a free style knob: check
-     the aspect, not just whether the height "looks right". */
+     clip path is tuned at — objectBoundingBox normalises to the box, so
+     the wave stretches with it and a squatter box visibly steepens the
+     descent. Height is therefore NOT a free style knob: change it and
+     re-check the measured box aspect, not just whether the height
+     "looks right" on its own. */
   height:clamp(170px,16.5vw,360px);
 }
+/* The clip goes on the <img>, not on .around-photo itself:
+   .around-photo-caption is a child of the same figure, and clipping the
+   container would clip the caption along with the photo. */
 .around-photo-img{
   width:100%; height:100%; object-fit:cover;
   clip-path:url(#aroundWave); display:block;
 }
+/* Owner-supplied lettering artwork (images/adventuretext.webp), not live
+   text — see the note in index.html. Nothing here sets a font, a tilt or
+   a stagger any more: the artwork carries all three itself, which is why
+   the old .around-photo-caption-line / .around-photo-squiggle rules are
+   gone rather than kept "just in case". If it ever goes back to live
+   text, those need rebuilding; git history has them.
+   --script is still used by .dist-more ("More to explore") in this same
+   section, so it is NOT dead now that the caption doesn't use it. */
 .around-photo-caption{
-  position:absolute; top:1.2em; right:2em; text-align:right;
-  font-family:var(--script); font-size:clamp(1.5rem,2.4vw,1.9rem); line-height:1.25;
-  color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.25);
-  transform:rotate(-7deg); transform-origin:100% 0;
+  position:absolute; top:6%; right:5%;
+  width:min(30%, 300px);
+  /* A drop-shadow filter, not box-shadow: the artwork is transparent
+     apart from the strokes, so box-shadow would draw a rectangle round
+     the whole image box. This follows the letterforms. Same job the old
+     text-shadow did for the live-text version — the photo behind it is
+     bright in places and the white strokes need separating from it. */
+  filter:drop-shadow(0 2px 10px rgba(0,0,0,.35));
 }
-.around-photo-squiggle{ width:74px; height:auto; margin:.15em 0 0 auto; display:block; }
+.around-photo-caption-img{ width:100%; height:auto; display:block; }
 
-.around-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(32px,6vw,80px); }
+.around-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:var(--around-gap); }
 
 .dist-head{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
 .dist-col-label{
@@ -802,20 +880,54 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .trips-explore:hover{ color:var(--ink); }
 .trips-explore:hover svg{ transform:translateX(3px); }
 .trips p{ margin-top:1em; color:var(--ink-soft); }
-.chips-group-label{ margin-top:1.6em; }
+/* Each group's label needs to sit clearly closer to ITS OWN chips than
+   to the group above — it was `margin-top:1.6em` against the chips'
+   `margin-top:1.4em`, near enough equal that the label read as a
+   trailing caption on the previous group rather than a heading for the
+   next one. Roughly 3:1 now. */
+.chips-group + .chips-group-label{ margin-top:2.4em; }
+.chips-group-label{ margin-bottom:0; }
 
-.chips{ list-style:none; margin:1.4em 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+.chips{ list-style:none; margin:.85em 0 0; padding:0; display:flex; flex-wrap:wrap; gap:9px 10px; }
 .chips li{
-  font-size:var(--t--1); padding:.42em .9em;
+  font-size:var(--t--1); line-height:1.4;
+  padding:.44em .95em;
   background:var(--chalk); border-radius:100px;
   color:var(--ink-soft);
 }
-/* some chips are plain place names, others (operators with their own
-   site) are links — same pill either way, `a` just adds the underline
-   affordance on hover so it doesn't look identical to the non-clickable
-   ones until you're right on it */
-.chips a{ color:inherit; text-decoration:none; }
-.chips a:hover{ text-decoration:underline; }
+
+/* Some chips are plain place names; others (operators and tourism sites
+   with their own pages) are real external links. They used to look
+   identical until you hovered, which gave no reason to try hovering in
+   the first place — linked ones now carry a small outbound arrow and
+   slightly stronger text colour, so the difference is visible at rest. */
+.chips li:has(a){ padding:0; }          /* padding moves to the <a> below */
+.chips a{
+  display:inline-flex; align-items:center; gap:.42em;
+  padding:.44em .95em; border-radius:100px;
+  color:var(--ink); text-decoration:none;
+  transition:background-color .2s ease, color .2s ease;
+}
+/* :has() is the clean way to hand the padding to the <a> so the WHOLE
+   pill is the hit target rather than just the words. Browsers without it
+   (nothing current, but just in case) still get a perfectly usable chip:
+   the <li> keeps its own padding and the <a> simply sits inside it,
+   slightly smaller. Nothing breaks, so this needs no fallback. */
+.chips a::after{
+  content:""; flex:none; width:.85em; height:.85em;
+  background:currentColor; opacity:.5;
+  /* A bare diagonal arrow, not the usual box-with-arrow outbound glyph:
+     at ~9px rendered, the box collapses into noise. Same lesson as the
+     .dist-icon elephant — under ~20px, drop detail rather than shrink
+     it. Masked rather than inlined per link so it inherits currentColor
+     and the markup stays 11 <svg>s lighter. */
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 16 16 8'/%3E%3Cpath d='M9.5 8H16v6.5'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 16 16 8'/%3E%3Cpath d='M9.5 8H16v6.5'/%3E%3C/svg%3E") center/contain no-repeat;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.chips a:hover{ background:var(--ink); color:var(--chalk); }
+.chips a:hover::after{ opacity:.95; transform:translate(1px,-1px); }
+.chips a:focus-visible{ background:var(--ink); color:var(--chalk); }
 
 /* ---------- gallery ---------- */
 .grid-gal{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(8px,1.2vw,16px); }
@@ -911,35 +1023,116 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 }
 
 /* ---------- callback ---------- */
+/* This section closes with .cb-signoff, which already sits a long way
+   down (see its margin-top). A full --band of padding *underneath* that
+   as well left an obvious slab of empty colour at the bottom, so the
+   bottom padding is roughly halved here. The top padding stays --band so
+   the section still opens in the same rhythm as every other one —
+   they're deliberately not symmetrical. */
+.cb-band{ padding-bottom:clamp(40px,5vw,70px); }
 .cb{ display:grid; grid-template-columns:.92fr 1.08fr; gap:clamp(32px,6vw,84px); align-items:start; }
 /* .cb-form is commented out in index.html while the callback form is
    hidden at the owner's request (Sep 2026) — this collapses the section
-   back to one centered column so .cb-intro doesn't sit stranded in the
-   left half of the two-column grid. Remove this rule (and the "cb--solo"
-   class in the HTML) when the form comes back — see CLAUDE.md
-   "Callback form". */
+   to a single column so .cb-intro doesn't sit stranded in the left half
+   of the two-column grid. Remove this rule (and the "cb--solo" class in
+   the HTML) when the form comes back — see CLAUDE.md "Callback form". */
 .cb--solo{ grid-template-columns:1fr; }
-.cb--solo .cb-intro{ max-width:800px; margin:0 auto; }
-/* Contact list + "Good to know" facts sit stacked by default (the narrow
-   ~46%-width left column they occupy when .cb-form is present doesn't
-   leave room for two side-by-side blocks) — .cb--solo has the full,
-   wider column to itself, so only there do they sit side by side instead. */
-.cb--solo .cb-cols{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,5vw,64px); align-items:start; }
-/* Both columns now open with a matching .h-min heading (Reach us
-   directly / Good to know) so their top dividers line up. .cb-gk's own
-   margin-top (normally the gap under .cb-direct, when the two were
-   stacked) is zeroed — it's a column heading here, not a follow-on
-   element — and .cb-direct's own margin-top (normally the gap under the
-   section lede, with no heading in between) is set to match
-   .facts-tight's gap under "Good to know" instead, so both headings sit
-   the same distance above their own list. */
+/* Left-aligned and full-width, NOT the centred 800px block this was —
+   the owner asked for it on the left, and the card/facts layout below
+   needs the room. The lede keeps its own narrower measure (below) so
+   only the two columns use the full width. */
+.cb--solo .cb-intro{ max-width:none; margin:0; }
+.cb--solo .cb-intro > .lede{ max-width:52ch; }
+
+/* Two equal columns with a hairline between them. The divider is a
+   border on the second column rather than a separate element, so it
+   stretches to whichever column is taller on its own. */
+.cb--solo .cb-cols{
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(32px,5vw,72px); align-items:stretch;
+  margin-top:clamp(32px,4vw,54px);
+}
+.cb--solo .cb-col--facts{ border-left:1px solid var(--line); padding-left:clamp(32px,5vw,72px); }
 .cb--solo .cb-cols .cb-gk{ margin-top:0; }
-.cb--solo .cb-cols .cb-direct{ margin-top:1.4em; }
-.cb-direct{ list-style:none; margin:2em 0 0; padding:0; border-top:1px solid var(--line); }
-.cb-direct li{ display:flex; justify-content:space-between; gap:18px; padding:.8em 0; border-bottom:1px solid var(--line); }
-.cb-direct a{ font-family:var(--serif); font-size:var(--t-1); font-weight:500; text-decoration:none; }
-.cb-direct a:hover{ color:var(--rose); }
-.cb-direct span{ font-size:var(--t--1); color:var(--ink-mute); align-self:center; }
+
+/* ---- contact cards ---- */
+.cb-direct{ list-style:none; margin:1.4em 0 0; padding:0; display:grid; gap:12px; border:0; }
+.cb-direct li{ display:block; padding:0; border:0; }
+.cb-card{
+  display:flex; align-items:center; gap:16px;
+  padding:14px 18px;
+  border:1px solid var(--line); border-radius:14px;
+  /* A solid --chalk fill, not the translucent white this had while the
+     section sat on the rose band. On the --paper band a 35%-white card
+     is all but invisible; --chalk is a step DARKER than --paper, so the
+     cards read as cards, and on hover they brighten to white — the state
+     change runs light rather than dark, which is why the border darkens
+     at the same time to keep the edge defined. */
+  background:var(--chalk);
+  text-decoration:none; color:var(--ink);
+  transition:background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.cb-card:hover{ background:#fff; border-color:var(--ink-mute); transform:translateY(-1px); }
+.cb-card-icon{
+  display:grid; place-items:center; flex:none; width:44px; height:44px;
+  border-radius:50%; background:rgba(28,58,49,.08); color:var(--ink);
+}
+.cb-card-icon svg{ width:20px; height:20px; }
+.cb-card-text{ display:flex; flex-direction:column; gap:.25em; flex:1 1 auto; min-width:0; }
+.cb-card-label{
+  font:700 .68rem/1 var(--sans); letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-mute);
+}
+.cb-card-value{ font-family:var(--serif); font-weight:500; font-size:var(--t-1); }
+/* The email is much longer than the phone numbers, so it gets its own
+   smaller, fluid size — at a fixed size it wrapped mid-address on phones
+   ("…co.z / a"), which looks like a typo rather than a line break. The
+   vw term lets it shrink to fit the card on narrow screens; the ceiling
+   keeps it at --t-0 everywhere else. overflow-wrap stays as a
+   last-resort guard against overflow if the address ever changes. */
+.cb-card-value--sm{ font-size:clamp(.84rem,3.3vw,var(--t-0)); overflow-wrap:anywhere; }
+.cb-card-go{ flex:none; color:var(--ink-mute); transition:transform .2s ease, color .2s ease; }
+.cb-card-go svg{ width:20px; height:20px; display:block; }
+.cb-card:hover .cb-card-go{ transform:translateX(3px); color:var(--ink); }
+
+/* ---- "Good to know" facts, icon-led ---- */
+.cb-facts dt{ display:flex; align-items:center; gap:14px; }
+.cb-facts > div{ padding:.95em 0; }
+.cb-fact-icon{
+  display:grid; place-items:center; flex:none; width:38px; height:38px;
+  border-radius:50%; background:rgba(28,58,49,.08); color:var(--ink);
+}
+.cb-fact-icon svg{ width:18px; height:18px; }
+.cb-facts dt{
+  font:700 .68rem/1 var(--sans); letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-mute);
+}
+.cb-facts dd{ font-size:var(--t-0); }
+
+/* ---- closing line ---- */
+/* Same rule-flanked script line as .dist-more, but centred rather than
+   trailing, so it reads as a sign-off for the whole section. */
+.cb-signoff{
+  display:flex; align-items:center; gap:clamp(18px,3vw,32px);
+  /* Sits well clear of the columns above it — it's a sign-off for the
+     whole section, not a caption on the facts list, and it needs the
+     distance to read that way. */
+  margin:clamp(62px,7.5vw,104px) 0 0;
+  font-family:var(--script); font-size:clamp(1.45rem,2.4vw,1.9rem);
+  color:var(--ink-soft); text-align:center;
+}
+.cb-signoff::before,.cb-signoff::after{ content:""; flex:1 1 auto; height:1px; background:var(--line); }
+
+/* Two side-by-side columns with a divider stop working once each is
+   phone-width, so they stack — and the divider has to move with them:
+   a left border on a full-width block would draw a stray vertical line
+   down the page. It becomes the gap above the second block instead. */
+@media (max-width:760px){
+  .cb--solo .cb-cols{ grid-template-columns:minmax(0,1fr); gap:0; }
+  .cb--solo .cb-col--facts{ border-left:0; padding-left:0; }
+  .cb--solo .cb-cols .cb-gk{ margin-top:2.4em; }
+}
+
 .cb-gk{ margin-top:2.2em; }
 
 .cb-form{ background:var(--paper); padding:clamp(22px,3vw,38px); border-radius:var(--r); border:1px solid rgba(168,59,84,.18); }
@@ -1057,7 +1250,10 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    rather than folding into the block below so the rest of that block's
    breakpoint (where cards/galleries/forms go single-column) is untouched. */
 @media (max-width:1024px){
-  html{ scroll-padding-top:74px; }
+  /* No scroll-padding-top override here — the header is --head-h tall at
+     every width, so the base rule is already correct. There used to be a
+     74px one, which undershot the 76px header and tucked the top of each
+     target section under it. */
   .nav{
     position:absolute; inset:100% 0 auto 0;
     flex-direction:column; gap:0;
@@ -1070,7 +1266,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   .nav a{ padding:13px 0; border-bottom:1px solid var(--line); font-size:var(--t-0); }
   .nav a::after{ display:none; }
   .burger{ display:block; }
-  .head-tel{ display:none; }
   .head-actions .btn{ display:none; }
   .site-head.stuck .nav{ background:var(--paper); }
 

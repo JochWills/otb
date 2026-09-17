@@ -47,6 +47,10 @@ dropped in.
   `images/aroundus.jpg`, kept as the archival original. Replaced a generated-gradient
   placeholder that briefly stood in its place under the filename `around.jpg` (deleted once
   the real photo arrived).
+- `images/adventuretext.webp` — the handwritten "Adventure is close by" lettering over that
+  photo. This one is **artwork, not text on the page**, so changing the wording means a new
+  image, not an edit to the HTML. Source: `images/adventuretext.png`, kept as the archival
+  original.
 
 **Still placeholder — replace the file, keep the filename, nothing else changes:**
 
@@ -122,7 +126,7 @@ Two external things load over the network:
 
 ## Design notes
 
-- **Palette** — deep garden green `#1C3A31`, chalk `#EFF2EA`, sand `#E7DCCA`, rose
+- **Palette** — deep garden green `#1C3A31`, warm linen `#F1ECE1`, sand `#E7DCCA`, rose
   `#A83B54`, sea `#4F8F8B`. Drawn from the two things that actually define the place: an
   English rose garden and the bay behind it.
 - **Type** — Fraunces for headings, Karla for everything else.

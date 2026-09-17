@@ -88,6 +88,11 @@ them:
   pattern note just below that for how they still get the same wide/narrow
   treatment as photos 1–6 despite arriving after the original six-photo
   mosaic was hand-tuned.
+- `images/adventuretext.webp` — the "What's around us" photo caption, as
+  **owner-supplied lettering artwork rather than live text** (Sept 2026).
+  Source `images/adventuretext.png` kept as the archival original. See
+  the "What's around us" section below for why it's an image, and for
+  the transparent-PNG encoding gotcha it ran into.
 
 **Gallery mosaic pattern.** `.grid-gal-mosaic .gal-item:nth-child(4n+1)`
 and `:nth-child(4n)` render wide (2 grid columns, an 8:3 crop); everything
@@ -481,6 +486,37 @@ phrased directly from each room's own existing copy/specs — not invented)
 / WhatsApp. No lightbox markup on this page — the cards link out rather
 than open one, so there's no `.gal-item` to power.
 
+### Header nav
+
+Order: **Home / Rooms / Around us / Gallery / Get in touch / Find us**,
+then a "Book Now" button. It follows the homepage's own section order, so
+an anchor nav doesn't jump around relative to the page.
+
+**The phone number is gone from the header** (Sept 2026, owner's
+request) — `.head-tel` and its mobile `display:none` override were
+deleted from styles.css too, not left as dead rules. The number still
+appears in the `#callback` section's contact card, the footer and the
+JSON-LD.
+
+**"Get in touch" → `#callback` was added in its place**, matching the
+wording the footer and room pages already used for that section. Like
+everything else in this header, it is **hand-written on all 9 pages**
+(index + the 8 under `rooms/`) with no shared source — and the path
+differs by location: `#callback` on index.html, `../index.html#callback`
+everywhere under `rooms/`.
+
+**Watch the width when adding another item.** Per the note on the
+1024px breakpoint below, this nav is tight: at 1025px (the narrowest
+desktop width) there is about 31px between the last link and the "Book
+Now" button, and a link wrapping mid-word makes the header grow into the
+hero. Removing the phone number roughly paid for this new link, so the
+budget is no better than it was. Measure at 1025px, not just at 1440px.
+
+**Editing gotcha:** the header nav and the footer nav contain the same
+`Gallery` / `Find us` links at the same indentation, so a plain
+find-and-replace hits both. Scope any edit to the slice between
+`<nav class="nav" id="nav"` and its closing `</nav>`.
+
 ### "Rooms" nav dropdown
 
 The header's "Rooms" link (on every page — `index.html` and all 7
@@ -520,6 +556,28 @@ side — so this side-by-side arrangement is specific to the hidden-form
 layout and doesn't need undoing when the form returns, it just stops
 applying on its own once `.cb--solo` is removed.
 
+**Two bugs were found in this grid later (Sept 2026) and both are easy
+to reintroduce:**
+- Its tracks are `minmax(0,1fr)`, **not** a bare `1fr`. A grid item's
+  default `min-width` is `auto`, which honours its content's min-content
+  width — the phone numbers in `.cb-direct` and the `dt`/`dd` rows in
+  `.facts` couldn't shrink, so the tracks blew the grid (and the whole
+  page) past the viewport into **horizontal scroll on phones**, ~507px
+  of content in a 390px viewport. Exactly the same gotcha already
+  documented for `.roomlayout`'s mobile rule; see "Room cards" above.
+  The page had no other horizontal-overflow source, so this made every
+  page on a phone scroll sideways — worth re-checking `scrollWidth`
+  against the viewport after any grid change, since nothing about the
+  section itself looks wrong on desktop.
+- It stacks below **620px** (two blocks at ~170px each is not a layout),
+  and **that media query has to sit after the `.cb-gk` / `.cb-direct`
+  margin rules in the file, not next to the `.cb-cols` grid declaration
+  where it logically belongs.** Those rules are equally specific, so at
+  equal specificity the later one wins regardless of the media query —
+  placing the query first left "Good to know" jammed against the contact
+  row above it, still carrying the `margin-top:0` that only makes sense
+  in the side-by-side layout.
+
 The heading/lede pair also changed (from "Request a callback" / "Leave
 your details and…" to "Get in touch" / "Phone, WhatsApp or email us…",
 since the original text explicitly promised a form); the **original
@@ -533,6 +591,47 @@ heading/lede): `index.html` (footer nav), `rooms/index.html` (hero CTA
 button *and* footer nav — 2 lines), and one footer-nav line each in
 `rooms/garden-double.html`, `family-unit.html`, `twin.html`,
 `king-sofa.html`, `compact-single.html`, `self-catering.html`.
+
+**The section was rebuilt to an owner-supplied mockup (Sept 2026)** and
+is now the most componentised part of the homepage:
+- **`.cb-card`** — each contact method is a bordered, rounded pill
+  containing a circular icon badge, a small uppercase label, the value in
+  serif, and a trailing arrow. The `<a>` fills the card, so the whole
+  pill is the hit target rather than just the number. Link text reads
+  "Phone / 041 583 3190" in DOM order, so the label is genuinely useful
+  to a screen reader — only the icon and arrow are `aria-hidden`.
+- **`.cb-facts`** — "Good to know" keeps the sitewide `.facts` dl but
+  adds a circular icon badge inside each `dt` and an uppercase label.
+  The badges reuse the exact `rgba(28,58,49,.08)` circle treatment
+  already used by `.dist-icon` and `.bookbox-icon`.
+- **The column divider is a `border-left` on `.cb-col--facts`**, not a
+  separate element, so it stretches to whichever column is taller.
+  Below 760px the columns stack and that border has to be removed — a
+  left border on a full-width block draws a stray vertical line down the
+  page.
+- **`.cb-signoff`** — "We look forward to hearing from you", a
+  rule-flanked script line (same construction as `.dist-more`, but
+  centred rather than trailing, so it reads as a sign-off for the whole
+  section).
+- **`.cb-card-value--sm`** (the email) is `clamp(.84rem,3.3vw,--t-0)`,
+  fluid rather than fixed. At a fixed size the address wrapped
+  mid-string on phones ("…co.z / a"), which reads as a typo rather than
+  a line break. Verified one line from 360px up; 320px wraps to two but
+  without overflow. `overflow-wrap:anywhere` stays as a last-resort
+  guard if the address ever changes.
+- **`.cb-band` halves the section's bottom padding**
+  (`clamp(40px,5vw,70px)` against `--band`'s 64–124px). The sign-off
+  already sits a long way down, so a full `--band` underneath it as well
+  left a visible slab of empty colour. Top padding stays `--band` so the
+  section still opens in the same rhythm as every other one — the
+  asymmetry is deliberate.
+
+**The section is left-aligned, not centred.** `.cb--solo .cb-intro` has
+`margin:0` (it was `margin:0 auto`), at the owner's request — it now
+starts at the same gutter as every other section heading instead of
+floating as a centred block. The `max-width:800px` stays: without it the
+contact list and facts stretch the full shell and the two-column pairing
+below them falls apart.
 
 **To bring the form back:** in `index.html`, (1) remove the `cb--solo`
 class from the `.shell cb` div, (2) delete the "Get in touch" heading/lede
@@ -597,18 +696,19 @@ changed by the time this is read.
     padding entirely, which is exactly what's wanted — the photo starts
     at the section's edge while the text below still gets normal
     padding.
-  - **`left:max(40%, calc((100% - var(--maxw)) / 2 + var(--maxw) * 0.4))`**
-    is the only genuinely non-obvious value here. A plain `40%` would
-    keep sliding right forever as the window grew while `.shell` stayed
-    capped at `--maxw` and centred — so the gap between the text column
-    and the photo would *shrink* on wide screens (measured: ~490px at
-    1440px down to ~310px at 3000px, i.e. it gets worse exactly where
-    there's most room). The `max()` pins the left edge to 40% of
-    `.shell`'s own content box once `--maxw` kicks in —
-    `(100% - --maxw)/2` is `.shell`'s left offset, plus 40% of its width
-    — making the gap constant above ~1330px (verified: 28px at 1440,
-    1920 and 2560). Below that `.shell` is gutter-bound rather than
-    `--maxw`-bound, the first term underestimates, and the plain `40%`
+  - **`left:max(38%, calc((100% - var(--maxw)) / 2 + var(--maxw) * 0.38))`**
+    is the only genuinely non-obvious value here — the `38%` is the
+    brief's "roughly the right 60-65% of the section", but the `max()`
+    around it is load-bearing. A bare `38%` keeps sliding right forever
+    as the window grows while `.shell` stays capped at `--maxw` and
+    centred, so the gap between the text column and the photo *shrinks*
+    on wide screens — measured ~490px at 1440px down to ~310px at
+    3000px, i.e. it gets worse exactly where there's most room. The
+    `max()` pins the left edge to 38% of `.shell`'s own content box once
+    `--maxw` kicks in (`(100% - --maxw)/2` is `.shell`'s left offset,
+    plus 38% of its width), making the relationship constant above
+    ~1330px. Below that `.shell` is gutter-bound rather than
+    `--maxw`-bound, the first term underestimates, and the plain `38%`
     wins. **If this is ever simplified back to a bare percentage, the
     wide-screen regression comes straight back and is easy to miss,
     because it only shows above the width most people test at.**
@@ -655,76 +755,100 @@ changed by the time this is read.
   positioned against it.
 - **The photo panel's wavy edge is a `clip-path:url(#aroundWave)`**,
   where `#aroundWave` is a `<clipPath clipPathUnits="objectBoundingBox">`
-  defined inline in index.html right at the top of the `<section>`
-  (`width="0" height="0"` SVG, so it renders nothing itself, only serves
-  as a definition target). `objectBoundingBox` units (0–1 on both axes)
-  are what let one hand-authored path scale correctly to `.around-photo`'s
-  actual rendered box regardless of viewport width, rather than needing a
-  pixel-space path recalculated per breakpoint. The path traces a full
-  closed shape starting and ending at the box's own top-left corner (so
-  the top and right edges render flush, un-clipped, and only the
-  left/bottom boundary curves) rather than just cutting the left edge.
-  **The current path is traced point-by-point off an owner-supplied
-  mockup, and the thing it gets right is structural, not cosmetic: the
-  curve does not taper away down the left edge and leave a straight
+  defined inline in index.html at the top of the `<section>` (a
+  `width="0" height="0"` SVG, so it renders nothing itself and only
+  serves as a definition target). `objectBoundingBox` units (0–1 on both
+  axes) are what let one hand-authored path scale to `.around-photo`'s
+  actual rendered box at any viewport instead of needing a pixel-space
+  path per breakpoint. The path is a full closed shape through the box's
+  own corners, so the top and right edges render flush and only the
+  left/bottom boundary curves.
+
+  **The structural point, and what several versions of this got wrong:
+  the curve does not taper away down the left edge and leave a straight
   bottom.** It sweeps down from the top-left corner and then *becomes*
-  the photo's bottom edge, undulating — trough, crest, slight dip — as
-  it runs off the right edge of the page. That is what reads as water.
-  Every version before v6 was a diagonal cut with a flat bottom, which
-  reads as a torn corner no matter how well the diagonal itself is
-  drawn — so if this ever looks wrong again, check that structural
-  property first before fiddling with control points.
+  the photo's bottom edge, rolling — trough, crest, second trough — as
+  it runs off the right edge of the page. That is what reads as water; a
+  diagonal cut with a flat bottom reads as a torn corner. If this ever
+  looks wrong again, check that structural property first, before
+  touching control points.
 
-  Four segments: (1) the descent from the corner, opening up as it
-  falls; (2) the flattening into the bottom edge, bottoming out in a
-  **trough at x≈0.60**; (3) a rise to a **crest at x≈0.86**; (4) a
-  slight dip again out to the right edge. That second, gentler
-  undulation in (3)/(4) is easy to miss and is most of what makes it
-  read as moving water — v6 stopped at the trough and ran straight off
-  the edge, and looked notably deader for it.
+  Three segments: the wave face down to the first and deepest **trough
+  at (0.46,1)**; up to the **crest at (0.70,0.87)**; then into a second,
+  shallower trough that **runs off the right edge at (1,0.945)** rather
+  than resolving on screen — the water carries on past the page. The
+  second swell is easy to miss and is most of what makes it read as
+  moving water rather than a single scoop.
 
-  Segment (2) ends with its control point at `y=1` exactly, forcing a
-  horizontal tangent at the trough — that's what makes the bottom of the
-  dip read as a settled low point rather than a corner.
+  **Two rules keep this smooth, and matching tangents is necessary but
+  NOT sufficient** — this is the most useful thing in this section and
+  it cost several rounds to learn:
+  1. **Split segments only at the curve's own extrema.** At a trough or
+     crest the tangent is horizontal on both sides, so the join is
+     unambiguous and curvature is naturally near-symmetric across it. A
+     join placed mid-curve is only tangent-continuous; curvature still
+     jumps, and the eye reads that jump as a flat spot.
+  2. **Match curvature across each join, not just tangent direction.** A
+     version with *exactly* continuous tangents at every join still drew
+     a complaint that it "isn't nicely rounded in some parts";
+     measuring it showed a 130% curvature jump at one join and 57%/35%
+     at others. Re-tuning to near-zero fixed it with no change to the
+     overall shape. Current: 0% at both joins, with peak curvature
+     varying only 1.5x across the whole path (0.59–0.87).
 
-  **The clip path is only half of the shape; `.around-photo`'s aspect
-  ratio is the other half.** `objectBoundingBox` normalises to the box,
-  so the traced curve stretches with it — the same path in a squatter
-  box visibly steepens the descent and was, at one point, the entire
-  reason a correct path still didn't match the mockup. The path was
-  traced at ~3.5:1, which is why the photo's `height` clamp is tuned to
-  hold roughly that across the desktop range rather than picked to look
-  good on its own. **Changing the height is changing the wave.**
+  A third, lesser rule: keep each segment's three control-polygon legs
+  similar in length. A leg much shorter than its neighbours crams that
+  segment's curvature into a tight bend at one end (one bad version had
+  legs of 0.26 / 0.39 / 0.13, and the short leg is exactly where it
+  pinched).
 
-  **Seven revisions so far, with a different failure mode each time** —
-  all seven looked plausible as coordinates and only revealed themselves
-  on screen, so redraw this against a screenshot, never against a mental
-  model of the numbers:
+  **The clip path is only half the shape; `.around-photo`'s aspect ratio
+  is the other half.** `objectBoundingBox` normalises to the box, so the
+  path stretches with it — a squatter box visibly steepens the descent,
+  and this was once the entire reason a correct path still didn't match
+  the reference. Tuned at ~3.5:1, which is why the photo's `height`
+  clamp holds roughly that across the desktop range rather than being
+  picked to look good on its own. **Changing the height is changing the
+  wave.**
+
+  The clip is applied to the `<img>`, not to `.around-photo`:
+  `.around-photo-caption` is a child of the same `<figure>`, so clipping
+  the container would clip the caption too.
+
+  **Revision history — a different failure mode each time.** All of
+  these looked plausible as coordinates and only revealed themselves on
+  screen, so check this in a browser, never against a mental model of
+  the numbers:
   - v1: small in-out wobbles → read as a **scalloped** edge.
-  - v2 (once the photo went full-bleed): a single sharp reversal → read
-    as a pronounced **bulge/cove**, not a flowing curve.
+  - v2: a single sharp reversal → read as a **bulge/cove**.
   - v3: softened that reversal's amplitude.
-  - v4: added a deliberate crest near the top, but its first control
-    point pulled too far sideways out of the corner (`C0.06,0.12 …`) →
-    the whole top-left read as a **round scoop bitten out of the
-    corner**, more like a large border-radius than water.
-  - v5: "the face of a breaking wave" — near-vertical exit from the
-    corner, monotonically increasing curvature, no reversal anywhere.
-    Clean, and approved at the time, but still a diagonal-with-flat-
-    bottom, which is what the mockup that produced v6 rejected.
-  - v6: the rolling-crest structure — the right idea, but invented
-    rather than traced: it ran straight off the right edge after the
-    trough, missing the crest, and it was paired with a 2.9:1 box that
-    stretched it vertically.
-  - v7 (live): traced off the mockup, plus the aspect-ratio fix.
+  - v4: first control point pulled too far sideways out of the corner →
+    top-left read as a **round scoop bitten out**, like a big
+    border-radius rather than water.
+  - v5: near-vertical exit from the corner, monotonic curvature. Clean,
+    approved at the time, but a diagonal-with-flat-bottom.
+  - v6: rolling-crest structure, but invented rather than traced, and
+    paired with a 2.9:1 box that stretched it vertically.
+  - v7: traced off the owner's reference + the aspect fix. Tangent-
+    continuous everywhere and still looked lumpy — this is the one that
+    produced rule 2 above.
+  - v8: curvature-matched, then reworked into the two rolling swells.
+  - v9: a full rebuild to a written brief the owner passed on (a large
+    concave scoop in the upper left pulling back before the bottom wave,
+    lowest point at 70%, photo 430–500px tall, plus separate tablet and
+    mobile clip paths). **Built, reviewed and rejected — reverted to
+    v8.** Worth knowing before re-proposing anything in that direction:
+    the owner has now seen it rendered and did not want it. If it is
+    ever revisited, the two non-obvious findings from building it were
+    (a) making the scoop's maximum an actual anchor point forces a
+    vertical tangent and a join at the tightest part of the curve, which
+    measured 32.6 peak curvature and looked pinched — let the maximum
+    fall inside one smooth cubic instead; and (b) at 430–500px the photo
+    is tall enough that the `.sec-head` reservation below must grow with
+    it or the photo runs straight through "Worth the drive".
 
-  Every join is C1-continuous — each segment's first control point is
-  the reflection of the previous segment's last through the shared
-  anchor, so the tangent never breaks. That's cheap to preserve
-  arithmetically and worth checking by hand when editing, since a broken
-  tangent is one of the things that reads as a "kink" in the filled
-  shape. There's no build step generating any of this; edit the `d=`
-  attribute's control points directly in index.html.
+  There's no build step generating any of this; edit the `d=` attribute
+  directly in index.html.
 - **`.around-photo`'s height is set with `height`, not `min-height`** —
   worth remembering, this one is a real gotcha, independent of the
   full-bleed rework above. With only a `min-height` on an otherwise-
@@ -739,20 +863,28 @@ changed by the time this is read.
   remains true now that the photo is absolutely positioned rather than a
   grid item, since `height:clamp(...)` is what both the desktop absolute
   box and the `.around-top .sec-head` spacer's `min-height` are tuned to
-  match. The clamp has been retuned four times: `clamp(220px,23vw,320px)`
-  → `clamp(170px,16vw,240px)` → `clamp(190px,18vw,270px)` →
-  `clamp(210px,20vw,320px)` → the current `clamp(170px,16.5vw,360px)`.
-  The first four were all tuned by eye ("too tall", "too small", "reads
-  smaller in a narrower box"). **The fifth was derived instead, and that
-  is the approach to keep:** the clip path is traced at ~3.5:1 and
-  `objectBoundingBox` stretches it to whatever aspect the box actually
-  has, so the height is whatever holds the box near 3.5:1 across the
-  desktop range — measured 3.35 at 950px, 3.54 at 1440px, 3.42 at
-  1920px, 3.89 at 2560px. Tuning this by eye again will silently distort
-  the wave. **This number is a function of the box's width and the clip
-  path's traced aspect, not of the text block's height** — don't
-  re-derive it from the text, and check the measured aspect rather than
-  whether the height "looks right".
+  match. The clamp is now `clamp(320px,30vw,480px)` — the ~430–500px the
+  owner's written brief asked for, at desktop widths. It has been
+  retuned five times, and the lesson from all five is the same: **this
+  number is a function of the box's width and the clip path's tuned
+  aspect, not of the text block's height.** Earlier values were picked
+  by eye ("too tall", "too small", "reads smaller in a narrower box")
+  and each one silently distorted the wave, because `objectBoundingBox`
+  stretches the path to whatever aspect the box ends up with. Check the
+  measured aspect against the path's tuned aspect, not whether the
+  height "looks right" on its own.
+
+  **When the height changes, `.around-top .sec-head`'s `min-height` must
+  change with it** — it reserves the vertical space that keeps
+  `.around-grid` from colliding with the photo. That reservation used to
+  be a third hand-tuned clamp approximating "photo height minus section
+  padding", and when the photo grew from ~264px to ~432px it silently
+  under-reserved and the photo ran straight through the "Worth the
+  drive" heading below it. It now restates the photo's height clamp and
+  the section's padding-top clamp verbatim and subtracts them
+  (`calc(clamp(...) - clamp(...) + 8px)`), so it tracks both
+  automatically. **Keep those two clamps identical to the real ones.**
+
 - **`images/aroundus.webp` is the real photo** (Sept 2026, owner-supplied
   — Ironman cyclists on the coast road, matching the section's own
   Ironman-focused lede copy). Source: `images/aroundus.jpg`, kept as the
@@ -765,47 +897,103 @@ changed by the time this is read.
   on `.around-photo-img` means a portrait source would get cropped hard —
   and re-check the `height:clamp(...)` above still reads correctly, since
   that's tuned against this specific photo's crop, not derived from it.
-- **The photo caption ("Adventure / is closer / than you think") and
-  "More to explore" line use a new font**, `--script` (`"Sacramento",
-  cursive`, loaded from Google Fonts alongside Fraunces/Karla in
-  index.html's `<head>` — one extra `family=` param on the existing
-  request, not a second `<link>`). This is the first use of a third type
-  family on the site; if a future change wants a different script/
-  handwritten feel, swap the Google Fonts `family=Sacramento` param and
-  the `--script` token together, both places currently agree only because
-  they were set at the same time. The caption's copy and line count
-  changed once already — it originally read "Adventure is close by" on
-  two lines; a follow-up mockup changed it to the current three-line
-  version, tilted with `transform:rotate(-7deg)` on the whole `<figcaption>`
-  (`transform-origin:100% 0`, so it pivots from its own top-right corner,
-  keeping that corner anchored roughly where `top`/`right` place it rather
-  than the rotation shifting the block's visible position around).
-- **The hand-drawn squiggle** is a plain inline SVG sine-wave path
-  (`.around-photo-squiggle`), not a font glyph or a border trick — three
-  `Q` curves in one `<path>`, positioned by simple DOM order (last line
-  in the `<figcaption>`) to sit under whichever line is currently last —
-  no change needed there when the copy above it changed from two lines to
-  three.
-- **`.around-top .sec-head` carries an explicit
-  `max-width:min(460px,32vw)`** — this is a real bug fix, not a style
-  choice, caught while rotating the caption (unrelated change, same
-  editing session) and re-screenshotting at a few viewport widths out of
-  habit. `.lede`'s sitewide default (`max-width:60ch`) is generous
-  enough that, combined with `.around-photo`'s independent absolute
-  positioning (nothing about the text column's width automatically
-  accounts for the photo — they're not grid siblings, see above), the
-  paragraph could run wide enough to disappear *underneath* the photo at
-  some viewport widths rather than wrapping clear of it. The two terms
-  do different jobs: the vw term keeps it clear of the photo's left edge
-  on narrower desktops, the `460px` stops the measure getting
-  uncomfortably long on wide ones (above ~1330px the photo's left edge
-  stops tracking the viewport, so the available room goes constant and
-  the flat cap takes over). **The vw term has had to be retuned every
-  time `.around-photo`'s `left` changed** (40vw when the photo started
-  at 50%, 32vw now that it starts at 40%) — it is empirical, not derived
-  from the photo, so re-measure rather than assume. Current clearances,
-  measured: 30px at 1000, 33px at 1100, 52px at 1280, 28px at 1440/1920/
-  2560.
+- **The photo caption is owner-supplied lettering ARTWORK, not live
+  text** — `images/adventuretext.webp`, white-on-transparent, with the
+  wording, the two-line stagger, the tilt and the underline swoosh all
+  baked into the image. It sits in the `<figcaption>` as a plain `<img>`
+  whose `alt` carries the wording ("Adventure is close by"), since the
+  image *is* the text.
+
+  This replaced a live-text version (Sacramento, two staggered `<span>`s,
+  an inline-SVG underline, `transform:rotate(-4deg)`) which the owner
+  had iterated on several times. The reason for the swap: their
+  reference used a heavier brush script than Sacramento, and matching it
+  as live text meant adding a fourth font family to a site that already
+  loads three. Supplying the artwork sidesteps that. **The old text
+  rules (`.around-photo-caption-line`, `.around-photo-squiggle`) were
+  deleted rather than left behind** — git history has them if it ever
+  goes back to live text.
+
+  Consequences worth knowing:
+  - **`--script` is still live** — `.dist-more` ("More to explore") in
+    this same section uses it. Don't assume the token or the Google
+    Fonts `family=Sacramento` param is dead weight now.
+  - The caption is sized by **width** (`min(30%, 300px)` of the photo)
+    with `height:auto`, and positioned in **percentages** rather than
+    `em` — it no longer has a font-size to key off. Checked to sit
+    inside the photo at 390/620/950/1100/1440/1920/2560.
+  - It carries `filter:drop-shadow(...)`, **not `box-shadow`**. The
+    artwork is transparent apart from the strokes, so `box-shadow` would
+    draw a rectangle around the whole image box; `drop-shadow` follows
+    the letterforms. It does the same job the live version's
+    `text-shadow` did — the photo behind it is bright in places.
+
+  **Processing note, and a real gotcha for any similar artwork:** the
+  source `images/adventuretext.png` (kept as the archival original, same
+  as `aroundus.jpg`) had **black RGB under its fully-transparent
+  pixels**. Encoding that straight to lossy WebP bleeds the black into
+  the white strokes through the YUV conversion and leaves a grey fringe
+  — the same failure mode already documented for `bookbox-wave.webp`,
+  arriving by a different route. It was flooded with white first and the
+  original alpha reattached. It's also saved **lossless** (`lossless=True`,
+  not the usual `quality=82`): for flat line art the lossless file came
+  out only ~6% larger (166KB vs 157KB) and has no edge artefacts at all,
+  so the usual lossy trade-off doesn't apply here. It was trimmed to its
+  alpha bounding box (plus 6px) so the CSS sizing isn't padding-
+  dependent — 1665x889, aspect 1.873.
+
+- **`.around-top .sec-head`'s width is DERIVED from `.around-grid`, not
+  eyeballed** — `calc((100% - var(--around-gap)) * .45)`, which
+  reproduces that grid's left column (`.9fr` of `.9fr 1.1fr`, i.e.
+  0.9/2.0 = 45% of what's left after the gap). The owner asked for the
+  lede to "span the same width as the Close by section", and this makes
+  it exact at every viewport rather than approximately right at one —
+  verified identical to the pixel at 950/1100/1280/1440/1600/1920/2560.
+
+  `--around-gap` exists as a variable purely so the grid and this
+  calculation can't drift apart. **If `.around-grid`'s tracks ever
+  change from `.9fr 1.1fr`, the `.45` here has to change with them** —
+  that's one decision expressed in two places, which is the unavoidable
+  cost of the lede not being a grid item itself.
+
+  This *also* has to keep the lede clear of `.around-photo`, which is
+  absolutely positioned and which nothing here accounts for
+  automatically (`.lede`'s own sitewide `max-width:60ch` is wide enough
+  to run clean underneath it — that was the original bug this cap was
+  added for, before it became a width match). The column width happens
+  to clear the photo comfortably everywhere checked (121–180px of
+  slack), **but that is a verified coincidence, not something the
+  formula guarantees.** Re-measure against the clip boundary if the
+  photo's `left`, height or clip path changes. Previous values, for
+  reference: `460px` → `min(460px,32vw)` → `min(540px,37vw)` → the
+  current derived form; every one of those needed re-measuring when the
+  photo moved.
+
+  Below 900px the mobile block sets `max-width:none` — the layout is
+  stacked single-column there, so matching a "column" is meaningless and
+  `.lede`'s own 60ch measure takes over. That's why the lede is
+  deliberately *narrower* than the full column at tablet widths (677px
+  vs 738px at 820px): 60ch is a readability guard, not a mismatch to
+  fix.
+
+- **`.around-top .lede` is `1.1875rem`, off the type scale on purpose.**
+  The owner asked for "a little bit smaller" than the sitewide `.lede`
+  (`--t-1`, 1.3125rem). The next step down the scale, `--t-0`
+  (1.0625rem), is plain body size and loses the lede's role as an
+  intro, so this sits between the two. If the scale itself is ever
+  revised, this is a deliberate exception, not an oversight.
+
+- **`.around-top`'s `margin-bottom` is small on purpose**
+  (`clamp(10px,1.2vw,18px)`, down from `clamp(16px,2vw,28px)`) — the
+  owner asked for "Close by" and "Worth the drive" to come up. Most of
+  that lift actually came from the lede getting wider and smaller (fewer,
+  shorter lines), since at mid widths the text block's own height is
+  what pushes the grid down, not the reservation. **Above ~1600px the
+  reservation IS the floor** and the grid sits as high as it safely can
+  (26px below the photo: 8px of built-in air plus this margin). Don't
+  shrink the reservation to gain more — that's what keeps the photo off
+  "Worth the drive".
+
 - **The "Close by" list icons are new hand-drawn line icons** (beach
   umbrella, paper-plane/airport, graduation cap, flag, a stylised
   elephant), same stroke conventions as the rest of the site's inline
@@ -832,11 +1020,153 @@ changed by the time this is read.
   itself already says "we're happy to advise on or arrange" these trips,
   making the callback/WhatsApp form the honest destination for "tell me
   more about the area" rather than a dead `href="#"`.
-- **The chips pills changed from outline-on-dark to filled-on-light**
-  (`background:var(--chalk)`, no border) to suit the new light band —
-  same `.chips`/`.chips-group`/`.chips-group-label` markup and grouping
-  (main "Worth the drive" list, then "Beaches & watersports", then
-  "Trails & biking") as before, only the colours changed.
+- **The chips pills are filled-on-light** (`background:var(--chalk)`, no
+  border), changed from outline-on-dark when the band went light. Same
+  `.chips`/`.chips-group`/`.chips-group-label` markup and grouping (main
+  "Worth the drive" list, then "Beaches & watersports", then "Trails &
+  biking").
+
+  **Roughly half the chips are real external links and half are plain
+  place names** — 11 and 10 respectively. That difference used to be
+  invisible until you hovered, which gave nobody a reason to hover in
+  the first place. Linked chips now carry a **small outbound arrow** and
+  slightly stronger text colour, so it reads at rest, and the whole pill
+  fills `--ink` on hover/focus.
+  - The arrow is a masked pseudo-element (`.chips a::after`, an inline
+    SVG data-URI behind `mask`), not an `<svg>` per link — it inherits
+    `currentColor` that way and keeps 11 SVGs out of the markup.
+  - It's a **bare diagonal arrow, not the usual box-with-arrow outbound
+    glyph**: at this size the box collapses into noise. Same lesson as
+    the `.dist-icon` elephant — under ~20px, drop detail rather than
+    shrink it.
+  - Sized `.85em` (≈11px rendered). It was first set at `.66em` (≈9px)
+    and the owner called it slightly too small, so don't shrink it back
+    for tidiness — it's sized to be legible, not to match the text's
+    optical weight. Pill heights are unaffected either way (30px), since
+    the line-height governs them.
+  - `.chips li:has(a)` hands its padding to the `<a>` so the **whole
+    pill is the hit target**, not just the words. No fallback is needed:
+    without `:has()` the `<li>` simply keeps its own padding and the
+    chip still works, just with a smaller hit area.
+  - `.chips-group + .chips-group-label` has `margin-top:2.4em` against
+    the chips' own `.85em`. The two used to be near-equal (1.6em vs
+    1.4em), which made each label read as a trailing caption on the
+    group *above* it rather than a heading for the one below.
+
+## Section background colours
+
+The homepage alternates strictly, top to bottom: hero, then
+**paper / linen / paper / linen / paper / linen**, then the dark footer.
+`#stay` paper, `#rooms` linen, `#around` paper, `#gallery` linen,
+`#callback` paper, `#find` linen. Keep it alternating if a section is
+ever added or reordered — two same-coloured bands in a row have no
+visible seam *and* double their `padding-block` where they meet (the
+mistake already documented for `rooms/index.html`'s intro).
+
+**`--chalk` is warm linen `#F1ECE1`** (was `#EFF2EA`, a cool grey-green,
+changed Sept 2026 — the owner didn't like it). Two things made the old
+value weak, both measurable rather than matters of taste: every other
+accent on the site is warm (`--rose` gold, `--sand`, `--rose-tint`), so
+the cool grey-green was the single cold note; and it sat almost exactly
+level with `--rose-tint` in luminance (ΔL 0.016), so that seam barely
+registered. The new value separates from both neighbours (ΔL 0.10 from
+`--paper`, 0.02 from `--rose-tint`) and keeps 10.5:1 contrast for
+`--ink` text.
+
+**`--chalk` is NOT only a background.** It is also:
+- the light **text** colour on `.site-foot` and `.band-deep`;
+- the fill of the `.chips` pills on the `#around` band;
+- the `.nav-dropdown` hover/current background;
+- the fill of the `.cb-card` contact cards.
+
+All five were checked after the change. The name "chalk" is now a little
+off for a warm linen — renaming it (and `.band-chalk`, which appears in
+three markup files) was deliberately left alone as churn the owner
+didn't ask for, but it's the obvious tidy-up if this area is touched
+again.
+
+**`#callback` moved from `.band-rose` to `.band-paper` and `#find` from
+`.band-paper` to `.band-chalk`** at the same time, which is what makes
+the alternation above come out even. `.band-rose` is **not** dead —
+`rooms/index.html`'s closing CTA still uses it. Knock-on: `.cb-card`'s
+fill had been `rgba(255,255,255,.35)`, tuned against the warm rose band;
+on `--paper` that is all but invisible, so the cards now take a solid
+`--chalk` fill and brighten to white on hover. **Any component tuned
+against a specific band colour needs re-checking when its section
+moves** — a translucent white is the classic one to miss.
+
+## Section eyebrows
+
+Every section heading on the homepage opens with a small uppercase label
+and a short trailing rule — `<p class="eyebrow eyebrow-rule">`. Current
+labels: **The house** (`#stay`), **Accommodation** (`#rooms`),
+**Location** (`#around`), **Gallery** (`#gallery`), **Contact**
+(`#callback`), **Directions** (`#find`). The hero is deliberately left
+out: its `.hero-place` ("Summerstrand, Gqeberha") already does the same
+orienting job in the same position.
+
+**`.eyebrow-rule` is a separate, opt-in class on top of `.eyebrow`, and
+that separation matters.** `.eyebrow` is also used for smaller labels
+that must stay plain — "Room type" on all six room cards, "About the
+room" on the room detail pages, and the `.chips-group-label` headings
+("Beaches & watersports", "Trails & biking"). Restyling `.eyebrow`
+itself, or scoping the rule to something like `.sec-head .eyebrow`,
+would put a trailing line inside every room card. Verified after the
+change: 6 section eyebrows have the rule, and the 6 card labels + 2
+chips labels do not.
+
+Two of the six sections (`#stay`, `#callback`) have no `.sec-head`
+wrapper — their heading sits directly in `.split-text` / `.cb-intro` —
+which is the other reason the class is applied per-element rather than
+inherited from a wrapper.
+
+The rule's colour is `--line`, a *translucent* ink
+(`rgba(28,58,49,.15)`), so it reads correctly on the paper, chalk and
+rose-tint bands without a per-band variant. A dark band would need one;
+nothing uses `.band-deep` any more, but that's the trap if it returns.
+
+**Not added to `rooms/index.html` or the room detail pages** — those
+open with a breadcrumb, which already orients the reader in that
+position, and the room pages' "About the room" eyebrow is a
+content label rather than a section marker. Worth raising with the owner
+rather than assuming either way.
+
+## Fixed header and anchor links
+
+The header is `position:fixed`, so any `#anchor` jump has to stop
+`--head-h` short of the target or the section lands behind it. **One
+token, `--head-h: 76px`, drives both `.head-inner`'s `min-height` and
+`html`'s `scroll-padding-top`** — they must agree exactly, and keeping
+them as one value is the whole point.
+
+This was three independent hand-set numbers (a 76px header, 88px
+desktop `scroll-padding-top`, 74px mobile) and every nav link landed
+visibly off: **12px of the previous section showing through on
+desktop, 2px of the target tucked under the header below 1024px.** The
+mobile override is gone entirely — the header is the same height at
+every width, so there was never a reason for a second value. If the
+header's height changes, change `--head-h` and nothing else.
+
+No extra breathing room is added on top of `--head-h` deliberately:
+every target is a `.band` with its own `var(--band)` of top padding, so
+landing the section edge flush under the header still leaves its
+content clear.
+
+**Known, unfixed: anchors arriving from ANOTHER page land ~86px off.**
+In-page nav clicks are exact (verified flush at 390/900/1100/1440), but
+loading `index.html#callback` cold — which is what the footer links and
+the room pages' "Get in touch" do — overshoots. The cause is layout
+shift, not scroll maths: the browser computes the fragment scroll while
+the page is still settling, the hero box then shrinks ~118px (and
+`#rooms` grows ~32px) as webfonts and images finish loading, and the
+scroll position is never recomputed. **All 25 images on the homepage
+lack `width`/`height` attributes**, so nothing reserves their boxes.
+The fix is to give images intrinsic dimensions (and to look at font
+loading for the hero's `.ribbon`, which can wrap to two lines on
+fallback metrics and un-wrap once Fraunces/Karla arrive) — a
+CLS-reduction job worth doing on its own merits, not a scroll-offset
+tweak. Do not "fix" it by padding `--head-h`; that would break the
+in-page case, which is currently correct.
 
 ## Worth flagging to the owner
 
