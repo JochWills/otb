@@ -19,7 +19,8 @@ images/         all photography
 ## 1. Swap in the real photos
 
 The `images/` folder started out with **soft colour placeholders**, each with its filename
-printed faintly in the corner. Two are done; the rest still need real photos dropped in.
+printed faintly in the corner. Most are done now; one file still needs a real photo
+dropped in.
 
 **Done:**
 - `hero.jpg` and `garden.jpg` (now `garden.webp`) — real photos.
@@ -29,16 +30,29 @@ printed faintly in the corner. Two are done; the rest still need real photos dro
   to its own page under `rooms/` with a full photo gallery and more detail; clicking a
   gallery photo (on the homepage's own "A look around" gallery, or on any room page) opens
   a lightbox with all of that grid's shots.
+- `gallery-1.webp` … `gallery-14.webp` — the homepage's own "A look around" gallery, real
+  photos of the house/garden (Sept 2026, from `images/LookAround/`, kept in place as the
+  archival source). Same WebP pipeline as the room photos (see CLAUDE.md § Photo processing
+  conventions) rather than the plain JPEG this section used to suggest — these open in the
+  same lightbox as the room photos, so they get the same 2000px/quality-82 treatment for
+  sharpness on 2x screens. One tile per row of 3 renders **wide**, alternating sides
+  (tiles 1, 4, 5, 8, 9… — see CLAUDE.md for the exact pattern), the rest **square-ish** —
+  photos were assigned to slots by which crop suited their framing, not
+  upload order. Only the first 6 show on page load; a **"See more photos"** button reveals
+  the rest 4 at a time (see CLAUDE.md § Image status for exactly how — worth reading before
+  touching this grid, there's a non-obvious CSS specificity gotcha around hiding `.btn`
+  elements that bit this once already).
+- `images/aroundus.webp` — the "What's around us" section's photo panel (Sept 2026 redesign,
+  see CLAUDE.md), owner-supplied Ironman cyclists on the coast road. Source:
+  `images/aroundus.jpg`, kept as the archival original. Replaced a generated-gradient
+  placeholder that briefly stood in its place under the filename `around.jpg` (deleted once
+  the real photo arrived).
 
 **Still placeholder — replace the file, keep the filename, nothing else changes:**
 
 | File | What goes here | Suggested size |
 |---|---|---|
-| `gallery-1.jpg` … `gallery-6.jpg` | Six mixed shots | 1000 × 750 |
 | `og-image.jpg` | Preview image for WhatsApp / Facebook shares | 1200 × 630 |
-
-Gallery positions 1, 4 and 5 render **wide**; 2, 3 and 6 render **square-ish**. Put the
-landscape shots in the wide slots.
 
 Save as JPEG at roughly 80% quality and keep each file under about 400 KB. The existing
 photos on the old site can be pulled straight out of the browser (right-click → Save image).

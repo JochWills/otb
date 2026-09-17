@@ -58,11 +58,84 @@ them:
   room is still pending; when photos do arrive, process them the same way
   as the other five (see "Photo processing conventions") and update both
   the homepage card and `rooms/garden-double.html` (see below).
+- `images/gallery-1.webp` … `gallery-6.webp` — the homepage's `#gallery`
+  ("A look around") grid, replacing the six soft-gradient placeholders
+  (Sept 2026). Source: `images/LookAround/LookAround1.jpg`…`6.jpeg` (owner-
+  supplied, kept in place as the archival originals, matching the
+  hero/garden/bookbox precedent above rather than the room-photo one, which
+  deletes its raw dumps). Processed with the same pipeline as the room
+  photos (2000px long edge, WebP `quality=82, method=6`) rather than the
+  plain-JPEG one the README used to describe for this file set — these
+  photos open in the same `#lb` lightbox the room galleries use, so the
+  same "why 2000px" reasoning in "Photo processing conventions" below
+  applies to them too, not just to room shots. `ImageOps.exif_transpose()`
+  was run before resizing (none of the six actually needed it — all came
+  out upright — but cheap insurance, unlike the room photos' HEIC source
+  which has no usable orientation tag at all and needs the contact-sheet
+  method instead). The six source photos weren't assigned to gallery slots
+  in upload order — slots 1, 4 and 5 render as a wide 8:3 crop and 2, 3
+  and 6 as 4:3 (see below), so the two naturally panoramic garden-path
+  shots and the wide-doorway dining room shot went in the wide slots, and
+  the three closer/detail shots (a dresser, a "Welcome" shelf, a patio
+  corner) went in the square-ish ones — a crop that fights a photo's own
+  framing is the usual way this kind of mosaic ends up looking broken.
+- `images/gallery-7.webp` … `gallery-14.webp` — eight more real photos
+  (Sept 2026, same day, same owner upload — `images/LookAround/LookAround7
+  .jpeg`…`14.jpg`, same archival-source-kept treatment, same WebP pipeline),
+  added in a follow-up request specifically so the site had more than 6
+  "around the property" shots without crowding the page on load — see
+  "'See more photos'" below for how they're revealed, and the mosaic
+  pattern note just below that for how they still get the same wide/narrow
+  treatment as photos 1–6 despite arriving after the original six-photo
+  mosaic was hand-tuned.
 
-**Still placeholder, needs real photos:** `gallery-1.jpg` … `gallery-6.jpg`,
-`og-image.jpg`. Same
+**Gallery mosaic pattern.** `.grid-gal-mosaic .gal-item:nth-child(4n+1)`
+and `:nth-child(4n)` render wide (2 grid columns, an 8:3 crop); everything
+else stays the grid's default 1-column 4:3 tile. In a 3-column grid this
+alternates which side of each row the wide tile falls on — tile 1 wide,
+2 narrow; 3 narrow, 4 wide; 5 wide, 6 narrow; 7 narrow, 8 wide; and so on,
+repeating forever. This replaced an earlier version hardcoded to exactly
+`:nth-child(1), :nth-child(4), :nth-child(5)` (correct only for a fixed
+6-photo grid) once "See more photos" (below) meant the grid could hold
+more than 6 — the `4n`/`4n+1` formula keeps producing the same one-wide-
+tile-per-row rhythm no matter how many photos get revealed, instead of
+every tile past 6 falling back to a flat, un-mosaicked grid.
+
+**"See more photos" — the homepage gallery only shows 6 photos up front.**
+All 14 `.gal-item` buttons are in the DOM from page load (`index.html`'s
+`#gal`), but the 8 that aren't among the first 6 carry a plain `hidden`
+attribute in the markup, and a `<button id="galMore">See more photos</button>`
+sits in a `.gal-more-row` right after the grid. `script.js`'s `#galMore`
+click handler un-hides the next 4 still-hidden `.gal-item`s each time it's
+clicked (`#gal .gal-item[hidden]`, sliced to 4), and hides the button
+itself once none are left. Two clicks exhausts 8 photos (4 + 4). A photo
+count that isn't a multiple of 4 still works fine — the last click just
+reveals whatever's left, same as the loop's own `.slice(0, 4)` naturally
+handles a shorter remainder.
+
+Two things worth knowing if this needs touching again:
+- **The lightbox's own photo set is built once at page load from every
+  `.gal-item` in the DOM, hidden or not** (`document.querySelectorAll
+  ('.gal-item')` doesn't care about the `hidden` attribute or `display`).
+  So opening the lightbox on photo 1 and clicking "previous" wraps
+  straight to photo 14/14, even if "See more photos" was never clicked —
+  this is intentional, not a bug to "fix" by scoping the lightbox to only
+  visible tiles. It means the lightbox and the on-page reveal are two
+  independent ways to reach the same photos, not one gating the other.
+- **`.btn[hidden]` needed an explicit override to actually hide.** `.btn`
+  sets `display:inline-flex` in the author stylesheet; the browser's own
+  default `[hidden]{ display:none }` rule lives in the *user-agent*
+  stylesheet, which always loses ties to an author-stylesheet rule of the
+  same specificity, regardless of which one is more "specific-looking" —
+  so `galMore.hidden = true` silently did nothing visually until
+  `.gal-more-row .btn[hidden]{ display:none }` was added in styles.css to
+  re-assert it at author-stylesheet specificity. Worth remembering for any
+  future `hidden`-toggled `.btn` elsewhere on the site — the same silent
+  failure will happen again without a matching override.
+
+**Still placeholder, needs a real photo:** `og-image.jpg`. Same
 swap-in-place approach as the README describes: replace the file, keep the
-filename, no HTML/CSS changes needed for those.
+filename, no HTML/CSS changes needed.
 
 `beach.jpg` (a placeholder gradient) and the `.wide-fig` figure that displayed
 it — a full-width band under the "What's around us" distances/trips grid —
@@ -80,11 +153,17 @@ own page**, it doesn't open a lightbox itself:
 
 ```html
 <a class="room" href="rooms/king-sofa.html">
-  <div class="room-img">
+  <div class="room-img" data-room-carousel data-slug="king-sofa" data-count="9" data-ext="webp" data-alt="King room with sofa bed">
     <img src="images/rooms/king-sofa/1.webp" alt="King room with sofa bed" loading="lazy">
-    <span class="room-img-count">9 photos</span>
+    <span class="room-badge room-badge--light"><svg ...>...</svg>Private patio</span>
+    <div class="room-carousel" aria-hidden="true">
+      <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of King with sofa bed">...</button>
+      <span class="room-carousel-count">1 / 9</span>
+      <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of King with sofa bed">...</button>
+    </div>
   </div>
   <div class="room-body">
+    <p class="eyebrow">Room type</p>
     <h3>King with sofa bed</h3>
     <p>One king-size bed with a sofa bed suitable for a child under 12. Opens onto its own patio.</p>
     <div class="room-tag">
@@ -92,7 +171,7 @@ own page**, it doesn't open a lightbox itself:
         <li><svg ...>...</svg>1 king bed + sofa bed</li>
         ...
       </ul>
-      <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+      <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg ...>...</svg></span></span>
     </div>
   </div>
 </a>
@@ -106,25 +185,66 @@ Enquire shortcut was redundant with the one already on the room's own
 page). Because of that, `<h3>` and `.room-view` are **plain text/`<span>`,
 not nested `<a>` tags** — the HTML spec doesn't allow anchors inside
 anchors, and it used to be one (`.room-img-link`, `<h3><a>`, `.room-actions`
-with a second `<a class="link-enq">`) before this simplification. If a
-future change needs an independent link *inside* a card again, the whole
-card can't stay a single `<a>` — pull it back apart into an image-link +
-title-link like the very first version of this pattern, don't just drop a
-nested `<a>` in.
+with a second `<a class="link-enq">`) before this simplification.
+`.room-view`'s trailing arrow is a small `.room-view-arrow` circle
+(30px, dark, turns `--rose-deep` and nudges right on card hover) rather
+than a bare "→" character — reverted from an even bigger version of this
+(a rule stretching across the whole row to a 38px button) the owner tried
+and didn't want, back to something closer to the original but with the
+circle kept.
+
+**Badge + working photo carousel, added Sept 2026** to match an
+owner-supplied mockup: a small feature **badge** top-left of the photo,
+and prev/next controls + a "1 / 9" counter that cycle that room's own
+`images/rooms/<slug>/` photo set right on the card, in place of the old
+static "9 photos" text. This briefly forced the card apart into an
+image-link + title-link (a `<button>` isn't valid content inside an `<a>`,
+and the carousel needed real buttons) — **reverted at the owner's
+request**, who wanted click-anywhere-on-the-card back. The fix: the
+carousel buttons stay nested inside the single `<a>` (a real HTML
+conformance wart — interactive content inside a hyperlink — kept on
+purpose) and their click handlers call `e.stopPropagation()` in
+`script.js`, the same trick `.lb-prev`/`.lb-next` already use against the
+lightbox `<dialog>`, so a button click never bubbles up to trigger the
+card's own navigation. **If a future change needs another *link* (not a
+button) inside the card again, this trick won't help** — nested `<a>`s
+really do get broken apart by the browser's own parser, unlike nested
+buttons — pull the card back apart the way it briefly was, don't try to
+stopPropagation a nested anchor.
+
+The carousel is `script.js`'s `data-room-carousel` block: it reads
+`data-slug`/`-count`/`-ext`/`-alt` off `.room-img` and rewrites the `<img
+src>` + counter text on click, no page reload and no lightbox involved
+(it's a separate, much lighter mechanism than the `#lb` lightbox that
+powers the *gallery* grids elsewhere).
+
+The feature badges (`.room-badge`, alternating `--light`/`--dark` pill
+styling down the row purely for visual rhythm, not tied to meaning) are
+short, defensible, feature-based lines the owner should feel free to
+edit — **not** verified marketing claims like "most popular" (no booking
+data backs that up), so each one describes something already true of the
+room's own spec instead: king-sofa "Private patio", twin "Flexible
+option" (it really does convert between 2 singles and a king+single),
+family-unit "Great for families", garden-double "Garden views",
+self-catering "Self-catering", compact-single "Solo & short stays".
+
+A small wave-doodle watermark low in each `.room-body` (`.room-body::after`,
+an inline SVG data-URI, ~5% opacity) echoes the same ripple motif as
+`.bookbox-head-waves` on the room detail pages — pure decoration, `z-index`
+places it behind the card's own text.
 
 The card's visual language (rounded card with hover lift/shadow, `.room-tag`
 pairing an icon spec-list with "View room" widening its arrow gap on hover)
-was built to match a reference
-site's room-card layout the owner pointed to
+was built to match a reference site's room-card layout the owner pointed to
 (relaxedcityliving.co.za/rooms) — colours/type swapped for ours, structure
 and interaction kept close to the original (that reference site's own card
-is also a single `<a>` with no separate CTA inside it, which is why
-dropping our per-card Enquire button actually brought this closer to the
-reference, not further from it). It's a deliberate departure from the rest
-of the site's flatter, sharper-cornered, shadowless look; that's
-intentional, not drift, so don't "fix" it back to match `.btn`/`.gal-item`/
-etc. `--r` (the sitewide 3px radius token) is untouched — these cards use
-their own 14px radius, scoped to `.room`.
+is also a single `<a>` with no separate CTA inside it). The badge/carousel
+addition above is a departure from that reference (it doesn't have either),
+sourced from a second, separate mockup the owner supplied instead. Both are
+a deliberate departure from the rest of the site's flatter, sharper-cornered,
+shadowless look; that's intentional, not drift, so don't "fix" it back to
+match `.btn`/`.gal-item`/etc. `--r` (the sitewide 3px radius token) is
+untouched — these cards use their own 14px radius, scoped to `.room`.
 
 **All 6 cards are meant to end up roughly the same height and the same
 background.** `.room-tag` has `margin-top:auto`, so it sits at the bottom
@@ -265,10 +385,10 @@ site the card design was already ported from
   just the first photo a 2×2 feature tile (`.gal-item:first-child{
   grid-column:span 2; grid-row:span 2 }`, ported from the reference site's
   own `.gallery button:first-child` rule) — generalising to any photo
-  count, unlike the homepage gallery's 1st/4th/5th-span mosaic (hand-tuned
-  for exactly 6 photos, and now scoped to its own `.grid-gal-mosaic`
-  modifier class on `#gallery`'s grid — see next paragraph) or the flat
-  `.grid-gal-uniform` modifier this replaced (removed, no longer used
+  count, same as the homepage gallery's own `4n`/`4n+1` mosaic pattern
+  does now (see "Gallery mosaic pattern" above; scoped to its own
+  `.grid-gal-mosaic` modifier class on `#gallery`'s grid), rather than the
+  flat `.grid-gal-uniform` modifier this replaced (removed, no longer used
   anywhere).
   **`.grid-gal-feature` explicitly resets every tile** (`grid-column:span
   1; grid-row:span 1`, 4/3 aspect) before re-applying the span to
@@ -289,15 +409,19 @@ site the card design was already ported from
 
 **Three places to update, not one.** The homepage card, the `rooms/index.html`
 listing card, and the room's own page all reference the same photo set
-independently. Changing a room's photos means updating *all three*: the
-card thumbnail `src` + `.room-img-count` text in `index.html`, the same pair
-in `rooms/index.html`, and the full `<div class="grid-gal grid-gal-feature">`
-list in `rooms/<slug>.html` (plus that page's `.hero-img` `src`/`alt` if
-photo #1 changed — it's the room's hero banner now, not a small intro
-figure). There's no shared data source between them — the two card
-instances and the one generator script that originally wrote them (see
-below) all just happen to agree today because they were written from the
-same data at the same time, not because anything enforces it going forward.
+independently. Changing a room's photo *count* means updating *all three*:
+the card's `.room-img` `data-count` (and its initial `.room-carousel-count`
+text, "1 / N") in `index.html`, the same pair in `rooms/index.html`, and the
+full `<div class="grid-gal grid-gal-feature">` list in `rooms/<slug>.html`
+(plus that page's `.hero-img` `src`/`alt` if photo #1 changed — it's the
+room's hero banner now, not a small intro figure). The card's own `<img
+src>` only ever needs to point at `1.<ext>` — the carousel derives every
+other photo's path from that at click-time, it doesn't need a full list on
+the card. There's no shared data source between any of these — the two
+card instances and the one generator script that originally wrote them
+(see below) all just happen to agree today because they were written from
+the same data at the same time, not because anything enforces it going
+forward.
 
 - Photos live under `images/rooms/<slug>/1.webp, 2.webp, ...` (still `.jpg`
   for `garden-double`, see above) — one folder per room type, numbered in
@@ -372,6 +496,253 @@ panel. **Two more places to update if a room is ever renamed/added/
 removed**, on top of the "three places" already listed above for cards:
 the `.nav-dropdown` list is hand-written on **all 8 pages**, not
 generated — there's no shared data source for it either.
+
+## Callback form — currently hidden
+
+The `#callback` section on `index.html` still exists (nav, footer, and
+every `rooms/*.html` page's callback link all still point at it), but the
+actual `<form class="cb-form" id="cbForm">…</form>` inside it is
+**commented out** (Sep 2026, at the owner's request — "hide so long, bring
+it back upon my request"), not deleted. With the form gone, `.cb-intro`
+(direct phone/WhatsApp/email list + "Good to know" facts) is the section's
+only content, so `.cb` (the two-column grid `.cb-intro`/`.cb-form` normally
+splits) carries a `cb--solo` modifier class that collapses it to one
+centered, width-capped column instead — without that class the intro block
+would strand itself in the grid's left half with a blank right column.
+Within that solo column, the contact list and "Good to know" facts (a
+`<ul class="cb-direct">` and a `<div>` wrapping the `cb-gk` heading + facts
+list, both now sharing a `.cb-cols` wrapper `<div>`) sit **side by side**
+rather than stacked — `.cb--solo .cb-cols` is a two-column grid, scoped to
+`.cb--solo` on purpose: `.cb-cols` on its own (no `.cb--solo` ancestor)
+stays an unstyled stack, since the narrower ~46%-width column `.cb-intro`
+occupies once `.cb-form` is back doesn't have room for two blocks side by
+side — so this side-by-side arrangement is specific to the hidden-form
+layout and doesn't need undoing when the form returns, it just stops
+applying on its own once `.cb--solo` is removed.
+
+The heading/lede pair also changed (from "Request a callback" / "Leave
+your details and…" to "Get in touch" / "Phone, WhatsApp or email us…",
+since the original text explicitly promised a form); the **original
+heading/lede is commented out immediately below the new one**, not
+rewritten from scratch, so restoring doesn't rely on reconstructing the
+old copy from memory. The nav/footer links that point at this section were
+also reworded from "Request a callback" to "Get in touch" to match, on
+**9 live lines** across 8 files (not commented out, just edited — the old
+text isn't preserved inline anywhere for these, unlike the section's own
+heading/lede): `index.html` (footer nav), `rooms/index.html` (hero CTA
+button *and* footer nav — 2 lines), and one footer-nav line each in
+`rooms/garden-double.html`, `family-unit.html`, `twin.html`,
+`king-sofa.html`, `compact-single.html`, `self-catering.html`.
+
+**To bring the form back:** in `index.html`, (1) remove the `cb--solo`
+class from the `.shell cb` div, (2) delete the "Get in touch" heading/lede
+and un-comment the original "Request a callback" pair just below it, (3)
+un-comment the `<form class="cb-form">…</form>` block. Then, if "Get in
+touch" should revert to "Request a callback" as link text too, re-edit the
+9 lines listed above by hand (a plain find/replace isn't quite safe — the
+section's own `<h2>` will also read "Get in touch" mid-edit depending on
+which step you've done first). In `styles.css`, the `.cb--solo` rule (and
+its nested `.cb-cols` side-by-side override) can stay — dead/unused CSS
+once nothing carries that class, harmless either way — or be deleted.
+`script.js`'s room-preselect logic (`document.getElementById('f-room')`,
+the `#f-in`/`#f-out` date-min logic) already null-guards every lookup, so
+it didn't need any change to tolerate the form's absence and won't need
+one to tolerate its return either.
+
+Nothing else on the site referenced the form directly — no room page ever
+got an "Enquire about this room" button wired to `?room=<name>#callback`
+(that button was removed from the bookbox entirely, see "Room cards → room
+detail pages" above), so there was no dangling room-preselect link to
+account for.
+
+## "What's around us" section
+
+Redesigned (Sept 2026) from a dark `.band-deep` band to a light `.band-
+paper` one, against an owner-supplied mockup. `.band-deep`/`.sec-head-
+light` stay defined in styles.css (small, harmless) in case a future dark
+band wants them, but nothing on the site uses either any more — grep
+before assuming they're dead weight worth deleting, in case that's
+changed by the time this is read.
+
+- **`.around-photo` is full-bleed to the true right edge of the viewport
+  — a second, more precise mockup made this explicit** (the first pass
+  had it as a `.around-top` grid column, contained within `.shell` like
+  everything else on the site; the owner's follow-up screenshot showed it
+  actually bleeding past that, flush to both the top of the section and
+  the browser's right edge, plus a fuller wave shape and tighter spacing
+  below — all three fixed in the same pass). Structurally this means
+  `.around-photo` is a **sibling of `.shell`**, not a grid item inside
+  it — `<section class="around">` → `<figure class="around-photo">` (full
+  viewport-width sibling) then `<div class="shell">` (everything else,
+  still normally gutter-constrained). `.around{position:relative}` +
+  `.around-photo{position:absolute; right:0}` is what achieves the bleed
+  — `right:0` resolves against `.around`'s own padding box, ignoring
+  `.band`'s usual side gutter entirely (intentional, matches the mockup —
+  the text column below it still gets the section's normal padding
+  normally, since it's unaffected inside `.shell`).
+  **`top:var(--band)`** — reusing the exact same top-padding token every
+  `.band` section already gets, not a separately hand-picked number — is
+  what the `top` value settled on, after two earlier attempts got this
+  wrong in opposite directions: `top:0` put the photo flush against the
+  header with no gap at all; a hand-picked `top:clamp(48px,6vw,96px)`
+  (meant to add breathing room) was *smaller* than `--band`, so it left
+  the photo sitting above where `.shell`'s own padding-driven content
+  naturally starts — a visible dead gap between the header and the photo
+  that didn't match the gap every other section opens with, since an
+  absolutely positioned element's `top` ignores its container's padding
+  entirely and needs an explicit value to land level with content that
+  gets that padding for free. Reusing `--band` itself, rather than a
+  fresh number tuned by eye, guarantees the photo's top edge always
+  tracks whatever the sitewide section padding is — including if
+  `--band` itself is ever retuned later — instead of two independent
+  values that happen to look right together only by coincidence today.
+  `.around-top .sec-head`'s own `min-height:clamp(170px,16vw,240px)`
+  only needs to match `.around-photo`'s height now (not height *plus*
+  an offset) — both boxes start from the same `--band` distance down, so
+  reserving the photo's height alone keeps `.around-grid` below it from
+  starting too soon. The mobile breakpoint drops all of this back to a
+  plain static, full-width block ahead of the text (`position:relative`
+  — *not* `static`, see the callout below — `width:100%`, `min-height:0`
+  on `.sec-head` since nothing needs reserving once the photo is back in
+  flow, and no `top` offset either,
+  it's back to sitting flush above the text like every other stacked
+  mobile section) — DOM order alone (the `<figure>` comes before `<div class="shell">`
+  in index.html) puts it above the text on mobile with no extra CSS.
+- **Mobile gotcha: `.around-photo` needs `position:relative`, not
+  `static`, even though it's back in normal document flow there.**
+  `.around-photo-caption` is `position:absolute` against it — drop to
+  `static` and the caption falls through to the next positioned ancestor
+  up the tree instead (`.around{position:relative}`, the whole section),
+  which relocated it to float in the empty cream space above the photo
+  the first time this was tried, since the section's own top edge sits
+  well above where the photo actually renders on mobile. Any similar
+  photo-with-overlaid-caption pattern needs the same care: an element's
+  positioned-ness (not just its top/left) matters to everything absolutely
+  positioned against it.
+- **The photo panel's wavy edge is a `clip-path:url(#aroundWave)`**,
+  where `#aroundWave` is a `<clipPath clipPathUnits="objectBoundingBox">`
+  defined inline in index.html right at the top of the `<section>`
+  (`width="0" height="0"` SVG, so it renders nothing itself, only serves
+  as a definition target). `objectBoundingBox` units (0–1 on both axes)
+  are what let one hand-authored path scale correctly to `.around-photo`'s
+  actual rendered box regardless of viewport width, rather than needing a
+  pixel-space path recalculated per breakpoint. The path traces a full
+  closed shape starting and ending at the box's own top-left corner (so
+  the top and right edges render flush, un-clipped, and only the
+  left/bottom boundary curves) rather than just cutting the left edge —
+  went through three revisions chasing the mockup's one smooth continuous
+  diagonal sweep: v1 had small in-out wobbles that read as a scalloped
+  edge; v2 (once the photo went full-bleed) had a single sharp reversal
+  that read as a pronounced bulge/cove rather than a flowing curve; v3
+  softened that reversal's amplitude, which is what's live now. If the
+  wave shape ever needs redrawing, edit the `d=` path's control points
+  directly — there's no build step generating it — and check it in the
+  browser, not just as a mental model of the coordinates: small numeric
+  wobbles that look fine in the path data can still read as a visible
+  flaw once filled with a busy photo.
+- **`.around-photo`'s height is set with `height`, not `min-height`** —
+  worth remembering, this one is a real gotcha, independent of the
+  full-bleed rework above. With only a `min-height` on an otherwise-
+  unconstrained box, a browser can fall back to the `<img>`'s own
+  intrinsic aspect ratio for sizing purposes (`object-fit:cover` alone
+  doesn't give the box an independent height) — with `aroundus.webp` at
+  roughly 1.63:1, that made an early version of this panel balloon to
+  ~395px tall against a ~646px-wide column, towering over the ~206px-tall
+  text block beside it. The explicit `height:clamp(...)` sidesteps the
+  image's own aspect ratio entirely and keeps the panel close to the text
+  column's own height, matching the mockup's tighter proportions — this
+  remains true now that the photo is absolutely positioned rather than a
+  grid item, since `height:clamp(...)` is what both the desktop absolute
+  box and the `.around-top .sec-head` spacer's `min-height` are tuned to
+  match. The clamp value itself has been sized down once already, from
+  `clamp(220px,23vw,320px)` to the current `clamp(170px,16vw,240px)` — the
+  first value came from matching the *un-shrunk* text block's height, but
+  once the panel was actually full-bleed and flush against the header (no
+  longer just a same-height grid column sitting level with the text), that
+  height read as too tall/dominant against the mockup — sitting "high up"
+  and overpowering the text beside it rather than reading as a compact
+  companion to it. If this needs tuning again, don't just re-match the
+  text block's height mechanically; check it against a screenshot, since
+  the flush-top positioning changes how tall it can be before it stops
+  looking proportional.
+- **`images/aroundus.webp` is the real photo** (Sept 2026, owner-supplied
+  — Ironman cyclists on the coast road, matching the section's own
+  Ironman-focused lede copy). Source: `images/aroundus.jpg`, kept as the
+  archival original, same WebP pipeline as everything else (long edge
+  under 2000px already, so no resize needed, just quality-82 re-encode).
+  This replaced a Pillow-generated green-gradient placeholder that
+  briefly lived at `images/around.jpg` (deleted once the real photo
+  arrived, not kept — nothing else referenced that filename). If this
+  photo ever needs replacing, keep it landscape-ish — `object-fit:cover`
+  on `.around-photo-img` means a portrait source would get cropped hard —
+  and re-check the `height:clamp(...)` above still reads correctly, since
+  that's tuned against this specific photo's crop, not derived from it.
+- **The photo caption ("Adventure / is closer / than you think") and
+  "More to explore" line use a new font**, `--script` (`"Sacramento",
+  cursive`, loaded from Google Fonts alongside Fraunces/Karla in
+  index.html's `<head>` — one extra `family=` param on the existing
+  request, not a second `<link>`). This is the first use of a third type
+  family on the site; if a future change wants a different script/
+  handwritten feel, swap the Google Fonts `family=Sacramento` param and
+  the `--script` token together, both places currently agree only because
+  they were set at the same time. The caption's copy and line count
+  changed once already — it originally read "Adventure is close by" on
+  two lines; a follow-up mockup changed it to the current three-line
+  version, tilted with `transform:rotate(-7deg)` on the whole `<figcaption>`
+  (`transform-origin:100% 0`, so it pivots from its own top-right corner,
+  keeping that corner anchored roughly where `top`/`right` place it rather
+  than the rotation shifting the block's visible position around).
+- **The hand-drawn squiggle** is a plain inline SVG sine-wave path
+  (`.around-photo-squiggle`), not a font glyph or a border trick — three
+  `Q` curves in one `<path>`, positioned by simple DOM order (last line
+  in the `<figcaption>`) to sit under whichever line is currently last —
+  no change needed there when the copy above it changed from two lines to
+  three.
+- **`.around-top .sec-head` carries an explicit `max-width:460px`** —
+  this is a real bug fix, not a style choice, caught while widening the
+  caption/rotating it (unrelated change, same editing session) and
+  re-screenshotting at a few viewport widths out of habit. `.lede`'s
+  sitewide default (`max-width:60ch`) is generous enough that, combined
+  with `.around-photo`'s independent full-bleed-from-the-right sizing
+  (nothing about the text column's width automatically accounts for the
+  photo — they're not grid siblings any more, see the full-bleed
+  explanation above), the paragraph could run wide enough to disappear
+  *underneath* the photo at some viewport widths rather than wrapping
+  clear of it. `460px` was picked empirically (checked clear at 1100px,
+  1800px and 2400px viewports) rather than derived from `.around-photo`'s
+  own sizing — if `.around-photo`'s width or position ever changes, re-
+  check this number still clears it rather than assuming it still will.
+- **The "Close by" list icons are new hand-drawn line icons** (beach
+  umbrella, paper-plane/airport, graduation cap, flag, a stylised
+  elephant), same stroke conventions as the rest of the site's inline
+  SVGs (`viewBox="0 0 24 24"`, `stroke="currentColor"`, `stroke-width`
+  ~1.6, round caps/joins, no fill) sized down inside a `.dist-icon` circle
+  badge that reuses the exact same treatment as `.bookbox-icon` on the
+  room detail pages (`rgba(28,58,49,.08)` circle, `--ink` icon colour).
+  **The elephant icon went through two revisions** — the first attempt
+  (an ear/head/trunk/legs/eye path, closely following an elephant's
+  actual anatomy) rendered as illegible noise at the 18px size these
+  icons actually display at; cut down to just two strokes (one arc for
+  head+ear, one curl for the trunk) before it read as a recognisable
+  pictogram rather than a scribble. Worth remembering for any future icon
+  at this size — anatomical accuracy loses to legibility once a shape's
+  down under ~20px, drop detail rather than compress it.
+- **The chevron next to each "Close by" row's distance, and the arrow on
+  "Explore the area", are both decorative** — the `<li>`s aren't links
+  (no confirmed destination URL exists for "the beachfront" or "golf
+  courses and sports stadiums" as a single place), and it would be
+  inventing an unverified link to make them one just to match the
+  chevron's own affordance. Only **"Explore the area"** is a real link,
+  and deliberately not to a page this site doesn't have (there's no area-
+  guide page) — it points at `#callback`, since the adjacent lede text
+  itself already says "we're happy to advise on or arrange" these trips,
+  making the callback/WhatsApp form the honest destination for "tell me
+  more about the area" rather than a dead `href="#"`.
+- **The chips pills changed from outline-on-dark to filled-on-light**
+  (`background:var(--chalk)`, no border) to suit the new light band —
+  same `.chips`/`.chips-group`/`.chips-group-label` markup and grouping
+  (main "Worth the drive" list, then "Beaches & watersports", then
+  "Trails & biking") as before, only the colours changed.
 
 ## Worth flagging to the owner
 

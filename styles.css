@@ -20,8 +20,9 @@
   --line-light: rgba(255,255,255,.22);
 
   /* type */
-  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --sans:  "Karla", "Helvetica Neue", Arial, sans-serif;
+  --serif:  "Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans:   "Karla", "Helvetica Neue", Arial, sans-serif;
+  --script: "Sacramento", cursive;
 
   /* scale (1.25) */
   --t--1: .8125rem;
@@ -215,6 +216,12 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; z-index:-2;
 }
+/* compact-single's hero photo (1500x2000, portrait) is cropped hugely by
+   `cover` on this short, wide banner — default center-center crop landed
+   on the blanket/mid-bed, cutting off the headboard/pillows above it.
+   Only this one room's hero needs it, since it's specific to that one
+   photo's own composition, not a sitewide `.hero--room` default. */
+.hero-img--top{ object-position:center 42%; }
 .hero-scrim{
   position:absolute; inset:0; z-index:-1;
   background:
@@ -248,11 +255,22 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   font-variation-settings:"opsz" 144;
   text-wrap:balance;
 }
+/* the closing line ("hear it.") picked out in italic + a warm cream, not
+   plain white like the rest of the title — a small typographic accent on
+   the title's own punchline */
+.hero-title-accent{ font-style:italic; color:var(--rose-tint); }
 .hero-lede{
   font-size:clamp(1.0625rem,1.7vw,1.3125rem); line-height:1.6;
   max-width:46ch; color:rgba(255,255,255,.92); margin-bottom:2em;
 }
-.hero-cta{ display:flex; flex-wrap:wrap; gap:12px; }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:16px; }
+/* bigger than the sitewide .btn default and a touch more rounded — the
+   plain 13px/3px-radius button reads as undersized and slightly harsh
+   next to the large hero title/lede above it. Scoped to the hero only;
+   the header "Book Now" button and every other .btn on the site keeps
+   the flatter, smaller sitewide default on purpose (see CLAUDE.md on the
+   .room cards for why that flat language shouldn't get "fixed" globally). */
+.hero-cta .btn{ padding:1em 1.75em; font-size:.9375rem; border-radius:7px; }
 
 /* short banner variant — room detail pages. Same hero/hero-img/hero-scrim
    markup as the homepage hero, just a lot less tall and with the title
@@ -356,6 +374,16 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    otherwise sharp-cornered, shadowless language, asked for specifically to
    match a reference room-card layout (relaxedcityliving.co.za/rooms) */
 .rooms{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,2.2vw,28px); }
+/* Sept 2026 redesign, modelled on a mockup the owner supplied: a badge +
+   working photo carousel over the image and a "Room type" eyebrow. The
+   card briefly stopped being a single `<a>` over this (a `<button>` isn't
+   valid content inside an `<a>`), but the owner wanted click-anywhere back
+   — so the carousel buttons' click handlers stop the click from bubbling
+   up to the card's own `<a>` (`e.stopPropagation()` in script.js, the same
+   trick `.lb-prev`/`.lb-next` already use against the lightbox `<dialog>`),
+   which lets a `<button>` live inside an `<a>` and still work as a
+   button — a real HTML conformance wart (interactive content nested in a
+   hyperlink), kept deliberately for the click-anywhere UX it buys back. */
 .room{
   background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden;
   display:flex; flex-direction:column; position:relative;
@@ -367,17 +395,54 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .room-img img{ width:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .6s ease; }
 .room:hover .room-img img{ transform:scale(1.045); }
 
-.room-img-count{
-  position:absolute; right:10px; bottom:10px; z-index:1;
-  padding:.32em .75em; border-radius:100px;
-  background:rgba(16,34,28,.72); color:#fff;
+/* small pill top-left of the photo, alternating light/dark across the
+   row (set per-card in the markup) purely for visual rhythm — not tied
+   to any particular room's meaning */
+.room-badge{
+  position:absolute; top:14px; left:14px; z-index:1;
+  display:inline-flex; align-items:center; gap:.5em;
+  padding:.5em .95em; border-radius:100px;
+  font:700 11px/1 var(--sans); letter-spacing:.04em; text-transform:uppercase;
   backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-  font:600 11px/1 var(--sans); letter-spacing:.04em;
   pointer-events:none;
 }
-.room-body{ padding:clamp(20px,2.4vw,30px); display:flex; flex-direction:column; flex:1; }
-.room-body h3{ font-family:var(--serif); font-weight:500; font-size:var(--t-2); margin:0 0 .4em; line-height:1.15; }
-.room-body p{ color:var(--ink-soft); font-size:var(--t--1); line-height:1.62; }
+.room-badge svg{ width:14px; height:14px; flex:none; }
+.room-badge--light{ background:rgba(251,238,208,.94); color:var(--ink); }
+.room-badge--dark{ background:rgba(16,34,28,.8); color:#fff; }
+
+/* photo carousel — cycles that room's own photo set (script.js reads
+   data-slug/-count/-ext off .room-img and rewrites the <img src> plus
+   this counter on click; no page reload, no lightbox). Sits where the
+   old static "9 photos" badge used to. */
+.room-carousel{
+  position:absolute; right:12px; bottom:12px; z-index:1;
+  display:flex; align-items:center; gap:6px;
+}
+.room-carousel-btn{
+  display:flex; align-items:center; justify-content:center;
+  width:26px; height:26px; border-radius:50%; border:0; padding:0; cursor:pointer;
+  background:rgba(16,34,28,.72); color:#fff;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  transition:background-color .2s ease;
+}
+.room-carousel-btn:hover{ background:rgba(16,34,28,.92); }
+.room-carousel-btn svg{ width:12px; height:12px; }
+.room-carousel-count{
+  padding:.32em .7em; border-radius:100px;
+  background:rgba(16,34,28,.72); color:#fff;
+  font:600 11px/1 var(--sans); letter-spacing:.03em;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+
+.room-body{ padding:clamp(20px,2.4vw,30px); display:flex; flex-direction:column; flex:1; position:relative; }
+/* tighter eyebrow-to-title gap and a slightly larger title than
+   .eyebrow/h3 default elsewhere — matches an owner-supplied reference
+   screenshot of this exact spot on the card. Weight stayed at the sitewide
+   h3 default (500) — a bolder 600/700 was tried first and was too heavy
+   next to the reference, size/spacing were the actual gap. */
+.room-body .eyebrow{ margin-bottom:.5em; }
+.room-body h3{ font-family:var(--serif); font-weight:500; font-size:1.75rem; margin:0 0 .4em; line-height:1.15; }
+.room-body > p{ color:var(--ink-soft); font-size:var(--t--1); line-height:1.62; position:relative; }
 
 /* spec list — a vertical icon+text stack, used both bare (room detail
    page intro) and inside a .room-tag row (cards, paired with "View room") */
@@ -388,17 +453,42 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .room-tag{
   margin-top:auto; border-top:1px solid var(--line); padding-top:.9em;
   display:flex; align-items:flex-end; justify-content:space-between; gap:1.2em; flex-wrap:wrap;
+  position:relative;
 }
 .room-tag .spec{ flex:none; }
 
 /* not a link of its own — the whole .room card is one — just styled like
    one, since the card is the click target */
 .room-view{
-  display:inline-flex; align-items:center; gap:.45em; flex:none;
+  display:inline-flex; align-items:center; gap:.6em; flex:none;
   font:600 var(--t--1)/1.4 var(--sans); color:var(--ink-soft);
   transition:gap .22s ease, color .22s ease;
 }
-.room:hover .room-view{ gap:.7em; color:var(--rose); }
+.room:hover .room-view{ gap:.85em; color:var(--ink); }
+/* small circle button carrying the arrow, in place of a bare "→" —
+   compact and inline with the "View room" text rather than the earlier
+   redesign's version of this (a line stretching across the row to a much
+   bigger 38px button); this is just the label plus a small icon */
+.room-view-arrow{
+  display:flex; align-items:center; justify-content:center; flex:none;
+  width:30px; height:30px; border-radius:50%;
+  background:var(--ink); color:#fff;
+  transition:background-color .2s ease, transform .2s ease;
+}
+.room-view-arrow svg{ width:14px; height:14px; }
+.room:hover .room-view-arrow{ background:var(--rose-deep); transform:translateX(3px); }
+
+/* faint wave doodle low in the card body, echoing the same ripple motif
+   as .bookbox-head-waves elsewhere — pure decoration, sits behind the
+   text (z-index) and never intercepts clicks */
+.room-body::after{
+  content:""; position:absolute; right:-6px; bottom:-4px; z-index:0;
+  width:96px; height:60px; pointer-events:none;
+  opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 78 44'%3E%3Cg fill='none' stroke='%231C3A31' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M2 8 Q12 0 22 8 T42 8 T62 8'/%3E%3Cpath d='M8 22 Q18 14 28 22 T48 22 T68 22'/%3E%3Cpath d='M14 36 Q24 28 34 36 T54 36 T74 36'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-size:contain;
+}
+.room-body > *{ position:relative; z-index:1; }
 
 /* ---------- room detail page ---------- */
 /* the rooms LISTING page (rooms/index.html) still opens straight into its
@@ -580,33 +670,124 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .amen-note{ font-size:var(--t--1); color:var(--ink-mute); border-left:2px solid var(--sea); padding-left:14px; max-width:52ch; }
 
 /* ---------- around ---------- */
-.around-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(32px,6vw,80px); }
-.dist ul{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line-light); }
-.dist li{
-  display:flex; justify-content:space-between; align-items:baseline; gap:20px;
-  padding:.82em 0; border-bottom:1px solid var(--line-light);
+/* Redesigned Sept 2026 to match an owner-supplied mockup — light --paper
+   band (was a dark --ink one; .band-deep/.sec-head-light stay defined in
+   case a future section wants a dark band again, but neither is used
+   here any more), an eyebrow + wavy-clipped photo panel above the
+   existing two-column facts/chips grid. */
+.around{ position:relative; }
+.around-top{ margin-bottom:clamp(16px,2vw,28px); }
+.around-top .sec-head{
+  margin-bottom:0; display:flex; flex-direction:column; justify-content:center;
+  min-height:clamp(170px,16vw,240px);
+  /* .around-photo bleeds in from the right independently of this column
+     (see the full-bleed comment below), so nothing here automatically
+     keeps text off it the way a normal grid/flex sibling would — without
+     an explicit cap, .lede's own 60ch default max-width let it run wide
+     enough to genuinely disappear under the photo at some viewport
+     widths. This number is picked to clear the photo's left edge with
+     comfortable margin, not derived from it. */
+  max-width:460px;
 }
-.dist li span{ color:rgba(239,242,234,.78); font-size:var(--t--1); }
-.dist li b{ font-family:var(--serif); font-weight:500; white-space:nowrap; }
-.trips p{ color:rgba(239,242,234,.8); }
-/* .eyebrow's default colour (--ink-mute) is tuned for the paper/chalk
-   bands elsewhere on the page — unreadably dark against this section's
-   --ink background, so it needs the same light override every other
-   piece of text in .trips already gets */
-.trips .eyebrow{ color:rgba(239,242,234,.75); }
+.around-eyebrow{ display:flex; align-items:center; gap:12px; }
+.around-eyebrow::after{ content:""; flex:1 1 auto; max-width:56px; height:1px; background:var(--line); }
+
+/* Full-bleed to the true right edge of the viewport, on purpose, matching
+   the mockup exactly — .around-photo sits outside .shell as a sibling
+   (see index.html) rather than as a grid column inside it, `position:
+   absolute` against `.around{position:relative}`, anchored `right:0`.
+   `top:var(--band)` — the same top-padding token every other `.band`
+   section uses — is deliberate, not an arbitrary offset: an absolutely
+   positioned element's `top` ignores its container's own padding
+   entirely, so the photo needs an explicit value to land level with
+   `.shell`'s content (which gets `--band` for free, as normal padding).
+   Reusing the token itself, rather than a separately hand-picked number,
+   is what keeps the photo's top edge lined up with the section's own
+   standard top padding instead of drifting out of sync with it — an
+   earlier hand-picked `clamp(48px,6vw,96px)` was smaller than `--band`,
+   which put the photo above where the text naturally starts and left a
+   visible dead gap between the header and the photo that didn't match
+   the gap every other section opens with. `.around-top .sec-head`'s own
+   `min-height` (above) just needs to match `.around-photo`'s height now
+   (not height *plus* this offset) — both boxes start from the same
+   `--band` distance down, so reserving the photo's height alone is
+   enough to keep `.around-grid` below it from starting too soon. Width
+   is capped at 62vw so the photo doesn't creep left over the text column
+   at very wide viewports, where the section's own max content width caps
+   `.shell` long before 62vw of a huge screen would collide with it
+   anyway. */
+.around-photo{
+  position:absolute; top:var(--band); right:0; margin:0;
+  width:min(62vw,1400px); height:clamp(170px,16vw,240px);
+}
+.around-photo-img{
+  width:100%; height:100%; object-fit:cover;
+  clip-path:url(#aroundWave); display:block;
+}
+.around-photo-caption{
+  position:absolute; top:1.2em; right:2em; text-align:right;
+  font-family:var(--script); font-size:clamp(1.5rem,2.4vw,1.9rem); line-height:1.25;
+  color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.25);
+  transform:rotate(-7deg); transform-origin:100% 0;
+}
+.around-photo-squiggle{ width:74px; height:auto; margin:.15em 0 0 auto; display:block; }
+
+.around-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(32px,6vw,80px); }
+
+.dist-head{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.dist-col-label{
+  margin:0 0 .9em; font:700 .68rem/1 var(--sans); letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-mute);
+}
+.dist ul{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+.dist li{
+  display:flex; align-items:center; gap:16px;
+  padding:.9em 0; border-bottom:1px solid var(--line);
+}
+.dist-icon{
+  display:flex; align-items:center; justify-content:center; flex:none;
+  width:38px; height:38px; border-radius:50%;
+  background:rgba(28,58,49,.08); color:var(--ink);
+}
+.dist-icon svg{ width:18px; height:18px; }
+.dist-text{ display:flex; flex-direction:column; gap:.25em; flex:1 1 auto; min-width:0; }
+.dist-text b{ font-family:var(--serif); font-weight:500; font-size:var(--t-0); }
+.dist-text small{ font-size:var(--t--1); color:var(--ink-mute); }
+.dist-value{
+  display:flex; align-items:center; gap:.35em; flex:none;
+  font-family:var(--serif); font-weight:500; white-space:nowrap;
+}
+.dist-value svg{ width:15px; height:15px; color:var(--ink-mute); }
+.dist-more{
+  display:flex; align-items:center; gap:14px; margin:1.4em 0 0;
+  font-family:var(--script); font-size:1.4rem; color:var(--ink-soft);
+}
+.dist-more::after{ content:""; flex:1 1 auto; height:1px; background:var(--line); }
+
+.trips-head{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; }
+.trips-head .h-min{ margin-bottom:0; }
+.trips-explore{
+  display:inline-flex; align-items:center; gap:.5em;
+  font:700 .72rem/1 var(--sans); letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-mute); text-decoration:none; white-space:nowrap;
+}
+.trips-explore svg{ width:15px; height:15px; transition:transform .2s ease; }
+.trips-explore:hover{ color:var(--ink); }
+.trips-explore:hover svg{ transform:translateX(3px); }
+.trips p{ margin-top:1em; color:var(--ink-soft); }
 .chips-group-label{ margin-top:1.6em; }
 
 .chips{ list-style:none; margin:1.4em 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
 .chips li{
   font-size:var(--t--1); padding:.42em .9em;
-  border:1px solid var(--line-light); border-radius:100px;
-  color:rgba(239,242,234,.9);
+  background:var(--chalk); border-radius:100px;
+  color:var(--ink-soft);
 }
 /* some chips are plain place names, others (operators with their own
    site) are links — same pill either way, `a` just adds the underline
    affordance on hover so it doesn't look identical to the non-clickable
    ones until you're right on it */
-.chips a{ text-decoration:none; }
+.chips a{ color:inherit; text-decoration:none; }
 .chips a:hover{ text-decoration:underline; }
 
 /* ---------- gallery ---------- */
@@ -615,17 +796,23 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .gal-item img{ width:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .45s ease, filter .45s ease; }
 .gal-item:hover img{ transform:scale(1.04); filter:saturate(1.08); }
 
-/* homepage gallery only: the 1st/4th/5th tile runs wide (2 cols, still
-   just 1 row — an 8/3 banner-ish crop). Hand-tuned for exactly 6 photos,
-   so it's scoped to `.grid-gal-mosaic` rather than left as a bare
-   `.grid-gal` default — a `.grid-gal` with a different photo count (every
-   room page) needs a different pattern, see `.grid-gal-feature` below. */
-.grid-gal-mosaic .gal-item:nth-child(1),
-.grid-gal-mosaic .gal-item:nth-child(4),
-.grid-gal-mosaic .gal-item:nth-child(5){ grid-column:span 2; }
-.grid-gal-mosaic .gal-item:nth-child(1) img,
-.grid-gal-mosaic .gal-item:nth-child(4) img,
-.grid-gal-mosaic .gal-item:nth-child(5) img{ aspect-ratio:8/3; }
+/* homepage gallery only: one wide tile (2 cols, still just 1 row — an
+   8/3 banner-ish crop) per row of 3, alternating which side it falls on
+   — tile 1 wide, tile 2 narrow, then tile 3 narrow, tile 4 wide, then
+   back to wide-first, and so on. `:nth-child(4n+1)` and `:nth-child(4n)`
+   land on exactly the tiles that pattern needs wide (1,4,5,8,9,12,13…);
+   everything else stays the grid's default 1-col/4:3 tile. This is a
+   repeating formula rather than the fixed 1st/4th/5th list it used to be
+   (that only worked for exactly 6 photos) specifically so it keeps
+   working as "See more photos" (script.js) reveals photos past 6 — see
+   CLAUDE.md § Image status. Scoped to `.grid-gal-mosaic` rather than left
+   as a bare `.grid-gal` default, since a `.grid-gal` with a different
+   photo count (every room page) needs a different pattern, see
+   `.grid-gal-feature` below. */
+.grid-gal-mosaic .gal-item:nth-child(4n+1),
+.grid-gal-mosaic .gal-item:nth-child(4n){ grid-column:span 2; }
+.grid-gal-mosaic .gal-item:nth-child(4n+1) img,
+.grid-gal-mosaic .gal-item:nth-child(4n) img{ aspect-ratio:8/3; }
 
 /* room-page galleries: just the first photo as a big 2×2 feature tile,
    ported from the reference site's gallery (their `.gallery
@@ -637,6 +824,21 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .grid-gal-feature .gal-item{ grid-column:span 1; grid-row:span 1; }
 .grid-gal-feature .gal-item img{ aspect-ratio:4/3; }
 .grid-gal-feature .gal-item:first-child{ grid-column:span 2; grid-row:span 2; }
+
+/* homepage gallery only: photos past the first 6 ship in the DOM already
+   (so the lightbox's prev/next can page through all of them from the
+   start) but sit `hidden` until "See more photos" reveals them 4 at a
+   time — see the #galMore handler in script.js. */
+.gal-more-row{ display:flex; justify-content:center; margin-top:clamp(28px,4vw,40px); }
+/* .btn's own `display:inline-flex` and [hidden]'s UA-stylesheet
+   `display:none` are the same specificity, so without this, JS setting
+   `galMore.hidden = true` doesn't actually hide it — the author-stylesheet
+   .btn rule wins the tie against the browser's default [hidden] rule
+   (same specificity, but UA-origin rules always lose ties to an author
+   rule, regardless of order). This re-asserts it at author-stylesheet
+   specificity so the button actually disappears once every photo has
+   been revealed. */
+.gal-more-row .btn[hidden]{ display:none; }
 
 /* must be `fixed`, not `relative` — `<dialog>`'s own UA stylesheet
    expects `position:fixed` to centre itself in the viewport via
@@ -683,6 +885,29 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 
 /* ---------- callback ---------- */
 .cb{ display:grid; grid-template-columns:.92fr 1.08fr; gap:clamp(32px,6vw,84px); align-items:start; }
+/* .cb-form is commented out in index.html while the callback form is
+   hidden at the owner's request (Sep 2026) — this collapses the section
+   back to one centered column so .cb-intro doesn't sit stranded in the
+   left half of the two-column grid. Remove this rule (and the "cb--solo"
+   class in the HTML) when the form comes back — see CLAUDE.md
+   "Callback form". */
+.cb--solo{ grid-template-columns:1fr; }
+.cb--solo .cb-intro{ max-width:800px; margin:0 auto; }
+/* Contact list + "Good to know" facts sit stacked by default (the narrow
+   ~46%-width left column they occupy when .cb-form is present doesn't
+   leave room for two side-by-side blocks) — .cb--solo has the full,
+   wider column to itself, so only there do they sit side by side instead. */
+.cb--solo .cb-cols{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,5vw,64px); align-items:start; }
+/* Both columns now open with a matching .h-min heading (Reach us
+   directly / Good to know) so their top dividers line up. .cb-gk's own
+   margin-top (normally the gap under .cb-direct, when the two were
+   stacked) is zeroed — it's a column heading here, not a follow-on
+   element — and .cb-direct's own margin-top (normally the gap under the
+   section lede, with no heading in between) is set to match
+   .facts-tight's gap under "Good to know" instead, so both headings sit
+   the same distance above their own list. */
+.cb--solo .cb-cols .cb-gk{ margin-top:0; }
+.cb--solo .cb-cols .cb-direct{ margin-top:1.4em; }
 .cb-direct{ list-style:none; margin:2em 0 0; padding:0; border-top:1px solid var(--line); }
 .cb-direct li{ display:flex; justify-content:space-between; gap:18px; padding:.8em 0; border-bottom:1px solid var(--line); }
 .cb-direct a{ font-family:var(--serif); font-size:var(--t-1); font-weight:500; text-decoration:none; }
@@ -756,6 +981,19 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 
 @media (max-width:900px){
   .split, .around-grid, .cb{ grid-template-columns:1fr; }
+  /* .around-photo's desktop full-bleed (position:absolute, right:0) has
+     no room to work with at this width — back to a normal-flow, full-
+     width block above the text, and .sec-head's min-height (which exists
+     only to reserve space under the absolute photo) is no longer needed
+     once the photo is back in flow ahead of it. */
+  .around-top{ margin-bottom:28px; }
+  .around-top .sec-head{ min-height:0; }
+  /* position:relative, not static — .around-photo-caption is positioned
+     absolute against it, so losing the positioning context here (static
+     would fall through to .around{position:relative} instead, the
+     section itself) sent the caption flying up into the cream space
+     above the photo the first time this was tried. */
+  .around-photo{ position:relative; top:auto; right:auto; width:100%; height:min(55vw,260px); margin-bottom:28px; }
   .split-fig{ position:static; }
   .split-fig img{ aspect-ratio:16/10; }
   .find-grid{ grid-template-columns:1fr; }

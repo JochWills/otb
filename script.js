@@ -125,6 +125,62 @@
     });
   }
 
+  /* "See more photos" — the homepage gallery ships every photo in the DOM
+     up front (so the lightbox set above already includes all of them,
+     letting prev/next page through the full set from photo 1), but only
+     the first 6 start visible. Each click un-hides the next 4. */
+  var galMore = document.getElementById('galMore');
+  if (galMore) {
+    galMore.addEventListener('click', function () {
+      var hiddenItems = document.querySelectorAll('#gal .gal-item[hidden]');
+      Array.prototype.forEach.call(Array.prototype.slice.call(hiddenItems, 0, 4), function (item) {
+        item.hidden = false;
+      });
+      if (!document.querySelector('#gal .gal-item[hidden]')) galMore.hidden = true;
+    });
+  }
+
+  /* room-card photo carousel — cycles that room's own photo set right on
+     the card (homepage and the rooms listing page both use this same
+     markup) without navigating away or opening the lightbox. The whole
+     card is a single <a> (click-anywhere is wanted back), so these
+     prev/next <button>s sit nested inside it — invalid content-model-wise,
+     but harmless in practice as long as their clicks never reach the
+     anchor: stopPropagation() below is what stops a button click from
+     also triggering the card's own navigation, the same trick used
+     against the lightbox <dialog> by .lb-prev/.lb-next. */
+  var roomCarousels = document.querySelectorAll('[data-room-carousel]');
+  roomCarousels.forEach(function (box) {
+    var count = parseInt(box.getAttribute('data-count'), 10) || 1;
+    if (count < 2) return;
+    var ext = box.getAttribute('data-ext');
+    var altBase = box.getAttribute('data-alt') || '';
+    var img = box.querySelector('img');
+    var countEl = box.querySelector('.room-carousel-count');
+    if (!img) return;
+    var dir = img.getAttribute('src').split('/').slice(0, -1).join('/');
+    var current = 1;
+    var render = function () {
+      img.src = dir + '/' + current + '.' + ext;
+      img.alt = altBase ? altBase + ' — photo ' + current : '';
+      if (countEl) countEl.textContent = current + ' / ' + count;
+    };
+    var prev = box.querySelector('.room-carousel-prev');
+    var next = box.querySelector('.room-carousel-next');
+    if (prev) prev.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      current = current === 1 ? count : current - 1;
+      render();
+    });
+    if (next) next.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      current = current === count ? 1 : current + 1;
+      render();
+    });
+  });
+
   /* footer year */
   var yr = document.getElementById('yr');
   if (yr) yr.textContent = new Date().getFullYear();

@@ -15,7 +15,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Karla:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Karla:wght@300..700&family=Sacramento&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
 <script type="application/ld+json">
@@ -104,7 +104,7 @@
 
   <div class="shell hero-inner">
     <p class="hero-place js-rise" style="--d:0ms">Summerstrand, Gqeberha</p>
-    <h1 class="hero-title js-rise" style="--d:90ms">One block from the<br>beachfront, and quiet<br>enough to hear it.</h1>
+    <h1 class="hero-title js-rise" style="--d:90ms">One block from the<br>beachfront, and quiet<br>enough to <em class="hero-title-accent">hear it.</em></h1>
     <p class="hero-lede js-rise" style="--d:180ms">
       A three-star bed and breakfast for business travellers, tourists and holiday makers.
       Six rooms, each with its own entrance and patio, set around an English rose garden.
@@ -124,7 +124,7 @@
 </section>
 
 <!-- ─────────────────────────  WELCOME  ───────────────────────── -->
-<section class="band band-chalk" id="stay">
+<section class="band band-paper" id="stay">
   <div class="shell split">
 
     <div class="split-text">
@@ -162,7 +162,7 @@
 </section>
 
 <!-- ─────────────────────────  ROOMS  ───────────────────────── -->
-<section class="band band-paper" id="rooms">
+<section class="band band-chalk" id="rooms">
   <div class="shell">
 
     <header class="sec-head">
@@ -176,11 +176,17 @@
     <div class="rooms">
 
       <a class="room" href="rooms/king-sofa.html">
-        <div class="room-img">
+        <div class="room-img" data-room-carousel data-slug="king-sofa" data-count="9" data-ext="webp" data-alt="King room with sofa bed">
           <img src="images/rooms/king-sofa/1.webp" alt="King room with sofa bed" loading="lazy">
-          <span class="room-img-count">9 photos</span>
+          <span class="room-badge room-badge--light"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h5A1.5 1.5 0 0 1 14 4.5V21"/><path d="M3 21h14"/><circle cx="11" cy="12" r="1" fill="currentColor" stroke="none"/></svg>Private patio</span>
+          <div class="room-carousel" aria-hidden="true">
+            <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of King with sofa bed"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <span class="room-carousel-count">1 / 9</span>
+            <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of King with sofa bed"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
         <div class="room-body">
+          <p class="eyebrow">Room type</p>
           <h3>King with sofa bed</h3>
           <p>One king-size bed with a sofa bed suitable for a child under 12. Opens onto its own patio.</p>
           <div class="room-tag">
@@ -189,17 +195,23 @@
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2 + 1 child</li>
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
             </ul>
-            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+            <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></span>
           </div>
         </div>
       </a>
 
       <a class="room" href="rooms/twin.html">
-        <div class="room-img">
+        <div class="room-img" data-room-carousel data-slug="twin" data-count="6" data-ext="webp" data-alt="Twin room with an extra single bed">
           <img src="images/rooms/twin/1.webp" alt="Twin room with an extra single bed" loading="lazy">
-          <span class="room-img-count">6 photos</span>
+          <span class="room-badge room-badge--dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-3.5-3.5"/><path d="M18 16H6l3.5 3.5"/></svg>Flexible option</span>
+          <div class="room-carousel" aria-hidden="true">
+            <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Twin with extra single"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <span class="room-carousel-count">1 / 6</span>
+            <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of Twin with extra single"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
         <div class="room-body">
+          <p class="eyebrow">Room type</p>
           <h3>Twin with extra single</h3>
           <p>Two single beds plus a single suitable for a child under 12 &mdash; or a king with a single bed for a child.</p>
           <div class="room-tag">
@@ -208,17 +220,23 @@
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2 + 1 child</li>
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
             </ul>
-            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+            <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></span>
           </div>
         </div>
       </a>
 
       <a class="room" href="rooms/family-unit.html">
-        <div class="room-img">
+        <div class="room-img" data-room-carousel data-slug="family-unit" data-count="11" data-ext="webp" data-alt="Two-bedroom family unit">
           <img src="images/rooms/family-unit/1.webp" alt="Two-bedroom family unit" loading="lazy">
-          <span class="room-img-count">11 photos</span>
+          <span class="room-badge room-badge--light"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Great for families</span>
+          <div class="room-carousel" aria-hidden="true">
+            <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Two-bedroom family unit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <span class="room-carousel-count">1 / 11</span>
+            <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of Two-bedroom family unit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
         <div class="room-body">
+          <p class="eyebrow">Room type</p>
           <h3>Two-bedroom family unit</h3>
           <p>Two bedrooms with their own entrances, sharing one en-suite bathroom and a kitchenette. Book as one family unit, or as two separate rooms.</p>
           <div class="room-tag">
@@ -227,17 +245,23 @@
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps up to 4</li>
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>Shared en-suite</li>
             </ul>
-            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+            <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></span>
           </div>
         </div>
       </a>
 
       <a class="room" href="rooms/garden-double.html">
-        <div class="room-img">
+        <div class="room-img" data-room-carousel data-slug="garden-double" data-count="4" data-ext="jpg" data-alt="Garden double room">
           <img src="images/rooms/garden-double/1.jpg" alt="Garden double room" loading="lazy">
-          <span class="room-img-count">4 photos</span>
+          <span class="room-badge room-badge--dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C11 4 4 11 4 20c9 0 16-7 16-16z"/><path d="M8 20C8 13 13 8 20 4"/></svg>Garden views</span>
+          <div class="room-carousel" aria-hidden="true">
+            <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Garden double"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <span class="room-carousel-count">1 / 4</span>
+            <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of Garden double"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
         <div class="room-body">
+          <p class="eyebrow">Room type</p>
           <h3>Garden double</h3>
           <p>A double room looking onto the rose garden, with a private entrance and patio of its own.</p>
           <div class="room-tag">
@@ -246,17 +270,23 @@
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2</li>
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
             </ul>
-            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+            <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></span>
           </div>
         </div>
       </a>
 
       <a class="room" href="rooms/self-catering.html">
-        <div class="room-img">
+        <div class="room-img" data-room-carousel data-slug="self-catering" data-count="7" data-ext="webp" data-alt="Self-catering room with kitchenette">
           <img src="images/rooms/self-catering/1.webp" alt="Self-catering room with kitchenette" loading="lazy">
-          <span class="room-img-count">7 photos</span>
+          <span class="room-badge room-badge--light"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M15 6v12M5 10h6M5 14h4"/></svg>Self-catering</span>
+          <div class="room-carousel" aria-hidden="true">
+            <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Self-catering room"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <span class="room-carousel-count">1 / 7</span>
+            <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of Self-catering room"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
         <div class="room-body">
+          <p class="eyebrow">Room type</p>
           <h3>Self-catering room</h3>
           <p>Set up for longer stays, with the facilities to put together a light meal without going out.</p>
           <div class="room-tag">
@@ -265,17 +295,23 @@
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 2</li>
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M15 6v12M5 10h6M5 14h4"/></svg>Kitchenette</li>
             </ul>
-            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+            <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></span>
           </div>
         </div>
       </a>
 
       <a class="room" href="rooms/compact-single.html">
-        <div class="room-img">
+        <div class="room-img" data-room-carousel data-slug="compact-single" data-count="4" data-ext="webp" data-alt="Compact single room">
           <img src="images/rooms/compact-single/1.webp" alt="Compact single room" loading="lazy">
-          <span class="room-img-count">4 photos</span>
+          <span class="room-badge room-badge--dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Solo &amp; short stays</span>
+          <div class="room-carousel" aria-hidden="true">
+            <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Compact single"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <span class="room-carousel-count">1 / 4</span>
+            <button type="button" class="room-carousel-btn room-carousel-next" aria-label="Next photo of Compact single"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
         <div class="room-body">
+          <p class="eyebrow">Room type</p>
           <h3>Compact single</h3>
           <p>A smaller room for one person, or a couple on a short stay. En-suite, with everything you need for a night or two.</p>
           <div class="room-tag">
@@ -284,7 +320,7 @@
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Sleeps 1&ndash;2</li>
               <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7M4 14h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/></svg>En-suite shower</li>
             </ul>
-            <span class="room-view">View room <span aria-hidden="true">&rarr;</span></span>
+            <span class="room-view">View room <span class="room-view-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></span>
           </div>
         </div>
       </a>
@@ -314,33 +350,83 @@
 </section>
 
 <!-- ─────────────────────────  AROUND US  ───────────────────────── -->
-<section class="band band-deep" id="around">
+<section class="band band-paper around" id="around">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <clipPath id="aroundWave" clipPathUnits="objectBoundingBox">
+      <path d="M0,0 C0.06,0.08 0.12,0.12 0.09,0.22 C0.06,0.32 0.01,0.36 0.03,0.46 C0.05,0.56 0.20,0.54 0.22,0.66 C0.24,0.78 0.40,0.86 0.54,1 L1,1 L1,0 Z"/>
+    </clipPath>
+  </svg>
+
+  <!-- full-bleed to the viewport's right edge on purpose (matching the
+       mockup exactly) — this is why the photo sits outside .shell rather
+       than as a grid column inside it like the rest of the section; see
+       CLAUDE.md "What's around us" section for the full reasoning. -->
+  <figure class="around-photo">
+    <img class="around-photo-img" src="images/aroundus.webp" alt="Cyclists on the coast road during Ironman, with the beach and dunes below" loading="lazy">
+    <figcaption class="around-photo-caption">
+      Adventure<br>is closer<br>than you think
+      <svg class="around-photo-squiggle" viewBox="0 0 120 14" aria-hidden="true" focusable="false">
+        <path d="M2 7 Q17 1 32 7 T62 7 T92 7 T118 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </figcaption>
+  </figure>
+
   <div class="shell">
 
-    <header class="sec-head sec-head-light">
-      <h2 class="h-sec">What&rsquo;s around us</h2>
-      <p class="lede">
-        We&rsquo;re well placed for Ironman and the major local and international sporting events, and
-        we&rsquo;re happy to advise on or arrange safaris, sea trips, scuba diving and other outdoor
-        adventures.
-      </p>
-    </header>
+    <div class="around-top">
+      <header class="sec-head around-head">
+        <p class="eyebrow around-eyebrow">Location</p>
+        <h2 class="h-sec">What&rsquo;s around us</h2>
+        <p class="lede">
+          We&rsquo;re perfectly located for Ironman and the major local and international sporting
+          events, and we&rsquo;re happy to advise on or arrange safaris, sea trips, scuba diving and
+          other outdoor adventures.
+        </p>
+      </header>
+    </div>
 
     <div class="around-grid">
 
       <div class="dist">
-        <h3 class="h-min">Close by</h3>
+        <div class="dist-head">
+          <h3 class="h-min">Close by</h3>
+          <p class="dist-col-label">Distance / drive time</p>
+        </div>
         <ul>
-          <li><span>The beachfront</span><b>One block</b></li>
-          <li><span>Chief Dawid Stuurman International Airport</span><b>6 km</b></li>
-          <li><span>Nelson Mandela University</span><b>9 km</b></li>
-          <li><span>Golf courses and sports stadiums</span><b>Short drive</b></li>
-          <li><span>Addo Elephant National Park</span><b>30 min</b></li>
+          <li>
+            <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11C4.5 6.5 8 3 12 3s7.5 3.5 8 8H4z"/><path d="M12 3v2.5"/><path d="M12 9.5V20"/><path d="M9 20h6"/></svg></span>
+            <span class="dist-text"><b>The beachfront</b><small>Golden beaches and ocean walks</small></span>
+            <span class="dist-value">One block<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </li>
+          <li>
+            <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></span>
+            <span class="dist-text"><b>Chief Dawid Stuurman International Airport</b><small>Direct flights from major cities</small></span>
+            <span class="dist-value">6 km<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </li>
+          <li>
+            <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 5-10 5L2 8l10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></span>
+            <span class="dist-text"><b>Nelson Mandela University</b><small>Events, visits and campus access</small></span>
+            <span class="dist-value">9 km<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </li>
+          <li>
+            <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-3 4 3 4H6"/></svg></span>
+            <span class="dist-text"><b>Golf courses and sports stadiums</b><small>Top local golf and sporting venues</small></span>
+            <span class="dist-value">Short drive<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </li>
+          <li>
+            <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13c0-4.4 3.4-7.5 7.5-7.5s7 3.3 7 6.7c1.3 0 2.3 1 2.3 2.1 0 1.3-1.1 2.2-2.4 2"/><path d="M9.8 8.3v6.2c0 2.3 1.5 3.5 2.8 4.5"/></svg></span>
+            <span class="dist-text"><b>Addo Elephant National Park</b><small>World-famous wildlife experiences</small></span>
+            <span class="dist-value">30 min<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </li>
         </ul>
+        <p class="dist-more">More to explore</p>
       </div>
 
       <div class="trips">
-        <h3 class="h-min">Worth the drive</h3>
+        <div class="trips-head">
+          <h3 class="h-min">Worth the drive</h3>
+          <a class="trips-explore" href="#callback">Explore the area<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></a>
+        </div>
         <p>
           Thirty minutes away is the world-famous, malaria-free Addo Elephant National Park, along with
           Schotia Safaris and the private Big Five lodges at Shamwari. Sundaze sits beside the Addo
@@ -399,41 +485,72 @@
     </header>
 
     <div class="grid-gal grid-gal-mosaic" id="gal">
-      <button class="gal-item" data-full="images/gallery-1.jpg"><img src="images/gallery-1.jpg" alt="The garden" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-2.jpg"><img src="images/gallery-2.jpg" alt="A guest room" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-3.jpg"><img src="images/gallery-3.jpg" alt="Roses in the garden" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-4.jpg"><img src="images/gallery-4.jpg" alt="The bay" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-5.jpg"><img src="images/gallery-5.jpg" alt="The dining area" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-6.jpg"><img src="images/gallery-6.jpg" alt="A patio outside one of the rooms" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-1.webp"><img src="images/gallery-1.webp" alt="The garden path, flanked by flowerbeds" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-2.webp"><img src="images/gallery-2.webp" alt="A dresser in the dining room" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-3.webp"><img src="images/gallery-3.webp" alt="A welcoming corner on the porch" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-4.webp"><img src="images/gallery-4.webp" alt="The dining room, open to the kitchen" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-5.webp"><img src="images/gallery-5.webp" alt="The garden path towards the guest cottage" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-6.webp"><img src="images/gallery-6.webp" alt="A patio outside one of the rooms" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-7.webp" hidden><img src="images/gallery-7.webp" alt="A garden cottage with its own private patio" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-8.webp" hidden><img src="images/gallery-8.webp" alt="A sunny courtyard for guests to relax in" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-9.webp" hidden><img src="images/gallery-9.webp" alt="A quiet garden walkway" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-10.webp" hidden><img src="images/gallery-10.webp" alt="The open-plan dining room and lounge" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-11.webp" hidden><img src="images/gallery-11.webp" alt="Breakfast set for two by the garden windows" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-12.webp" hidden><img src="images/gallery-12.webp" alt="The dining room set for breakfast" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-13.webp" hidden><img src="images/gallery-13.webp" alt="Breakfast places set around the table" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-14.webp" hidden><img src="images/gallery-14.webp" alt="Fresh roses on the breakfast table" loading="lazy"></button>
+    </div>
+
+    <div class="gal-more-row">
+      <button type="button" class="btn btn-line" id="galMore">See more photos</button>
     </div>
   </div>
 </section>
 
 <!-- ─────────────────────────  CALLBACK  ───────────────────────── -->
 <section class="band band-rose" id="callback">
-  <div class="shell cb">
+  <div class="shell cb cb--solo">
 
+    <!-- Callback form hidden at the owner's request (Sep 2026) — see
+         CLAUDE.md "Callback form" for exactly how to bring it back
+         (uncomment the <form> below, remove "cb--solo" above, and swap
+         this heading/lede back for the pair commented out just below). -->
     <div class="cb-intro">
+      <h2 class="h-sec">Get in touch</h2>
+      <p class="lede">
+        Phone, WhatsApp or email us and we&rsquo;ll come back to you with availability and a
+        rate &mdash; someone is usually right here.
+      </p>
+      <!--
       <h2 class="h-sec">Request a callback</h2>
       <p class="lede">
         Leave your details and we&rsquo;ll come back to you with availability and a rate. If you&rsquo;d
         rather not wait, phone or WhatsApp us &mdash; someone is usually right here.
       </p>
-      <ul class="cb-direct">
-        <li><a href="tel:+27415833190">041 583 3190</a><span>Guest house</span></li>
-        <li><a href="https://wa.me/27837970894" rel="noopener">083 797 0894</a><span>WhatsApp</span></li>
-        <li><a href="mailto:info@onthebaybandb.co.za">info@onthebaybandb.co.za</a><span>Email</span></li>
-      </ul>
+      -->
+      <div class="cb-cols">
+        <div>
+          <h3 class="h-min">Reach us directly</h3>
+          <ul class="cb-direct">
+            <li><a href="tel:+27415833190">041 583 3190</a><span>Guest house</span></li>
+            <li><a href="https://wa.me/27837970894" rel="noopener">083 797 0894</a><span>WhatsApp</span></li>
+            <li><a href="mailto:info@onthebaybandb.co.za">info@onthebaybandb.co.za</a><span>Email</span></li>
+          </ul>
+        </div>
 
-      <h3 class="h-min cb-gk">Good to know</h3>
-      <dl class="facts facts-tight">
-        <div><dt>Check in</dt><dd>From 14:00</dd></div>
-        <div><dt>Check out</dt><dd>By 10:00</dd></div>
-        <div><dt>Breakfast</dt><dd>R110 per person, on request</dd></div>
-        <div><dt>Parking</dt><dd>Secure, on site, no charge</dd></div>
-      </dl>
+        <div>
+          <h3 class="h-min cb-gk">Good to know</h3>
+          <dl class="facts facts-tight">
+            <div><dt>Check in</dt><dd>From 14:00</dd></div>
+            <div><dt>Check out</dt><dd>By 10:00</dd></div>
+            <div><dt>Breakfast</dt><dd>R110 per person, on request</dd></div>
+            <div><dt>Parking</dt><dd>Secure, on site, no charge</dd></div>
+          </dl>
+        </div>
+      </div>
     </div>
 
+    <!--
     <form class="cb-form" id="cbForm" action="https://formsubmit.co/info@onthebaybandb.co.za" method="POST">
       <input type="hidden" name="_subject" value="Callback request from onthebaybandb.co.za">
       <input type="hidden" name="_captcha" value="false">
@@ -493,6 +610,7 @@
       <button class="btn btn-solid btn-block" type="submit">Send my request</button>
       <p class="fine">We&rsquo;ll only use your details to answer this enquiry.</p>
     </form>
+    -->
 
   </div>
 </section>
@@ -581,7 +699,7 @@
       <a href="#around">Around us</a>
       <a href="#gallery">Gallery</a>
       <a href="#find">Find us</a>
-      <a href="#callback">Request a callback</a>
+      <a href="#callback">Get in touch</a>
     </nav>
 
     <p class="foot-legal">&copy; <span id="yr">2026</span> On The Bay B&amp;B. All rights reserved.</p>
