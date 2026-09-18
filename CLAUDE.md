@@ -479,34 +479,48 @@ forward.
   display order. Current counts: `king-sofa` 9, `twin` 6, `family-unit` 11,
   `garden-double` 4, `self-catering` 7, `compact-single` 4.
 
-  **`twin/1.webp` is the one photo below the 2000px convention** — it was
-  replaced Sept 2026 from an owner-supplied `1.png` that was only
-  1448×1086, so it went from 2000×1500 down to 1448×1086 (WebP q86, no
-  resample — the source was already under 2000). That file is doing three
-  jobs, and the demanding one is `rooms/twin.html`'s **full-width hero
-  banner**, where 1448px is upscaled on any wide or 2x screen. Same
-  limitation as `hero-3.jpg`, from the same 1448px export ceiling, and
-  fixable only with a larger original. **Don't "fix" it by upscaling** —
-  that adds bytes and no detail. The previous 2000px version is in git if
-  the composition ever matters less than the sharpness.
+  **`twin/1.webp` and `compact-single/1.webp` are below the 2000px
+  convention.** Both were replaced Sept 2026 from owner-supplied `1.png`
+  files capped at 1448px on the long edge, so both lost resolution:
+  `twin` 2000×1500 → 1448×1086, `compact-single` 1500×2000 → 1086×1448.
+  Encoded WebP q86 with **no resample** (already under 2000).
 
-  Encoded at q86 rather than the usual q82 precisely because it's
-  resolution-starved: at 1:1 the two were indistinguishable, so the 39KB
-  buys headroom rather than visible quality.
+  Each is doing three jobs, and the demanding one is its room page's
+  **full-width hero banner**, where 1448px is upscaled on any wide or 2x
+  screen. Same 1448px export ceiling as `hero-3.jpg` — it appears to be
+  the owner's export setting, not the photos, so ask for a larger export
+  rather than assuming it's the best available. **Don't "fix" it by
+  upscaling**: that adds bytes and no detail. Both previous versions are
+  in git if sharpness ever matters more than the new framing.
+
+  q86 rather than the usual q82 precisely because they're
+  resolution-starved: at 1:1 the two were indistinguishable on the twin
+  photo, so the extra ~39KB buys encode headroom rather than visible
+  quality. Don't generalise q86 to photos that aren't resolution-limited.
+
+  **Replacing a photo #1 is never just the file.** Each is referenced
+  four times with `width`/`height` attributes that must be updated with
+  it (homepage card, rooms listing card, room page hero, room page
+  gallery) — stale attributes reserve the wrong box and reintroduce the
+  layout shift those attributes exist to prevent. For `compact-single`
+  there is a fifth thing: `.hero-img--top`'s `object-position`, which is
+  tuned to that photo's composition (see styles.css).
 - Slugs → room type: `king-sofa`, `twin`, `family-unit`, `garden-double`,
   `self-catering`, `compact-single` — matched to the six listed room types
   by asking the property owner to identify each `Room N` folder, not
   guessed from the photos.
 
   **The owner refers to rooms by `Room N`, not by slug**, so a request
-  like "replace Room 1's photo" needs that mapping. Only one leg of it is
-  recorded so far: **`Room 1` = `twin`** (confirmed Sept 2026 by matching
-  a dropped `Room 1/1.png` against the live sets — it was visibly the
-  same room as `images/rooms/twin/1.webp`). The other five were never
-  written down. **Confirm visually against `_originals/Room N/` before
-  overwriting anything**, and add the pair here once you know it —
-  silently writing to the wrong room's folder is the failure mode, and
-  it looks like success.
+  like "replace Room 1's photo" needs that mapping. Confirmed so far:
+  - **`Room 1` = `twin`**
+  - **`Room 6` = `compact-single`**
+
+  Both were confirmed Sept 2026 by rendering a contact sheet of all six
+  live `1.*` photos and matching the dropped file against it by eye — the
+  quickest reliable check, and worth repeating for the remaining four
+  rather than guessing from the number. **Confirm before overwriting**:
+  silently writing to the wrong room's folder is the failure mode here,
+  and it looks exactly like success.
 - Room pages live at `rooms/<slug>.html` (one level down from the site
   root), so every internal reference on them is `../`-prefixed
   (`../styles.css`, `../images/...`, `../index.html`, `../script.js`) —
