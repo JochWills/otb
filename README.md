@@ -136,7 +136,7 @@ Two external things load over the network:
   at the owner's request, so they read a little softer than the rest of the
   site's flatter, sharp-cornered look — that contrast is intentional.
 - **Structure** — one main page, plus a page per room. Hero → the house → six rooms →
-  breakfast and braai → what's around → gallery → callback → find us. Each room card links
+  what's around → gallery → get in touch → find us. Each room card links
   to its own page (`rooms/<room>.html`) with a full gallery and more detail. The callback
   request is reachable from the fixed header, every room card and room page, and its own
   section. The hero's own two buttons point elsewhere — "See rooms" scrolls to the room

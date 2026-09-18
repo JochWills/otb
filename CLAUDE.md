@@ -380,6 +380,26 @@ site the card design was already ported from
     the whole track — and the page — past the viewport into horizontal
     scroll rather than let that descendant wrap. `minmax(0,…)` is what
     actually lets the track shrink below its content.
+  - **`.roomlayout-aside` is capped at `max-width:440px` in that same
+    stacked state**, and that cap is load-bearing rather than taste.
+    Uncapped, the card took the whole column — **809px wide at an
+    899px viewport, against the 340px it's designed as** — and it does
+    not survive that: `.bookbox-head`'s `aspect-ratio:900/301` ties the
+    wave photo's height to the card's width, so the banner grew from
+    ~114px to 270px and dominated the page, while the `.bookbox-facts`
+    rows (`justify-content:space-between`) stranded each label at the
+    far left and its value at the far right with a void between. The
+    crossover at 900/901px used to be a 340→809 jump and is now
+    340→440. Desktop is untouched — the cap lives inside the
+    `max-width:900px` block.
+
+    Worth generalising: **`aspect-ratio` turns a width problem into a
+    height problem.** Any component sized that way needs a width cap
+    wherever it stops being width-constrained by its parent, because
+    nothing else will stop it. Squashing the header's height instead is
+    the tempting fix and it's the wrong one — it re-opens the
+    `object-fit:cover` crop bug documented on `.bookbox-head` itself,
+    where the wave line rides up through the "Plan your stay" subtitle.
 - `.roomlayout-main` has the description (`<p class="eyebrow">About the
   room</p>` + the same body paragraph used elsewhere for this room) and a
   **`Photos`**-labelled gallery: every photo for the room in a
@@ -994,21 +1014,46 @@ changed by the time this is read.
   shrink the reservation to gain more — that's what keeps the photo off
   "Worth the drive".
 
-- **The "Close by" list icons are new hand-drawn line icons** (beach
-  umbrella, paper-plane/airport, graduation cap, flag, a stylised
-  elephant), same stroke conventions as the rest of the site's inline
-  SVGs (`viewBox="0 0 24 24"`, `stroke="currentColor"`, `stroke-width`
-  ~1.6, round caps/joins, no fill) sized down inside a `.dist-icon` circle
+- **The "Close by" list icons are hand-drawn line icons** (beach
+  umbrella, airplane, graduation cap, flag, elephant), same stroke
+  conventions as the rest of the site's inline SVGs
+  (`viewBox="0 0 24 24"`, `stroke="currentColor"`, `stroke-width` ~1.6,
+  round caps/joins, no fill) sized down inside a `.dist-icon` circle
   badge that reuses the exact same treatment as `.bookbox-icon` on the
   room detail pages (`rgba(28,58,49,.08)` circle, `--ink` icon colour).
-  **The elephant icon went through two revisions** — the first attempt
-  (an ear/head/trunk/legs/eye path, closely following an elephant's
-  actual anatomy) rendered as illegible noise at the 18px size these
-  icons actually display at; cut down to just two strokes (one arc for
-  head+ear, one curl for the trunk) before it read as a recognisable
-  pictogram rather than a scribble. Worth remembering for any future icon
-  at this size — anatomical accuracy loses to legibility once a shape's
-  down under ~20px, drop detail rather than compress it.
+  **They render at 18px** — that, not the 24-unit viewBox, is the size
+  every decision here has to be judged at.
+
+  **The elephant has been through three versions and the airport two**,
+  and the arc of both is the same lesson, so don't re-litigate it:
+  - Elephant v1 followed real anatomy (ear/head/trunk/legs/eye) and was
+    illegible noise at 18px. v2 cut it to two strokes (one arc for
+    head+ear, one curl for the trunk) — legible, but the owner read it
+    as an abstract hook rather than an animal, which is the failure
+    mode on the other side of the same trade-off. **v3 (current)** is a
+    front-facing head: two ear arcs, a closed head shape, and a trunk
+    hanging from the centre drawn at `stroke-width:2.4` against the
+    outline's 1.6. Front-on wins because it's symmetric — a side view
+    needs legs and a body to read as an elephant, and neither survives
+    18px. The ears are deliberately oversized relative to the head:
+    **the ears are the whole tell**, so they get the space.
+  - Airport v1 was the generic paper-plane/"send" glyph, which reads as
+    email far more often than as flight. **v2 (current)** is a top-down
+    airplane silhouette drawn as an outline at the set's own 1.6 stroke.
+  - **Tusks and eyes were both built and rejected.** They test fine
+    large and turn to smudge at 18px — exactly what happened to
+    elephant v1. Same for the chunkier `stroke-width:1.8` plane and a
+    filled (rather than outlined) one: both legible, but heavier than
+    the four icons they sit beside, so the set stopped looking like a
+    set.
+
+  **How to judge a replacement: render it at 18px in the circle badge
+  and look at it.** All of the rejected versions above looked correct
+  as coordinates and correct at large sizes — every one of them was
+  only caught on screen at real size, next to the other four icons.
+  There's a throwaway harness pattern for this worth rebuilding:
+  a page showing each candidate at 18px, at ~58px, and dropped into a
+  real `.dist` row, all at once.
 - **The chevron next to each "Close by" row's distance, and the arrow on
   "Explore the area", are both decorative** — the `<li>`s aren't links
   (no confirmed destination URL exists for "the beachfront" or "golf
@@ -1167,6 +1212,32 @@ fallback metrics and un-wrap once Fraunces/Karla arrive) — a
 CLS-reduction job worth doing on its own merits, not a scroll-offset
 tweak. Do not "fix" it by padding `--head-h`; that would break the
 in-page case, which is currently correct.
+
+## Copy the owner has corrected — do not reinstate
+
+Facts changed on the owner's say-so, against what the old site or their
+public listings claim. An older source will still contradict these, so
+treat this list as the authority rather than "fixing" the page back.
+
+- **No braai, anywhere guest-facing** (Sept 2026). There is no shared
+  braai or entertainment area, and the site must not say there is. A
+  braai can be laid on by special request, but the owner does not want
+  it advertised, because it sets an expectation they'd then have to
+  carry. Removed from three places, and **all three matter**: the
+  Welcome paragraph in `index.html` (a `<!-- -->` note sits where it
+  was), the `"Braai facilities"` entry in the JSON-LD
+  `amenityFeature` list, and the `#f-msg` placeholder in the
+  commented-out callback form (which would come back with the form —
+  see "Callback form"). **Structured data is advertising**: it's how
+  search engines surface an amenity, so a claim removed from the prose
+  but left in the JSON-LD is still a live claim.
+- **Activities are arranged, not just suggested.** The `#around` lede
+  reads "we arrange activities for guests on request — safaris, sea
+  trips, scuba diving and other outdoor adventures." It previously
+  hedged ("happy to advise on or arrange"); the owner confirmed they
+  genuinely arrange these, so the hedge went. This is also what makes
+  `.trips-explore` ("Explore the area") honest in pointing at
+  `#callback` rather than a non-existent area-guide page.
 
 ## Worth flagging to the owner
 
