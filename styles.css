@@ -78,7 +78,14 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-img{ max-width:100%; display:block; }
+/* height:auto is the required companion to the width/height attributes now
+   on every <img> in the markup (added Sept 2026 to stop layout shift — see
+   CLAUDE.md "Image dimensions"). Without it, max-width:100% shrinks the
+   width on a narrow container while the height attribute stays at the
+   photo's full intrinsic value, stretching it. Every rule below that sets
+   an explicit height (.hero-img, .bookbox-head-img, .around-photo-img) is
+   a class selector and so still wins over this. */
+img{ max-width:100%; height:auto; display:block; }
 
 a{ color:inherit; }
 
@@ -241,11 +248,18 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; z-index:-2;
 }
-/* compact-single's hero photo (1500x2000, portrait) is cropped hugely by
+/* compact-single's hero photo (1086x1448, portrait) is cropped hugely by
    `cover` on this short, wide banner — default center-center crop landed
    on the blanket/mid-bed, cutting off the headboard/pillows above it.
    Only this one room's hero needs it, since it's specific to that one
-   photo's own composition, not a sitewide `.hero--room` default. */
+   photo's own composition, not a sitewide `.hero--room` default.
+
+   That makes this value photo-specific, so RE-CHECK IT whenever
+   compact-single's photo 1 is replaced. It survived the Sept 2026 swap
+   to a differently-framed shot by luck, not design: 42% still lands on
+   the headboard, while 30% shows mostly bare wall and 50%+ shows only
+   blanket. Render the hero at a few values and look — the number tells
+   you nothing on its own. */
 .hero-img--top{ object-position:center 42%; }
 .hero-scrim{
   position:absolute; inset:0; z-index:-1;

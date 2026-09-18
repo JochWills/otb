@@ -8,7 +8,16 @@
 <link rel="canonical" href="https://www.onthebaybandb.co.za/">
 <meta property="og:title" content="On The Bay B&amp;B — Summerstrand, Gqeberha">
 <meta property="og:description" content="Six rooms with private entrances, set around an English rose garden, one block from the beachfront.">
-<meta property="og:image" content="images/og-image.jpg">
+<!-- og:image MUST be an absolute URL — WhatsApp/Facebook fetch it from their
+     own servers, where a relative path has nothing to resolve against and the
+     preview silently falls back to no image. This was relative while every
+     rooms/*.html page was already absolute. -->
+<meta property="og:image" content="https://www.onthebaybandb.co.za/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The garden path leading to the guest cottage at On The Bay, with flowering pots and a mown lawn">
+<meta property="og:url" content="https://www.onthebaybandb.co.za/">
+<meta property="og:site_name" content="On The Bay B&amp;B">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#1C3A31">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -98,7 +107,7 @@
 
 <!-- ─────────────────────────  HERO  ───────────────────────── -->
 <section class="hero" id="top">
-  <img class="hero-img" src="images/hero-3.jpg" alt="The garden path leading to the guest cottage at On The Bay B&amp;B" fetchpriority="high">
+  <img class="hero-img" src="images/hero-3.jpg" width="1448" height="1086" alt="The garden path leading to the guest cottage at On The Bay B&amp;B" fetchpriority="high">
   <div class="hero-scrim" aria-hidden="true"></div>
 
   <div class="shell hero-inner">
@@ -160,7 +169,7 @@
     </div>
 
     <figure class="split-fig">
-      <img src="images/garden.webp" alt="The English garden at On The Bay, planted with over ninety rose bushes" loading="lazy">
+      <img src="images/garden.webp" width="1350" height="1800" alt="The English garden at On The Bay, planted with over ninety rose bushes" loading="lazy">
       <figcaption>Over ninety rose bushes, and the sound of the bay behind them.</figcaption>
     </figure>
 
@@ -184,7 +193,7 @@
 
       <a class="room" href="rooms/king-sofa.html">
         <div class="room-img" data-room-carousel data-slug="king-sofa" data-count="9" data-ext="webp" data-alt="King room with sofa bed">
-          <img src="images/rooms/king-sofa/1.webp" alt="King room with sofa bed" loading="lazy">
+          <img src="images/rooms/king-sofa/1.webp" width="2000" height="1500" alt="King room with sofa bed" loading="lazy">
           <span class="room-badge room-badge--light"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h5A1.5 1.5 0 0 1 14 4.5V21"/><path d="M3 21h14"/><circle cx="11" cy="12" r="1" fill="currentColor" stroke="none"/></svg>Private patio</span>
           <div class="room-carousel" aria-hidden="true">
             <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of King with sofa bed"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -209,7 +218,7 @@
 
       <a class="room" href="rooms/twin.html">
         <div class="room-img" data-room-carousel data-slug="twin" data-count="6" data-ext="webp" data-alt="Twin room with an extra single bed">
-          <img src="images/rooms/twin/1.webp" alt="Twin room with an extra single bed" loading="lazy">
+          <img src="images/rooms/twin/1.webp" width="1448" height="1086" alt="Twin room with an extra single bed" loading="lazy">
           <span class="room-badge room-badge--dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-3.5-3.5"/><path d="M18 16H6l3.5 3.5"/></svg>Flexible option</span>
           <div class="room-carousel" aria-hidden="true">
             <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Twin with extra single"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -234,7 +243,7 @@
 
       <a class="room" href="rooms/family-unit.html">
         <div class="room-img" data-room-carousel data-slug="family-unit" data-count="11" data-ext="webp" data-alt="Two-bedroom family unit">
-          <img src="images/rooms/family-unit/1.webp" alt="Two-bedroom family unit" loading="lazy">
+          <img src="images/rooms/family-unit/1.webp" width="2000" height="1500" alt="Two-bedroom family unit" loading="lazy">
           <span class="room-badge room-badge--light"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Great for families</span>
           <div class="room-carousel" aria-hidden="true">
             <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Two-bedroom family unit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -259,7 +268,7 @@
 
       <a class="room" href="rooms/garden-double.html">
         <div class="room-img" data-room-carousel data-slug="garden-double" data-count="4" data-ext="jpg" data-alt="Garden double room">
-          <img src="images/rooms/garden-double/1.jpg" alt="Garden double room" loading="lazy">
+          <img src="images/rooms/garden-double/1.jpg" width="1100" height="825" alt="Garden double room" loading="lazy">
           <span class="room-badge room-badge--dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C11 4 4 11 4 20c9 0 16-7 16-16z"/><path d="M8 20C8 13 13 8 20 4"/></svg>Garden views</span>
           <div class="room-carousel" aria-hidden="true">
             <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Garden double"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -284,7 +293,7 @@
 
       <a class="room" href="rooms/self-catering.html">
         <div class="room-img" data-room-carousel data-slug="self-catering" data-count="7" data-ext="webp" data-alt="Self-catering room with kitchenette">
-          <img src="images/rooms/self-catering/1.webp" alt="Self-catering room with kitchenette" loading="lazy">
+          <img src="images/rooms/self-catering/1.webp" width="2000" height="1500" alt="Self-catering room with kitchenette" loading="lazy">
           <span class="room-badge room-badge--light"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M15 6v12M5 10h6M5 14h4"/></svg>Self-catering</span>
           <div class="room-carousel" aria-hidden="true">
             <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Self-catering room"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -309,7 +318,7 @@
 
       <a class="room" href="rooms/compact-single.html">
         <div class="room-img" data-room-carousel data-slug="compact-single" data-count="4" data-ext="webp" data-alt="Compact single room">
-          <img src="images/rooms/compact-single/1.webp" alt="Compact single room" loading="lazy">
+          <img src="images/rooms/compact-single/1.webp" width="1086" height="1448" alt="Compact single room" loading="lazy">
           <span class="room-badge room-badge--dark"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20.5v-1.2a5.3 5.3 0 0 1 5.3-5.3h3.4a5.3 5.3 0 0 1 5.3 5.3v1.2"/></svg>Solo &amp; short stays</span>
           <div class="room-carousel" aria-hidden="true">
             <button type="button" class="room-carousel-btn room-carousel-prev" aria-label="Previous photo of Compact single"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -406,13 +415,13 @@
        than as a grid column inside it like the rest of the section; see
        CLAUDE.md "What's around us" section for the full reasoning. -->
   <figure class="around-photo">
-    <img class="around-photo-img" src="images/aroundus.webp" alt="Cyclists on the coast road during Ironman, with the beach and dunes below" loading="lazy">
+    <img class="around-photo-img" src="images/aroundus.webp" width="1600" height="980" alt="Cyclists on the coast road during Ironman, with the beach and dunes below" loading="lazy">
     <!-- The caption is owner-supplied lettering artwork, not live text —
          white-on-transparent, with the stagger, the tilt and the
          underline swoosh all baked into the image. The `alt` carries the
          wording, since the image IS the text. -->
     <figcaption class="around-photo-caption">
-      <img class="around-photo-caption-img" src="images/adventuretext.webp" alt="Adventure is close by" loading="lazy">
+      <img class="around-photo-caption-img" src="images/adventuretext.webp" width="1665" height="889" alt="Adventure is close by" loading="lazy">
     </figcaption>
   </figure>
 
@@ -531,20 +540,20 @@
     </header>
 
     <div class="grid-gal grid-gal-mosaic" id="gal">
-      <button class="gal-item" data-full="images/gallery-1.webp"><img src="images/gallery-1.webp" alt="The garden path, flanked by flowerbeds" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-2.webp"><img src="images/gallery-2.webp" alt="A dresser in the dining room" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-3.webp"><img src="images/gallery-3.webp" alt="A welcoming corner on the porch" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-4.webp"><img src="images/gallery-4.webp" alt="The dining room, open to the kitchen" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-5.webp"><img src="images/gallery-5.webp" alt="The garden path towards the guest cottage" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-6.webp"><img src="images/gallery-6.webp" alt="A patio outside one of the rooms" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-7.webp" hidden><img src="images/gallery-7.webp" alt="A garden cottage with its own private patio" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-8.webp" hidden><img src="images/gallery-8.webp" alt="A sunny courtyard for guests to relax in" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-9.webp" hidden><img src="images/gallery-9.webp" alt="A quiet garden walkway" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-10.webp" hidden><img src="images/gallery-10.webp" alt="The open-plan dining room and lounge" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-11.webp" hidden><img src="images/gallery-11.webp" alt="Breakfast set for two by the garden windows" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-12.webp" hidden><img src="images/gallery-12.webp" alt="The dining room set for breakfast" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-13.webp" hidden><img src="images/gallery-13.webp" alt="Breakfast places set around the table" loading="lazy"></button>
-      <button class="gal-item" data-full="images/gallery-14.webp" hidden><img src="images/gallery-14.webp" alt="Fresh roses on the breakfast table" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-1.webp"><img src="images/gallery-1.webp" width="1280" height="960" alt="The garden path, flanked by flowerbeds" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-2.webp"><img src="images/gallery-2.webp" width="1620" height="1080" alt="A dresser in the dining room" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-3.webp"><img src="images/gallery-3.webp" width="1280" height="960" alt="A welcoming corner on the porch" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-4.webp"><img src="images/gallery-4.webp" width="1620" height="1080" alt="The dining room, open to the kitchen" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-5.webp"><img src="images/gallery-5.webp" width="1280" height="960" alt="The garden path towards the guest cottage" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-6.webp"><img src="images/gallery-6.webp" width="1280" height="960" alt="A patio outside one of the rooms" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-7.webp" hidden><img src="images/gallery-7.webp" width="1620" height="1080" alt="A garden cottage with its own private patio" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-8.webp" hidden><img src="images/gallery-8.webp" width="1280" height="960" alt="A sunny courtyard for guests to relax in" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-9.webp" hidden><img src="images/gallery-9.webp" width="1620" height="1080" alt="A quiet garden walkway" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-10.webp" hidden><img src="images/gallery-10.webp" width="1620" height="1080" alt="The open-plan dining room and lounge" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-11.webp" hidden><img src="images/gallery-11.webp" width="1620" height="1080" alt="Breakfast set for two by the garden windows" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-12.webp" hidden><img src="images/gallery-12.webp" width="1620" height="1080" alt="The dining room set for breakfast" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-13.webp" hidden><img src="images/gallery-13.webp" width="1620" height="1080" alt="Breakfast places set around the table" loading="lazy"></button>
+      <button class="gal-item" data-full="images/gallery-14.webp" hidden><img src="images/gallery-14.webp" width="1620" height="1080" alt="Fresh roses on the breakfast table" loading="lazy"></button>
     </div>
 
     <div class="gal-more-row">

@@ -11,8 +11,15 @@ script.js
 favicon.svg
 robots.txt
 sitemap.xml
-images/         all photography
+images/         all photography the site actually uses — upload this
+_originals/     source photos, for rebuilding images later — DO NOT upload
 ```
+
+**`_originals/` is the one folder you don't upload.** It holds the
+full-resolution source photos (32 MB), kept only so images can be rebuilt
+later without asking for another export. It used to sit inside `images/`,
+which meant deploying the site also published every original at a guessable
+URL. See `_originals/README.md` for the per-host one-liner.
 
 ---
 
@@ -52,14 +59,29 @@ dropped in.
   image, not an edit to the HTML. Source: `images/adventuretext.png`, kept as the archival
   original.
 
-**Still placeholder — replace the file, keep the filename, nothing else changes:**
+- `images/og-image.jpg` — the preview card shown when the site is shared on WhatsApp,
+  Facebook or in a Google result. 1200 × 630, cropped from the same garden-path photo as
+  the hero, so a shared link looks like the page it opens. To change it, replace the file
+  at that exact size and keep the filename.
 
-| File | What goes here | Suggested size |
-|---|---|---|
-| `og-image.jpg` | Preview image for WhatsApp / Facebook shares | 1200 × 630 |
+**No placeholder images remain.** Every photo on the site is a real photo of the
+property. Two are lower quality than the rest and are worth re-shooting when convenient —
+see "Known photo limitations" below.
 
-Save as JPEG at roughly 80% quality and keep each file under about 400 KB. The existing
-photos on the old site can be pulled straight out of the browser (right-click → Save image).
+Save new photos as JPEG at roughly 80% quality and keep each file under about 400 KB.
+
+### Known photo limitations
+
+Neither of these blocks launch; both just look softer than everything around them.
+
+- **The hero photo is 1448 px wide** but spans the full width of the screen, so on a
+  modern laptop or phone (which pack two screen pixels into each CSS pixel) it's being
+  stretched about 2×. The original we were given is the same size, so this can only be
+  improved by sending a larger export of that photo straight from the phone or cloud
+  backup. Everything else on the site is 2000 px for this reason.
+- **The Garden double's four photos** are the old, smaller set — that room's photo folder
+  came through empty on both reshoots, so it never got updated with the other five rooms.
+  They're noticeably softer than the others when opened full-screen.
 
 To add more photos to an existing room, drop them into that room's `images/rooms/<room>/`
 folder as the next number, **then update up to three places**: the room's own gallery grid

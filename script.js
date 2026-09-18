@@ -181,6 +181,57 @@
     });
   });
 
+  /* re-apply a fragment scroll once webfonts have settled.
+
+     Landing on index.html#callback cold — which is what the footer links
+     and every room page's "Get in touch" do — used to leave the section
+     ~86px above where it belongs. The cause is NOT scroll maths and NOT
+     lazy images (every <img> now carries width/height, and fixing that
+     alone changed nothing here): it's the webfont swap. The stylesheet
+     loads with display=swap, so the first paint uses Georgia/Helvetica
+     fallback metrics, which make the hero 1000px tall against Fraunces
+     and Karla's 882px. The browser computes the fragment scroll against
+     the taller layout and never recomputes once the fonts arrive, so
+     everything below the hero has quietly moved up 118px underneath it.
+
+     Verified by blocking fonts.gstatic.com and measuring both states.
+
+     Deliberately NOT fixed by padding --head-h: in-page nav clicks are
+     already exact, and inflating the offset would break those to paper
+     over this. */
+  var hash = window.location.hash;
+  if (hash.length > 1) {
+    var target = null;
+    try { target = document.querySelector(hash); } catch (e) { target = null; }
+    if (target && document.fonts && document.fonts.ready) {
+      /* Only real input counts as "the visitor took over" — a scroll
+         listener would also catch the browser's own fragment scroll and
+         the correction below, and then never fire. Yanking the page out
+         from under someone who has started reading is worse than landing
+         slightly off, so any of these cancels the correction. */
+      var owned = false;
+      var claim = function () { owned = true; };
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+        window.addEventListener(ev, claim, { passive: true, once: true });
+      });
+
+      document.fonts.ready.then(function () {
+        requestAnimationFrame(function () {
+          if (owned) return;
+          /* html has scroll-behavior:smooth, which would animate this and
+             read as a glitch — a load-time correction should be invisible.
+             Suspend it rather than relying on behavior:'instant', which is
+             newer than the rest of what this file assumes. */
+          var root = document.documentElement;
+          var prev = root.style.scrollBehavior;
+          root.style.scrollBehavior = 'auto';
+          target.scrollIntoView();          /* honours scroll-padding-top */
+          root.style.scrollBehavior = prev;
+        });
+      });
+    }
+  }
+
   /* footer year */
   var yr = document.getElementById('yr');
   if (yr) yr.textContent = new Date().getFullYear();

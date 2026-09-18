@@ -16,7 +16,22 @@ filename printed faintly in the corner — that's the tell). Progress replacing
 them:
 
 **Done (real photos):**
-- `images/hero-2.jpg` — the current hero banner (Sept 2026), a garden-path
+- **`images/hero-3.jpg` is the hero the page actually loads** (1448×1086,
+  derived from the owner-supplied `images/heronewtest.png` at the same
+  size). This entry used to name `hero-2.jpg` and was stale — **check
+  `index.html`'s `.hero-img` `src` rather than trusting this list**, since
+  the hero has now been swapped three times and the superseded files are
+  all still on disk (`hero.jpg`, `hero.jpeg`, `hero-2.jpg`,
+  `hero (1).jpeg`, `hero-original.jpeg`), which makes guessing from
+  filenames unreliable.
+
+  **Known quality limit:** at 1448px wide it is the site's LCP image and
+  it spans `100vw`, so on a 1440px screen at 2x DPR it is upscaled about
+  2x and looks soft. Its own source (`heronewtest.png`) is the same size,
+  so this can't be fixed by re-exporting — it needs a larger original
+  from the owner. Everything else on the site targets 2000px for exactly
+  this reason (see "Photo processing conventions").
+- `images/hero-2.jpg` — a **superseded** hero (Sept 2026), a garden-path
   shot leading to the guest cottage, downsampled from
   `images/IMG_3459.HEIC` (8064×6048, kept in place as the archival source —
   not referenced by the site). Built the same way as the original hero: PNG
@@ -138,9 +153,20 @@ Two things worth knowing if this needs touching again:
   future `hidden`-toggled `.btn` elsewhere on the site — the same silent
   failure will happen again without a matching override.
 
-**Still placeholder, needs a real photo:** `og-image.jpg`. Same
-swap-in-place approach as the README describes: replace the file, keep the
-filename, no HTML/CSS changes needed.
+**No placeholders remain.** `og-image.jpg` was the last one (a green
+gradient with its own filename printed on it) and was replaced Sept 2026:
+1200×630, cropped from `_originals/heronewtest.png` — the hero's own source
+— at `top=210` of a full-width 1448×760 slice, so a shared link previews as
+the page it opens. Cropped from the PNG source rather than from
+`hero-3.jpg` to avoid a second lossy pass.
+
+**Its `og:image` must stay an absolute URL.** It was
+`content="images/og-image.jpg"` while all six room pages were already
+absolute, which meant the *homepage* — the most-shared page — previewed
+with no image at all: Facebook and WhatsApp fetch that URL from their own
+servers, where a relative path has nothing to resolve against. There is no
+warning and no error; the card just renders bare, so this is only ever
+caught by reading the tag or by testing a real share.
 
 `beach.jpg` (a placeholder gradient) and the `.wide-fig` figure that displayed
 it — a full-width band under the "What's around us" distances/trips grid —
@@ -452,10 +478,35 @@ forward.
   for `garden-double`, see above) — one folder per room type, numbered in
   display order. Current counts: `king-sofa` 9, `twin` 6, `family-unit` 11,
   `garden-double` 4, `self-catering` 7, `compact-single` 4.
+
+  **`twin/1.webp` is the one photo below the 2000px convention** — it was
+  replaced Sept 2026 from an owner-supplied `1.png` that was only
+  1448×1086, so it went from 2000×1500 down to 1448×1086 (WebP q86, no
+  resample — the source was already under 2000). That file is doing three
+  jobs, and the demanding one is `rooms/twin.html`'s **full-width hero
+  banner**, where 1448px is upscaled on any wide or 2x screen. Same
+  limitation as `hero-3.jpg`, from the same 1448px export ceiling, and
+  fixable only with a larger original. **Don't "fix" it by upscaling** —
+  that adds bytes and no detail. The previous 2000px version is in git if
+  the composition ever matters less than the sharpness.
+
+  Encoded at q86 rather than the usual q82 precisely because it's
+  resolution-starved: at 1:1 the two were indistinguishable, so the 39KB
+  buys headroom rather than visible quality.
 - Slugs → room type: `king-sofa`, `twin`, `family-unit`, `garden-double`,
   `self-catering`, `compact-single` — matched to the six listed room types
   by asking the property owner to identify each `Room N` folder, not
   guessed from the photos.
+
+  **The owner refers to rooms by `Room N`, not by slug**, so a request
+  like "replace Room 1's photo" needs that mapping. Only one leg of it is
+  recorded so far: **`Room 1` = `twin`** (confirmed Sept 2026 by matching
+  a dropped `Room 1/1.png` against the live sets — it was visibly the
+  same room as `images/rooms/twin/1.webp`). The other five were never
+  written down. **Confirm visually against `_originals/Room N/` before
+  overwriting anything**, and add the pair here once you know it —
+  silently writing to the wrong room's folder is the failure mode, and
+  it looks like success.
 - Room pages live at `rooms/<slug>.html` (one level down from the site
   root), so every internal reference on them is `../`-prefixed
   (`../styles.css`, `../images/...`, `../index.html`, `../script.js`) —
@@ -1197,21 +1248,47 @@ every target is a `.band` with its own `var(--band)` of top padding, so
 landing the section edge flush under the header still leaves its
 content clear.
 
-**Known, unfixed: anchors arriving from ANOTHER page land ~86px off.**
-In-page nav clicks are exact (verified flush at 390/900/1100/1440), but
-loading `index.html#callback` cold — which is what the footer links and
-the room pages' "Get in touch" do — overshoots. The cause is layout
-shift, not scroll maths: the browser computes the fragment scroll while
-the page is still settling, the hero box then shrinks ~118px (and
-`#rooms` grows ~32px) as webfonts and images finish loading, and the
-scroll position is never recomputed. **All 25 images on the homepage
-lack `width`/`height` attributes**, so nothing reserves their boxes.
-The fix is to give images intrinsic dimensions (and to look at font
-loading for the hero's `.ribbon`, which can wrap to two lines on
-fallback metrics and un-wrap once Fraunces/Karla arrive) — a
-CLS-reduction job worth doing on its own merits, not a scroll-offset
-tweak. Do not "fix" it by padding `--head-h`; that would break the
-in-page case, which is currently correct.
+**Anchors arriving from another page: FIXED (Sept 2026), and the cause
+was not what this file previously said it was.**
+
+Loading `index.html#callback` cold — what the footer links and every
+room page's "Get in touch" do — used to land ~86px off, while in-page
+nav clicks were exact. This file blamed lazy images and prescribed
+giving them `width`/`height`. **That was wrong.** Every image now has
+intrinsic dimensions and, measured immediately afterwards, the drift was
+still exactly 86px.
+
+The real cause is the **webfont swap**. The Google Fonts stylesheet loads
+with `display=swap`, so first paint uses Georgia/Helvetica fallback
+metrics, under which the hero measures **1000px tall against Fraunces and
+Karla's 882px**. The browser computes the fragment scroll against the
+taller layout and never recomputes, so everything below the hero slides
+up 118px underneath the scroll position. Confirmed by blocking
+`fonts.gstatic.com` at the network layer and measuring both states —
+worth reusing, since it separates font-driven shift from image-driven
+shift in one step, which guessing from a screenshot cannot.
+
+The fix is in `script.js`: on a load that carries a fragment, re-apply
+`scrollIntoView()` once `document.fonts.ready` resolves. Two details in
+there are load-bearing:
+- **It cancels on real user input** (`wheel`/`touchstart`/`keydown`/
+  `pointerdown`), not on a scroll event. A scroll listener would also
+  catch the browser's own fragment scroll and the correction itself, so
+  it would cancel every time. Scrolling the page out from under someone
+  who has started reading is worse than landing slightly off.
+- **It suspends `scroll-behavior:smooth`** around the call. Left on, the
+  correction animates several hundred px and reads as a glitch.
+
+Verified flush (0px) for `#callback`/`#find`/`#rooms`/`#around`/
+`#gallery` cold at 390/900/1440, **and** in-page clicks still flush at
+390/1440 — check both, since this bug is exactly the kind that gets
+"fixed" by breaking the other path. Do not pad `--head-h`.
+
+**Still outstanding (cosmetic, not a bug):** that 118px hero shift is
+real CLS whatever the anchor does. Properly fixing it means
+`size-adjust`/`ascent-override` on a fallback `@font-face` so the
+fallback occupies the same space, or `display=optional` at the cost of
+first-time visitors seeing Georgia. Neither was done.
 
 ## Copy the owner has corrected — do not reinstate
 
@@ -1238,6 +1315,49 @@ treat this list as the authority rather than "fixing" the page back.
   genuinely arrange these, so the hedge went. This is also what makes
   `.trips-explore` ("Explore the area") honest in pointing at
   `#callback` rather than a non-existent area-guide page.
+
+## Image dimensions, and `_originals/`
+
+**Every `<img>` on every page carries `width` and `height` attributes** set
+to the file's real intrinsic pixel size (Sept 2026). They are not styling —
+CSS still decides the rendered size in every case — they exist so the
+browser can reserve the right box before the bytes arrive. Previously none
+of the 83 images had them, which caused two visible problems:
+
+- the page visibly reflowed as photos loaded;
+- **the known cross-page anchor bug**: `index.html#callback` arriving cold
+  (from a footer link or a room page) landed ~86px off, because the browser
+  computed the fragment scroll while the hero was still collapsing. One fix,
+  both symptoms. See "Fixed header and anchor links" — the warning there
+  about *not* padding `--head-h` still stands; this was always the right fix.
+
+**Two rules for keeping this true:**
+1. **`img{ height:auto }` in styles.css is load-bearing, not tidiness.**
+   With width/height attributes present, `max-width:100%` shrinks the width
+   on a narrow container while the height attribute stays at the photo's
+   full value — the image stretches. `height:auto` is what restores the
+   ratio. Every rule that sets a real height (`.hero-img`,
+   `.bookbox-head-img`, `.around-photo-img`) is a class selector and still
+   wins over it.
+2. **A new or replaced photo needs its attributes updated with it.** A
+   stale pair is worse than none — it reserves a box of the wrong shape.
+   `<img id="lbImg">` is deliberately the one exception: it has no `src`
+   until the lightbox opens, and `.lb img` sizes it `auto`/`auto`.
+
+Adding these was verified layout-neutral by dumping every element's
+bounding box at 7 page/width combinations before and after: identical
+except `position:fixed` elements, whose rects move with scroll position.
+Worth reusing that technique rather than eyeballing screenshots — the
+gallery's lazy images make pixel diffs noisy enough to hide a real change.
+
+**`_originals/` (repo root) holds every source photo and must never be
+uploaded.** These files used to sit in `images/`, where deploying the site
+also published 32 MB of full-resolution originals at guessable URLs
+(`/images/hero-original.jpeg` and so on). The leading underscore is
+deliberate: GitHub Pages skips `_`-prefixed folders automatically. Other
+hosts need an explicit ignore — see `_originals/README.md`, which also maps
+each source file to the image it rebuilds. **Nothing in the site references
+it**, so a broken-link check is what proves a move like this was safe.
 
 ## Worth flagging to the owner
 
