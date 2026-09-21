@@ -34,11 +34,11 @@ RewriteRule ^ /%1 [R=301,L]
 #    /rooms/ still falls through to its index.html.
 #
 #    The pattern refuses anything ending in "/" and that is load-bearing.
-#    For /thanks/ Apache resolves the file as "thanks" with a path-info of
-#    "/", so the .html check below passes, the URL is rewritten to
-#    "thanks/.html", that resolves the same way, and it repeats until Apache
-#    gives up with a 500. Excluding the trailing slash turns that into a
-#    plain 404.
+#    For /rooms/twin/ Apache resolves the file as "rooms/twin" with a
+#    path-info of "/", so the .html check below passes, the URL is rewritten
+#    to "rooms/twin/.html", that resolves the same way, and it repeats until
+#    Apache gives up with a 500. Excluding the trailing slash turns that
+#    into a plain 404.
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.*[^/])$ $1.html [L]

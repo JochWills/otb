@@ -139,7 +139,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 .btn-line{ background:transparent; color:var(--ink); border-color:var(--line); }
 .btn-line:hover{ border-color:var(--ink); background:rgba(28,58,49,.05); }
 .btn-sm{ padding:.72em 1.1em; }
-.btn-block{ width:100%; padding:1.05em; font-size:var(--t-0); }
 
 /* ============================================================
    HEADER
@@ -249,19 +248,21 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; z-index:-2;
 }
-/* compact-single's hero photo (1086x1448, portrait) is cropped hugely by
-   `cover` on this short, wide banner — default center-center crop landed
-   on the blanket/mid-bed, cutting off the headboard/pillows above it.
-   Only this one room's hero needs it, since it's specific to that one
-   photo's own composition, not a sitewide `.hero--room` default.
+/* compact-single's banner is its own landscape crop, banner.webp (2:1,
+   2880x1440), NOT its photo #1 — the owner's photo is portrait, and `cover`
+   on this short wide box threw away ~70% of it and upscaled a 1086px file.
+   The banner is cut from the 48MP original instead (see CLAUDE.md).
 
-   That makes this value photo-specific, so RE-CHECK IT whenever
-   compact-single's photo 1 is replaced. It survived the Sept 2026 swap
-   to a differently-framed shot by luck, not design: 42% still lands on
-   the headboard, while 30% shows mostly bare wall and 50%+ shows only
-   blanket. Render the hero at a few values and look — the number tells
-   you nothing on its own. */
-.hero-img--top{ object-position:center 42%; }
+   Only this one room needs the class. On a screen wider than 2:1 the whole
+   width shows and only the vertical position matters, which the crop
+   itself already sets. On anything narrower (tablets, phones) `cover`
+   trims the SIDES, and the bed sits left of this photo's centre — centred,
+   a phone slices the headboard in half and leaves the cushion on the
+   edge. 30% keeps the cushion, lamp and nightstand in frame there.
+
+   Photo-specific, so RE-CHECK it if banner.webp is ever re-cropped: render
+   the hero at ~390 and ~768 px wide and look. */
+.hero-img--left{ object-position:30% center; }
 .hero-scrim{
   position:absolute; inset:0; z-index:-1;
   background:
@@ -428,15 +429,19 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 
 /* The mockup breaks the heading over two lines ("Welcome to / On The Bay"),
    which is most of what gives the wave flourish below it the right
-   proportion. Unconstrained it fits on one line at every width the site
-   reaches, so the cap is what creates the break.
+   proportion. The break is made by the markup — one block <span> per line,
+   nowrap — rather than by capping the width.
 
-   8.5ch is measured, not eyeballed: "Welcome to" is 7.41ch and "Welcome to
-   On" is 9.69ch, and those two numbers are the SAME at every viewport
-   (both the text and the ch unit scale with the h-sec clamp), so one value
-   holds from 360px to 1920px with ~15% margin either side. 13ch was the
-   first guess and it broke after "On" instead. If this heading's wording
-   ever changes, re-measure — the window moves with the words. */
+   It used to be `max-width:8.5ch`, a measured window between "Welcome to"
+   (7.41ch) and "Welcome to On" (9.69ch). That only holds while the font
+   is the one it was measured in: on a real phone it broke as "Welcome /
+   to On The / Bay", because ch is the width of a "0" and the ratio of "0"
+   to letters shifts with the font actually used (fallback while Fraunces
+   loads, different optical-size handling, Safari). A width window that
+   narrow is a bet on font metrics; two explicit lines are not. Each line
+   is ~175px at the smallest size against a ~320px column, so nowrap has
+   ~2x headroom before anything could overflow. Keep the wording in the
+   spans in step with what this comment says if it is ever changed. */
 .split-text .h-sec{
   /* Scaled up from the sitewide .h-sec clamp (1.9/4.2vw/3rem) so the
      heading's lines come out the same width as the .welcome-sub line
@@ -449,18 +454,11 @@ p{ margin:0 0 1.05em; max-width:66ch; }
      the subtitle is still 252px. Matching there too would mean either a
      ~57px heading on a 350px column or a subtitle too small to read.
 
-     max-width is in ch, which scales with this font-size — so the
-     "Welcome to / On The Bay" break survives this change with no
-     re-measuring. See the note below for where 8.5 comes from. */
+     The two-line break comes from the markup, not from a width — see
+     the note above. */
   font-size:clamp(2.15rem, 4.95vw, 3.55rem);
-  max-width:8.5ch;
 }
-
-/* The mockup has the lede only fractionally larger than the body copy, not
-   the 23% jump --t-1 (1.3125rem) gives over --t-0. Same deliberate
-   off-the-scale exception as .around-top .lede — if the type scale is ever
-   revised, these two are exceptions, not oversights. */
-.split-text .lede{ font-size:1.15rem; }
+.split-text .h-sec span{ display:block; white-space:nowrap; }
 
 /* Four feature callouts, replacing the <dl class="facts"> that was here.
    minmax(0,1fr) rather than a bare 1fr for the reason documented on
@@ -1176,30 +1174,29 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    the section still opens in the same rhythm as every other one —
    they're deliberately not symmetrical. */
 .cb-band{ padding-bottom:clamp(40px,5vw,70px); }
-.cb{ display:grid; grid-template-columns:.92fr 1.08fr; gap:clamp(32px,6vw,84px); align-items:start; }
-/* .cb-form is commented out in index.html while the callback form is
-   hidden at the owner's request (Sep 2026) — this collapses the section
-   to a single column so .cb-intro doesn't sit stranded in the left half
-   of the two-column grid. Remove this rule (and the "cb--solo" class in
-   the HTML) when the form comes back — see CLAUDE.md "Callback form". */
-.cb--solo{ grid-template-columns:1fr; }
+.cb{ display:grid; grid-template-columns:1fr; align-items:start; }
 /* Left-aligned and full-width, NOT the centred 800px block this was —
    the owner asked for it on the left, and the card/facts layout below
    needs the room. The lede keeps its own narrower measure (below) so
-   only the two columns use the full width. */
-.cb--solo .cb-intro{ max-width:none; margin:0; }
-.cb--solo .cb-intro > .lede{ max-width:52ch; }
+   only the two columns use the full width.
+
+   This section used to be a two-column grid (.cb-intro | .cb-form) and
+   carried a `cb--solo` modifier while the form was hidden. The form was
+   scrapped for good (Sept 2026), so the modifier is folded into .cb and
+   there is no second column to reserve. */
+.cb .cb-intro{ max-width:none; margin:0; }
+.cb .cb-intro > .lede{ max-width:52ch; }
 
 /* Two equal columns with a hairline between them. The divider is a
    border on the second column rather than a separate element, so it
    stretches to whichever column is taller on its own. */
-.cb--solo .cb-cols{
+.cb .cb-cols{
   display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:clamp(32px,5vw,72px); align-items:stretch;
   margin-top:clamp(32px,4vw,54px);
 }
-.cb--solo .cb-col--facts{ border-left:1px solid var(--line); padding-left:clamp(32px,5vw,72px); }
-.cb--solo .cb-cols .cb-gk{ margin-top:0; }
+.cb .cb-col--facts{ border-left:1px solid var(--line); padding-left:clamp(32px,5vw,72px); }
+.cb .cb-cols .cb-gk{ margin-top:0; }
 
 /* ---- contact cards ---- */
 .cb-direct{ list-style:none; margin:1.4em 0 0; padding:0; display:grid; gap:12px; border:0; }
@@ -1274,28 +1271,13 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    a left border on a full-width block would draw a stray vertical line
    down the page. It becomes the gap above the second block instead. */
 @media (max-width:760px){
-  .cb--solo .cb-cols{ grid-template-columns:minmax(0,1fr); gap:0; }
-  .cb--solo .cb-col--facts{ border-left:0; padding-left:0; }
-  .cb--solo .cb-cols .cb-gk{ margin-top:2.4em; }
+  .cb .cb-cols{ grid-template-columns:minmax(0,1fr); gap:0; }
+  .cb .cb-col--facts{ border-left:0; padding-left:0; }
+  .cb .cb-cols .cb-gk{ margin-top:2.4em; }
 }
 
 .cb-gk{ margin-top:2.2em; }
 
-.cb-form{ background:var(--paper); padding:clamp(22px,3vw,38px); border-radius:var(--r); border:1px solid rgba(168,59,84,.18); }
-.f-row{ display:grid; grid-template-columns:1fr 1fr; gap:0 18px; }
-.f-row:has(.field-narrow){ grid-template-columns:1fr 1fr .62fr; }
-.field{ margin:0 0 16px; display:flex; flex-direction:column; gap:6px; max-width:none; }
-.field label{ font-size:var(--t--1); font-weight:600; color:var(--ink-soft); }
-.opt{ font-weight:400; color:var(--ink-mute); }
-.field input, .field select, .field textarea{
-  font:400 var(--t-0)/1.5 var(--sans); color:var(--ink);
-  background:#fff; border:1px solid var(--line); border-radius:var(--r);
-  padding:.72em .85em; width:100%;
-}
-.field textarea{ resize:vertical; }
-.field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--rose); outline-offset:1px; }
-.honey{ position:absolute; left:-9999px; opacity:0; height:0; width:0; }
-.cb-form .fine{ margin:.9em 0 0; text-align:center; }
 
 /* ---------- find us ---------- */
 .find-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(28px,4vw,56px); }
@@ -1346,16 +1328,21 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 }
 
 @media (max-width:900px){
-  .split, .around-grid, .cb{ grid-template-columns:1fr; }
+  .split, .around-grid{ grid-template-columns:1fr; }
   /* .around-photo's desktop layout (absolute, spanning the right half of
      the section) has no room to work with at this width — back to a
      normal-flow, full-width block above the text. .sec-head's min-height
      exists only to reserve space under the absolute photo, and its
      max-width only to keep the lede clear of it, so both drop away once
-     the photo is back in flow ahead of it. The section's halved
-     padding-top goes back to the standard --band too: the photo is no
-     longer pinned above it, so there's nothing to compensate for. */
-  .around{ padding-top:var(--band); }
+     the photo is back in flow ahead of it.
+
+     padding-top is 0 so the photo still starts flush with the band's
+     colour boundary, exactly as it does on desktop. It was --band here
+     (~64px+), which left a strip of empty paper colour between the
+     previous section and the top of the photo — it read as a gap, not a
+     margin. The photo's own margin-bottom below supplies the space
+     before the text. */
+  .around{ padding-top:0; }
   .around-top{ margin-bottom:28px; }
   .around-top .sec-head{ min-height:0; max-width:none; }
   /* position:relative, not static — .around-photo-caption is positioned
@@ -1365,7 +1352,16 @@ p{ margin:0 0 1.05em; max-width:66ch; }
      above the photo the first time this was tried. */
   .around-photo{ position:relative; top:auto; left:auto; right:auto; width:100%; height:min(55vw,260px); margin-bottom:28px; }
   .split-fig{ position:static; }
-  .split-fig img{ aspect-ratio:16/10; }
+  /* 16/10 is a landscape window onto a 3/4 portrait photo, so only ~47% of
+     its height shows and this value picks WHERE on the photo that window
+     sits: 0% = the very top, 100% = the very bottom. The owner has steered
+     it by eye (Sept 2026) — 50% centred, then 60% and 72% (deckchair, pot
+     and paving, little of the creeper), and finally "much higher": 8%,
+     which is mostly the full creeper in flower with sky above it. Note
+     "lower"/"higher" meant the WINDOW's position on the photo, not the
+     picture moving in its frame; that was read backwards twice at first.
+     Only vertical position matters here; the width always fits. */
+  .split-fig img{ aspect-ratio:16/10; object-position:center 8%; }
   .find-grid{ grid-template-columns:1fr; }
   .ribbon{ grid-template-columns:repeat(2,1fr); }
   .ribbon li{ border-top:1px solid var(--line-light); padding-inline:var(--gut); }
@@ -1447,7 +1443,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   .grid-gal-mosaic .gal-item:nth-child(n){ grid-column:span 1; }
   .grid-gal-mosaic .gal-item:nth-child(n) img{ aspect-ratio:4/3; }
   .grid-gal-feature .gal-item:first-child{ grid-column:span 2; grid-row:span 1; }
-  .f-row, .f-row:has(.field-narrow){ grid-template-columns:1fr; }
 }
 
 @media (max-width:460px){
@@ -1459,6 +1454,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 }
 
 @media print{
-  .site-head, .wa-float, .cb-form, .find-map, .burger{ display:none; }
+  .site-head, .wa-float, .find-map, .burger{ display:none; }
   body{ background:#fff; color:#000; }
 }

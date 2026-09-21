@@ -4,7 +4,6 @@ Static site. No build step, no framework, no database. Upload the folder and it 
 
 ```
 index.html      the main site (single page, anchor nav)
-thanks.html     shown after a callback request is sent
 rooms/          rooms listing page (index.html), plus one page per room
 styles.css
 script.js
@@ -96,27 +95,7 @@ needs editing by hand.
 
 ---
 
-## 2. Point the callback form somewhere real
-
-The form currently posts to **FormSubmit**, which is free and needs no account:
-
-```html
-<form action="https://formsubmit.co/info@onthebaybandb.co.za" method="POST">
-```
-
-Submit the form once after the site goes live. FormSubmit emails
-`info@onthebaybandb.co.za` a one-time activation link — click it, and every submission
-from then on lands in that inbox. Nothing else to configure.
-
-If you'd rather use Formspree, Netlify Forms or a PHP handler, change the `action`
-attribute and delete the four hidden `_` fields.
-
-The `_next` field sends people to `thanks.html` after submitting. Update that URL if the
-site is hosted on a different domain.
-
----
-
-## 3. Things to confirm with the owner before going live
+## 2. Things to confirm with the owner before going live
 
 I built this from the copy and details on the current site plus their public listings.
 Three items are worth a quick check:
@@ -141,7 +120,7 @@ The COVID-19 section from the old site has been removed entirely, as asked.
 
 ---
 
-## 4. Hosting
+## 3. Hosting
 
 Drop the folder into any static host — Netlify, Cloudflare Pages, Vercel, GitHub Pages, or
 straight into `public_html` on cPanel shared hosting. There is no server-side code.
@@ -179,13 +158,13 @@ Two external things load over the network:
   site's flatter, sharp-cornered look — that contrast is intentional.
 - **Structure** — one main page, plus a page per room. Hero → the house → six rooms →
   what's around → gallery → get in touch → find us. Each room card links
-  to its own page (`rooms/<room>.html`) with a full gallery and more detail. The callback
-  request is reachable from the fixed header, every room card and room page, and its own
-  section. The hero's own two buttons point elsewhere — "See rooms" scrolls to the room
+  to its own page (`rooms/<room>.html`) with a full gallery and more detail. Contact details
+  (phone, WhatsApp, email) are reachable from the fixed header's "Get in touch" link, the
+  footer, and their own section — there is no enquiry form. The hero's own two buttons point elsewhere — "See rooms" scrolls to the room
   grid, "Check availability" opens the Nightsbridge booking site in a new tab.
 - **Motion** — one entrance sequence on the hero, and nothing else that isn't a response to
   a click or hover. `prefers-reduced-motion` is respected throughout.
-- **Accessibility** — skip link, visible focus rings, labelled form fields, alt text on
+- **Accessibility** — skip link, visible focus rings, alt text on
   every image, keyboard-operable gallery and menu.
 - The WhatsApp button floating bottom-right goes to **083 797 0894**. For a small guest
   house that's usually the highest-converting contact route, which is why it's always on

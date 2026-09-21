@@ -42,31 +42,6 @@
     });
   }
 
-  /* arriving from a room page's (or the rooms listing page's) "Enquire
-     about this room" link — /?room=Room+Name#callback — preselects
-     that room in the callback form's dropdown */
-  var select = document.getElementById('f-room');
-  var selectRoomOption = function (wanted) {
-    if (!select || !wanted) return;
-    Array.prototype.forEach.call(select.options, function (o) {
-      if (o.text.trim() === wanted) select.value = o.value || o.text;
-    });
-  };
-  selectRoomOption(new URLSearchParams(window.location.search).get('room'));
-
-  /* leaving date can never precede arriving date */
-  var inp = document.getElementById('f-in');
-  var out = document.getElementById('f-out');
-  if (inp && out) {
-    var today = new Date().toISOString().slice(0, 10);
-    inp.min = today;
-    out.min = today;
-    inp.addEventListener('change', function () {
-      out.min = inp.value || today;
-      if (out.value && out.value < out.min) out.value = out.min;
-    });
-  }
-
   /* lightbox — powers any .gal-item grid on the page (the homepage gallery,
      and each room page's own photo grid), with prev/next through that grid */
   var lb = document.getElementById('lb');

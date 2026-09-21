@@ -32,6 +32,8 @@ Upload everything **except this folder**.
 | `asideimage.png` | `images/bookbox-wave.webp` |
 | `LookAround/` | `images/gallery-1..14.webp` |
 | `Room 1/` … `Room6/` | the original (pre-reshoot) room photo sets |
+| `Room6/compact-single-1-original.HEIC` | `images/rooms/compact-single/banner.webp`, the Compact room's hero: the 48MP original, rotated 90° clockwise then cropped 2:1 from 26% down |
+| `Room6/compact-single-1-new.png` | `images/rooms/compact-single/1.webp`, that room's cards and first gallery tile |
 | `room-*.jpg` | retired placeholder room images |
 
 See CLAUDE.md § "Photo processing conventions" for the exact recipe each

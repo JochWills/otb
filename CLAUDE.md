@@ -6,7 +6,7 @@ hand-maintained directly (including the six files under `rooms/` — see
 "Room detail pages" below; they were generated once by a scratch script, but
 that script isn't part of the repo and nothing regenerates these files
 automatically). See README.md for the human-facing overview (hosting, the
-callback form, design notes). This file is context a fresh session won't get
+design notes). This file is context a fresh session won't get
 from the code alone.
 
 ## Image status — what's real, what's still placeholder
@@ -429,8 +429,8 @@ site the card design was already ported from
     room cards) — solid **"Check dates & book"** (calendar + arrow icons)
     straight to Nightsbridge (`https://book.nightsbridge.com/26870`, new
     tab, same link used sitewide — Nightsbridge doesn't take a per-room
-    query param), and outline **"Enquire about this room"** (photo +
-    arrow icons) to the callback form (see below). Then a small
+    query param). There is **no "Enquire about this room" button** and no
+    form for one to go to (see "Contact section"). Then a small
     horizontal-rule-flanked WhatsApp icon (`.bookbox-fine-rule`, reusing
     the same speech-bubble path as the floating `.wa-float` button) above
     a **"Prefer WhatsApp?"** line — there's no separate WhatsApp *button*
@@ -526,9 +526,12 @@ forward.
   `twin` 2000×1500 → 1448×1086, `compact-single` 1500×2000 → 1086×1448.
   Encoded WebP q86 with **no resample** (already under 2000).
 
-  Each is doing three jobs, and the demanding one is its room page's
-  **full-width hero banner**, where 1448px is upscaled on any wide or 2x
-  screen. Same 1448px export ceiling as `hero-3.jpg` — it appears to be
+  **`compact-single` no longer uses `1.webp` for its hero** (see "Compact
+  room's banner is an exception" just below), so for that room the
+  1086px limit only affects its two cards and the first gallery tile,
+  which render small. `twin/1.webp` still drives the twin's hero, which is
+  the demanding job: a **full-width hero banner**, where 1448px is
+  upscaled on any wide or 2x screen. Same 1448px export ceiling as `hero-3.jpg` — it appears to be
   the owner's export setting, not the photos, so ask for a larger export
   rather than assuming it's the best available. **Don't "fix" it by
   upscaling**: that adds bytes and no detail. Both previous versions are
@@ -543,12 +546,59 @@ forward.
   four times with `width`/`height` attributes that must be updated with
   it (homepage card, rooms listing card, room page hero, room page
   gallery) — stale attributes reserve the wrong box and reintroduce the
-  layout shift those attributes exist to prevent. For `compact-single`
-  there is a fifth thing: `.hero-img--top`'s `object-position`, which is
-  tuned to that photo's composition (see styles.css).
+  layout shift those attributes exist to prevent. (`compact-single`'s hero
+  is the exception and is not one of these references — it uses
+  `banner.webp`, below — so replacing its photo #1 touches only four.)
+
+- **Compact room's banner is an exception (Sept 2026).** Its photo is
+  **portrait**, and the hero is a short, wide box (`min-height:min(58svh,
+  500px)`, so ~2.9:1 at 1440px). `object-fit:cover` on a portrait image
+  there discards roughly 70% of the frame and upscales a 1086px file to
+  the full width, which is what looked soft. So this one room's hero uses
+  its **own landscape crop, `images/rooms/compact-single/banner.webp`**,
+  and every other place (both room cards, the first gallery tile) still
+  uses the portrait `1.webp`.
+  - **Built from the 48MP original**, not from `1.webp`: the owner's
+    `1.HEIC` (8064×6048, iPhone, no usable orientation tag, so it came
+    through sideways and needed `rotate(-90)` before anything else),
+    archived as `_originals/Room6/compact-single-1-original.HEIC`. Rotated
+    to 6048×8064, cropped to a **2:1 band** starting 26% down (6048×3024),
+    then resized **once** to **2880×1440** (Lanczos, from a lossless PNG,
+    so no compounding passes) and saved WebP **q88**, 369KB. 2880 is
+    exactly what a 1440px screen needs at 2x. Mean pixel error against the
+    lossless resize is 1.2/255 in the busiest patch; at 1:1 the lattice,
+    curtain print and lamp are indistinguishable.
+  - **q88, not the usual q82**, because "keep the original quality" was
+    the brief and it is one file. Don't generalise it.
+  - **The 26% start was chosen by rendering, not by eye on the source.**
+    Five positions (22/24/26/30/34%) were put in the real hero: 30% and
+    34% lose the headboard, 22% leaves a half-cut wall plate behind the
+    logo, and 26% keeps the whole headboard, both lamps and the patio door.
+  - **`.hero-img--left{ object-position:30% center }` is only for narrow
+    screens.** Wider than 2:1 the crop's whole width shows and only the
+    vertical position matters (already set by the crop). Narrower — tablets
+    and phones — `cover` trims the *sides*, and the bed sits left of this
+    photo's centre: centred, a phone slices the headboard in half. 30% keeps
+    the cushion, lamp and nightstand in frame. This class replaced
+    `.hero-img--top{ object-position:center 42% }`, which was tuned to the
+    old portrait crop and now has no users (deleted).
+  - **If the banner is ever re-cropped, re-check at ~390 and ~768px wide**
+    as well as desktop; the horizontal value is what breaks.
+  - The room page's `og:image` still points at the portrait `1.webp`. A
+    share preview is 1.91:1, so `banner.webp` would suit it better; left
+    alone because it wasn't asked for.
 - Slugs → room type: `king-sofa`, `twin`, `family-unit`, `garden-double`,
-  `self-catering`, `compact-single` — matched to the six listed room types
-  by asking the property owner to identify each `Room N` folder, not
+  `self-catering`, `compact-single` — **note the last one's guest-facing
+  name is "Compact room", not "Compact single"** (renamed Sept 2026, owner's
+  request, see "Copy the owner has corrected"). **Its page and URL were
+  renamed too: `rooms/compact-room.html`, served at `/rooms/compact-room`**
+  (owner: "it's still compact-single.html"). Only the *image folder*
+  `images/rooms/compact-single/` — and so the `data-slug="compact-single"`
+  on its two cards, which is how the carousel finds that folder — kept the
+  old name, because it is never visible to a guest. Nothing was live at the
+  old URL, so no redirect exists; if the site is ever deployed with
+  `/rooms/compact-single` already indexed, add a 301. Matched to the six
+  listed room types by asking the property owner to identify each `Room N` folder, not
   guessed from the photos.
 
   **The owner refers to rooms by `Room N`, not by slug**, so a request
@@ -568,13 +618,6 @@ forward.
   (`../styles.css`, `../images/...`, `../`, `../script.js`) — except links
   to the rooms listing page or another room page, which are siblings and
   are written `./` (the listing) and `<slug>` (a room), with no extension.
-- "Enquire about this room" on a room page links to
-  `../?room=<Room+Name>#callback` (space-as-`+`, matching
-  `application/x-www-form-urlencoded`). `script.js` reads that `room` query
-  param via `URLSearchParams` on load and preselects it in the `#f-room`
-  dropdown, using the same `selectRoomOption()` helper. The option text
-  must match exactly (it's a plain text match against `<select>` option
-  text, e.g. `"King with sofa bed"`).
 
 ### Rooms listing page (`rooms/index.html`)
 
@@ -616,7 +659,7 @@ than open one, so there's no `.gal-item` to power.
 ### Clean URLs — no `.html` in any link (Sept 2026)
 
 Every internal link, canonical, `og:url`, JSON-LD `url`, sitemap `<loc>` and
-the form's `_next` is written **without `.html`**: `/rooms/twin`, not
+is written **without `.html`**: `/rooms/twin`, not
 `/rooms/twin.html`. The files on disk keep their names — only the URLs
 changed. Shapes to use:
 
@@ -635,8 +678,8 @@ links resolve against the *directory* of the current URL, so `/rooms`
 for Apache/cPanel.** Netlify, Cloudflare Pages and GitHub Pages serve
 `/foo` from `foo.html` on their own and ignore that file; nginx needs
 `try_files $uri $uri.html $uri/ =404;`. What it does, all verified against
-a real Apache 2.4 with `mod_rewrite` (30 URL cases, 5 redirect chains, and
-a browser click-through of 33 navigation checks at 1440 and 390):
+a real Apache 2.4 with `mod_rewrite` (28 URL cases, redirect chains, and a
+browser click-through of 33 navigation checks at 1440 and 390):
 - `/rooms/twin` is served from `rooms/twin.html`.
 - `/rooms/twin.html`, `/index.html` and `/rooms/index.html` 301 to
   `/rooms/twin`, `/` and `/rooms/` in **one hop**, so every page has one URL.
@@ -652,10 +695,10 @@ a browser click-through of 33 navigation checks at 1440 and 390):
    site in `public_html`. WordPress's rules send every request to
    `index.php`, which will not exist.
 3. **The trailing-slash guard in rule 3 (`^(.*[^/])$`) is load-bearing.**
-   The first version was `^(.+)$` and returned a **500** for `/thanks/` and
-   `/rooms/twin/`: Apache resolves those as the file `thanks` with a
-   path-info of `/`, the `.html` existence check passes, the URL is
-   rewritten to `thanks/.html`, resolves the same way, and loops until
+   The first version was `^(.+)$` and returned a **500** for any page with a
+   trailing slash, e.g. `/rooms/twin/`: Apache resolves that as the file
+   `rooms/twin` with a path-info of `/`, the `.html` existence check passes,
+   the URL is rewritten to `rooms/twin/.html`, resolves the same way, and loops until
    Apache stops at 10 internal redirects. Nothing looked wrong on the
    URLs people normally use, so it only showed up by testing the
    trailing-slash variants. If the rules are ever edited, re-test those.
@@ -712,31 +755,43 @@ removed**, on top of the "three places" already listed above for cards:
 the `.nav-dropdown` list is hand-written on **all 8 pages**, not
 generated — there's no shared data source for it either.
 
-## Callback form — currently hidden
+## Contact section (`#callback`) — there is no form
 
-The `#callback` section on `index.html` still exists (nav, footer, and
-every `rooms/*.html` page's callback link all still point at it), but the
-actual `<form class="cb-form" id="cbForm">…</form>` inside it is
-**commented out** (Sep 2026, at the owner's request — "hide so long, bring
-it back upon my request"), not deleted. With the form gone, `.cb-intro`
-(direct phone/WhatsApp/email list + "Good to know" facts) is the section's
-only content, so `.cb` (the two-column grid `.cb-intro`/`.cb-form` normally
-splits) carries a `cb--solo` modifier class that collapses it to one
-centered, width-capped column instead — without that class the intro block
-would strand itself in the grid's left half with a blank right column.
-Within that solo column, the contact list and "Good to know" facts (a
-`<ul class="cb-direct">` and a `<div>` wrapping the `cb-gk` heading + facts
-list, both now sharing a `.cb-cols` wrapper `<div>`) sit **side by side**
-rather than stacked — `.cb--solo .cb-cols` is a two-column grid, scoped to
-`.cb--solo` on purpose: `.cb-cols` on its own (no `.cb--solo` ancestor)
-stays an unstyled stack, since the narrower ~46%-width column `.cb-intro`
-occupies once `.cb-form` is back doesn't have room for two blocks side by
-side — so this side-by-side arrangement is specific to the hidden-form
-layout and doesn't need undoing when the form returns, it just stops
-applying on its own once `.cb--solo` is removed.
+**The callback form was scrapped for good (Sept 2026, owner's request —
+"we won't need it").** It had been hidden since earlier that month and was
+kept commented-out for restoring; that is now all gone: the `<form>` and its
+commented-out "Request a callback" heading/lede in `index.html`, the form's
+CSS (`.cb-form`, `.f-row`, `.field*`, `.opt`, `.honey`, `.btn-block`), the
+`#f-room` / `#f-in` / `#f-out` logic in `script.js`, and **`thanks.html`**,
+its success page. Contact is phone, WhatsApp or email only. **Don't
+reinstate any of it without asking**; git history has all of it if that is
+ever wanted, but note it posted to FormSubmit, which was never activated
+(that needs a one-time email confirmation), so it never actually delivered
+anything.
 
-**Two bugs were found in this grid later (Sept 2026) and both are easy
-to reintroduce:**
+The section keeps its **`id="callback"`** even though nothing is called back:
+the nav, every footer and every room page link to `#callback`, and renaming
+it would mean touching all 9 pages for no visible gain. The visible wording
+is already "Get in touch".
+
+`.cb-intro` (the contact cards + "Good to know" facts) is the section's only
+content. The contact list and the facts (a `<ul class="cb-direct">` and a
+`<div>` wrapping the `cb-gk` heading + facts list, both inside a `.cb-cols`
+wrapper) sit **side by side** as a two-column grid.
+
+**`cb--solo` no longer exists.** That modifier meant "the form is hidden, so
+collapse to one column"; with the form gone for good it was folded into
+`.cb` itself (single column, `.cb .cb-intro`, `.cb .cb-cols`, …) rather than
+left as a modifier for something that isn't there. Verified layout-neutral:
+every element's rect compared before and after at 11 widths from 360 to
+1920px, 165 rects, zero differences. **A lesson from doing that check:** the
+first "after" run showed a ~300px difference at desktop, which was not the
+layout — it was Chrome reusing a cached `styles.css` against the new
+markup. A geometry snapshot must disable the cache
+(`Network.setCacheDisabled`) or it measures a stylesheet from the past.
+
+**Two bugs were found in this grid (Sept 2026) and both are easy to
+reintroduce:**
 - Its tracks are `minmax(0,1fr)`, **not** a bare `1fr`. A grid item's
   default `min-width` is `auto`, which honours its content's min-content
   width — the phone numbers in `.cb-direct` and the `dt`/`dd` rows in
@@ -748,7 +803,7 @@ to reintroduce:**
   page on a phone scroll sideways — worth re-checking `scrollWidth`
   against the viewport after any grid change, since nothing about the
   section itself looks wrong on desktop.
-- It stacks below **620px** (two blocks at ~170px each is not a layout),
+- It stacks below **760px** (two blocks at ~170px each is not a layout),
   and **that media query has to sit after the `.cb-gk` / `.cb-direct`
   margin rules in the file, not next to the `.cb-cols` grid declaration
   where it logically belongs.** Those rules are equally specific, so at
@@ -757,19 +812,11 @@ to reintroduce:**
   row above it, still carrying the `margin-top:0` that only makes sense
   in the side-by-side layout.
 
-The heading/lede pair also changed (from "Request a callback" / "Leave
-your details and…" to "Get in touch" / "Phone, WhatsApp or email us…",
-since the original text explicitly promised a form); the **original
-heading/lede is commented out immediately below the new one**, not
-rewritten from scratch, so restoring doesn't rely on reconstructing the
-old copy from memory. The nav/footer links that point at this section were
-also reworded from "Request a callback" to "Get in touch" to match, on
-**9 live lines** across 8 files (not commented out, just edited — the old
-text isn't preserved inline anywhere for these, unlike the section's own
-heading/lede): `index.html` (footer nav), `rooms/index.html` (hero CTA
-button *and* footer nav — 2 lines), and one footer-nav line each in
-`rooms/garden-double.html`, `family-unit.html`, `twin.html`,
-`king-sofa.html`, `compact-single.html`, `self-catering.html`.
+The heading and lede read "Get in touch" / "Phone, WhatsApp or email us…".
+They were reworded from "Request a callback" / "Leave your details and…"
+because the original explicitly promised a form. The nav and footer links
+that point at this section were reworded to "Get in touch" to match, on 9
+live lines across 8 files.
 
 **The section was rebuilt to an owner-supplied mockup (Sept 2026)** and
 is now the most componentised part of the homepage:
@@ -805,33 +852,12 @@ is now the most componentised part of the homepage:
   section still opens in the same rhythm as every other one — the
   asymmetry is deliberate.
 
-**The section is left-aligned, not centred.** `.cb--solo .cb-intro` has
+**The section is left-aligned, not centred.** `.cb .cb-intro` has
 `margin:0` (it was `margin:0 auto`), at the owner's request — it now
 starts at the same gutter as every other section heading instead of
 floating as a centred block. The `max-width:800px` stays: without it the
 contact list and facts stretch the full shell and the two-column pairing
 below them falls apart.
-
-**To bring the form back:** in `index.html`, (1) remove the `cb--solo`
-class from the `.shell cb` div, (2) delete the "Get in touch" heading/lede
-and un-comment the original "Request a callback" pair just below it, (3)
-un-comment the `<form class="cb-form">…</form>` block. Then, if "Get in
-touch" should revert to "Request a callback" as link text too, re-edit the
-9 lines listed above by hand (a plain find/replace isn't quite safe — the
-section's own `<h2>` will also read "Get in touch" mid-edit depending on
-which step you've done first). In `styles.css`, the `.cb--solo` rule (and
-its nested `.cb-cols` side-by-side override) can stay — dead/unused CSS
-once nothing carries that class, harmless either way — or be deleted.
-`script.js`'s room-preselect logic (`document.getElementById('f-room')`,
-the `#f-in`/`#f-out` date-min logic) already null-guards every lookup, so
-it didn't need any change to tolerate the form's absence and won't need
-one to tolerate its return either.
-
-Nothing else on the site referenced the form directly — no room page ever
-got an "Enquire about this room" button wired to `?room=<name>#callback`
-(that button was removed from the bookbox entirely, see "Room cards → room
-detail pages" above), so there was no dangling room-preselect link to
-account for.
 
 ## "What's around us" section
 
@@ -916,8 +942,12 @@ changed by the time this is read.
   block ahead of the text (`position:relative` — *not* `static`, see the
   callout below — `width:100%`, `top`/`left`/`right` all `auto`) and
   undoes the desktop-only compensations with it: `.around`'s
-  `padding-top` goes back to `var(--band)` (nothing is pinned above it
-  any more) and `.sec-head` drops both `min-height` and `max-width`
+  `padding-top` goes to **0**, not `var(--band)`, so the photo stays flush
+  with the colour boundary as on desktop. (It was `--band` — the "nothing
+  is pinned above it any more" reasoning — and left a ~64px+ strip of
+  empty paper above the photo that the owner flagged as a white gap,
+  Sept 2026. The photo's own `margin-bottom` spaces the text below.) and
+  `.sec-head` drops both `min-height` and `max-width`
   (nothing to reserve space under or stay clear of). DOM order alone
   (the `<figure>` comes before `<div class="shell">` in index.html) puts
   the photo above the text on mobile with no extra CSS.
@@ -1264,7 +1294,14 @@ changed by the time this is read.
 Rebuilt Sept 2026 to an owner-supplied mockup. Order in the text column:
 eyebrow → heading → **wave flourish** → **uppercase subtitle** → three
 body paragraphs → **4-up icon fact row** → **script sign-off**. The photo
-column (`.split-fig`) was untouched.
+column (`.split-fig`) was untouched, except that on mobile (≤900px) its
+photo is a 16:10 window onto the 3:4 portrait, so `object-position` there is
+`center 8%` rather than centred. The owner steered it by eye:
+60%, 72% (deckchair, pot and paving, little creeper), then "much higher" —
+8%, the full creeper in flower with sky above. **"Lower"/"higher" meant
+where the window sits on the photo** (0% top, 100% bottom), not the picture
+moving in its frame; it was read the wrong way round twice (42%, then 22%)
+before that was clear. If it is asked again, confirm which way rather than guessing.
 
 **The mockup had a solid "Book Your Stay" button on the sign-off row and
 the owner asked for it to be left out.** Don't add a CTA back here without
@@ -1282,7 +1319,7 @@ it would have gone.
   after** the `li:first-child` border reset: both selectors are
   `(0,2,1)`-specific, and at equal specificity the later rule wins
   regardless of the media query. That exact trap already bit `.cb-gk`
-  once (see "Callback form"). In the 2-column state the reset moves to
+  once (see "Contact section"). In the 2-column state the reset moves to
   `li:nth-child(odd)`, so the border clears on the first cell of *every*
   row rather than only the very first.
 - **The bed icon here is NOT the room-card `.spec` bed.** That one reads
@@ -1309,22 +1346,28 @@ it would have gone.
   390px the heading lines are ~153px and the subtitle is still 252px.
   Matching there too would need either a ~57px heading on a 350px column
   or a subtitle too small to read, so it was left.
-- **`.split-text .h-sec{max-width:8.5ch}` forces the two-line break**
-  ("Welcome to / On The Bay"). Unconstrained the heading fits on one line
-  at every width the site reaches, so the cap is what creates the break,
-  and it is most of what gives the wave flourish below it the right
-  proportion. **8.5ch is measured, not eyeballed:** "Welcome to" is
-  7.41ch and "Welcome to On" is 9.69ch, and both numbers are identical at
-  every viewport because the text and the `ch` unit scale together with
-  the `h-sec` clamp — so one value holds from 360px to 1920px with ~15%
-  margin either side. 13ch was the first guess and broke after "On".
-  **Re-measure if the heading's wording changes**; the window moves with
-  the words. Being in `ch` is also what let the font-size change above
-  happen for free — `ch` scales with the font, so the break point came
-  along with it and needed no re-measuring.
-- **`.split-text .lede` is `1.15rem`**, off the type scale — the mockup
-  has the lede only fractionally larger than the body copy, not the 23%
-  jump `--t-1` gives. Same deliberate exception as `.around-top .lede`.
+- **The two-line break ("Welcome to / On The Bay") is made by the markup**:
+  `<h2 class="h-sec"><span>Welcome to</span> <span>On The Bay</span></h2>`
+  with `.split-text .h-sec span{display:block;white-space:nowrap}`. It is
+  most of what gives the wave flourish below it the right proportion.
+  **It used to be `max-width:8.5ch` and that was wrong on a real phone**
+  (owner screenshot, Sept 2026: "Welcome / to On The / Bay"). 8.5ch sat in
+  a measured window between "Welcome to" (7.41ch) and "Welcome to On"
+  (9.69ch) and was verified at 360–1920px in headless Chrome — but `ch` is
+  the width of a "0", and how a "0" compares with the letters shifts with
+  the font actually rendered (fallback while Fraunces loads, optical-size
+  handling, Safari), so the window moved and closed on that device. A cap
+  that tight is a bet on font metrics. Explicit lines aren't: each is
+  ~175px at the smallest size against a ~320px column, so `nowrap` has ~2x
+  headroom. **Lesson: don't force a line break with a `ch`-measured window
+  in Chrome and call it verified across devices.** If the wording changes,
+  the spans change with it; nothing needs re-measuring.
+- **All three Welcome paragraphs are plain `<p>`s — the first is NOT a
+  `.lede`** (owner, Sept 2026: "all this text the same styling and size").
+  It was `class="lede"` with a `.split-text .lede{font-size:1.15rem}`
+  override, which made it visibly bigger, taller-leaded and narrower
+  (60ch vs 66ch) than the two below it. Both the class and that rule are
+  gone. Don't restore a lede here; if one is wanted, it's a design change.
 - **`.welcome-signoff` needs `max-width:none`.** It's a `<p>`, and the
   base `p` rule caps every paragraph at 66ch, which would stop its
   trailing rule short of the column edge. It is the third near-identical
@@ -1509,14 +1552,26 @@ treat this list as the authority rather than "fixing" the page back.
   braai or entertainment area, and the site must not say there is. A
   braai can be laid on by special request, but the owner does not want
   it advertised, because it sets an expectation they'd then have to
-  carry. Removed from three places, and **all three matter**: the
+  carry. Removed from two places, and **both matter**: the
   Welcome paragraph in `index.html` (a `<!-- -->` note sits where it
-  was), the `"Braai facilities"` entry in the JSON-LD
-  `amenityFeature` list, and the `#f-msg` placeholder in the
-  commented-out callback form (which would come back with the form —
-  see "Callback form"). **Structured data is advertising**: it's how
+  was) and the `"Braai facilities"` entry in the JSON-LD
+  `amenityFeature` list. (A third, a placeholder in the callback form,
+  went when the form was scrapped.) **Structured data is advertising**: it's how
   search engines surface an amenity, so a claim removed from the prose
   but left in the JSON-LD is still a live claim.
+- **Room 6 is a "Compact room" with one double bed, and "single" is not
+  mentioned for it** (Sept 2026). It was "Compact single" with a
+  "Single or double bed" spec line; the owner said it is just a double bed
+  and asked for the word to go. Changed in **33 places over 8 pages**: the
+  spec lines (now "1 double bed", matching garden-double's wording), the
+  name in titles, headings, breadcrumbs, both card sets, the Rooms
+  dropdown on every page, the "other rooms" pills, and every alt text and
+  carousel `aria-label`. **Do not "fix" it back from Nightsbridge or the old
+  site**, both of which will still say "Compact single". The URL slug
+  `compact-single` survives only as the image folder / carousel `data-slug`
+  (see the slug note above); the page itself is `compact-room`.
+  The Twin room's "single" (it genuinely has single beds) is unrelated and
+  correct.
 - **Activities are arranged, not just suggested.** The `#around` lede
   reads "we arrange activities for guests on request — safaris, sea
   trips, scuba diving and other outdoor adventures." It previously
@@ -1527,7 +1582,7 @@ treat this list as the authority rather than "fixing" the page back.
   `.facts` list in the Welcome section, and the `.cb-facts` "Good to know"
   list in `#callback`. Their own public booking listings still say R110,
   so an audit against those will look like it has found a bug here.
-  README.md § 3 used to carry this as an unconfirmed item; it isn't one
+  README.md § 2 used to carry this as an unconfirmed item; it isn't one
   any more.
 - **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
   9 km came from the old site / listings, which presumably measured to a
