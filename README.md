@@ -11,6 +11,7 @@ script.js
 favicon.svg
 robots.txt
 sitemap.xml
+.htaccess       makes page addresses work without .html on Apache/cPanel — a HIDDEN file, see Hosting
 images/         all photography the site actually uses — upload this
 _originals/     source photos, for rebuilding images later — DO NOT upload
 ```
@@ -144,6 +145,18 @@ The COVID-19 section from the old site has been removed entirely, as asked.
 
 Drop the folder into any static host — Netlify, Cloudflare Pages, Vercel, GitHub Pages, or
 straight into `public_html` on cPanel shared hosting. There is no server-side code.
+
+**Page addresses have no `.html`** (`/rooms/twin`, not `/rooms/twin.html`). On cPanel/Apache
+that is done by the **`.htaccess`** file at the top of this folder, and two things about it
+matter:
+
+- **It's a hidden file.** Dragging the folder across in Finder, most FTP programs and cPanel's
+  File Manager skip hidden files unless told otherwise. If it doesn't arrive, every page except
+  the homepage shows "not found". After uploading, open `/rooms/twin` to check.
+- **It replaces WordPress's own `.htaccess`.** If this is going over the old WordPress site,
+  make sure that old file is overwritten, not left alongside — its rules would break the site.
+
+Netlify, Cloudflare Pages and GitHub Pages need nothing extra and ignore the file.
 
 Two external things load over the network:
 

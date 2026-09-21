@@ -43,7 +43,7 @@
   }
 
   /* arriving from a room page's (or the rooms listing page's) "Enquire
-     about this room" link — index.html?room=Room+Name#callback — preselects
+     about this room" link — /?room=Room+Name#callback — preselects
      that room in the callback form's dropdown */
   var select = document.getElementById('f-room');
   var selectRoomOption = function (wanted) {
@@ -183,7 +183,7 @@
 
   /* re-apply a fragment scroll once webfonts have settled.
 
-     Landing on index.html#callback cold — which is what the footer links
+     Landing on /#callback cold — which is what the footer links
      and every room page's "Get in touch" do — used to leave the section
      ~86px above where it belongs. The cause is NOT scroll maths and NOT
      lazy images (every <img> now carries width/height, and fixing that

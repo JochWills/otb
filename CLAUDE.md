@@ -562,13 +562,14 @@ forward.
   rather than guessing from the number. **Confirm before overwriting**:
   silently writing to the wrong room's folder is the failure mode here,
   and it looks exactly like success.
-- Room pages live at `rooms/<slug>.html` (one level down from the site
-  root), so every internal reference on them is `../`-prefixed
-  (`../styles.css`, `../images/...`, `../index.html`, `../script.js`) —
-  except links to the rooms listing page or another room page, which are
-  siblings in the same folder and just `index.html` / `<slug>.html`.
+- Room pages live at `rooms/<slug>.html` **on disk** and are served at
+  `/rooms/<slug>` (see "Clean URLs" below). They sit one level down from
+  the site root, so every internal reference on them is `../`-prefixed
+  (`../styles.css`, `../images/...`, `../`, `../script.js`) — except links
+  to the rooms listing page or another room page, which are siblings and
+  are written `./` (the listing) and `<slug>` (a room), with no extension.
 - "Enquire about this room" on a room page links to
-  `../index.html?room=<Room+Name>#callback` (space-as-`+`, matching
+  `../?room=<Room+Name>#callback` (space-as-`+`, matching
   `application/x-www-form-urlencoded`). `script.js` reads that `room` query
   param via `URLSearchParams` on load and preselects it in the `#f-room`
   dropdown, using the same `selectRoomOption()` helper. The option text
@@ -581,8 +582,8 @@ A dedicated rooms index, separate from both the homepage's `#rooms` section
 and the individual `rooms/<slug>.html` pages — added so the header/footer
 **"Rooms" nav link** could point somewhere more room-focused than an anchor
 scroll. On `index.html` and every `rooms/*.html` page, `<a href="...">Rooms
-</a>` now points here (`rooms/index.html` from the root, plain `index.html`
-from inside `rooms/`) instead of `#rooms`. The homepage's own `#rooms`
+</a>` now points here (`rooms/` from the root, `./` from inside `rooms/`)
+instead of `#rooms`. The homepage's own `#rooms`
 section (`id="rooms"` on that `<section>`) is untouched and still there —
 the anchor target still exists, it's just no longer what the nav link goes
 to; each room detail page's own breadcrumb ("Home / Rooms / *Room title*")
@@ -612,6 +613,58 @@ phrased directly from each room's own existing copy/specs — not invented)
 / WhatsApp. No lightbox markup on this page — the cards link out rather
 than open one, so there's no `.gal-item` to power.
 
+### Clean URLs — no `.html` in any link (Sept 2026)
+
+Every internal link, canonical, `og:url`, JSON-LD `url`, sitemap `<loc>` and
+the form's `_next` is written **without `.html`**: `/rooms/twin`, not
+`/rooms/twin.html`. The files on disk keep their names — only the URLs
+changed. Shapes to use:
+
+| Target | From the root | From `rooms/` |
+|---|---|---|
+| Home | `./` | `../` |
+| Home section | `#callback` | `../#callback` |
+| Rooms listing | `rooms/` | `./` |
+| A room | `rooms/twin` | `twin` |
+
+**The listing is `rooms/` with a trailing slash, never `rooms`.** Relative
+links resolve against the *directory* of the current URL, so `/rooms`
+(no slash) would make `../styles.css` resolve one level too high.
+
+**A server has to make these URLs work, and `.htaccess` (repo root) does it
+for Apache/cPanel.** Netlify, Cloudflare Pages and GitHub Pages serve
+`/foo` from `foo.html` on their own and ignore that file; nginx needs
+`try_files $uri $uri.html $uri/ =404;`. What it does, all verified against
+a real Apache 2.4 with `mod_rewrite` (30 URL cases, 5 redirect chains, and
+a browser click-through of 33 navigation checks at 1440 and 390):
+- `/rooms/twin` is served from `rooms/twin.html`.
+- `/rooms/twin.html`, `/index.html` and `/rooms/index.html` 301 to
+  `/rooms/twin`, `/` and `/rooms/` in **one hop**, so every page has one URL.
+  Query strings survive (`/index.html?room=x` → `/?room=x`).
+- Unknown URLs are a real 404.
+
+**Three things that will bite:**
+1. **`.htaccess` is a hidden file.** Finder drag-and-drop, many FTP clients
+   and cPanel's File Manager skip dotfiles by default. If it doesn't
+   arrive, **every link except the homepage 404s.** After deploying,
+   open `/rooms/twin` first.
+2. **It replaces WordPress's `.htaccess`** if this is deployed over the old
+   site in `public_html`. WordPress's rules send every request to
+   `index.php`, which will not exist.
+3. **The trailing-slash guard in rule 3 (`^(.*[^/])$`) is load-bearing.**
+   The first version was `^(.+)$` and returned a **500** for `/thanks/` and
+   `/rooms/twin/`: Apache resolves those as the file `thanks` with a
+   path-info of `/`, the `.html` existence check passes, the URL is
+   rewritten to `thanks/.html`, resolves the same way, and loops until
+   Apache stops at 10 internal redirects. Nothing looked wrong on the
+   URLs people normally use, so it only showed up by testing the
+   trailing-slash variants. If the rules are ever edited, re-test those.
+
+**Local preview:** `python3 -m http.server` does **not** map `/foo` to
+`foo.html`, so every link except the homepage 404s under it, and opening the
+files straight from disk (`file://`) can't work at all. Use any server with
+clean-URL support (e.g. `npx serve`, or Netlify/Cloudflare's dev server).
+
 ### Header nav
 
 Order: **Home / Rooms / Around us / Gallery / Get in touch / Find us**,
@@ -628,7 +681,7 @@ JSON-LD.
 wording the footer and room pages already used for that section. Like
 everything else in this header, it is **hand-written on all 9 pages**
 (index + the 8 under `rooms/`) with no shared source — and the path
-differs by location: `#callback` on index.html, `../index.html#callback`
+differs by location: `#callback` on index.html, `../#callback`
 everywhere under `rooms/`.
 
 **Watch the width when adding another item.** Per the note on the
@@ -1407,7 +1460,7 @@ content clear.
 **Anchors arriving from another page: FIXED (Sept 2026), and the cause
 was not what this file previously said it was.**
 
-Loading `index.html#callback` cold — what the footer links and every
+Loading `/#callback` cold — what the footer links and every
 room page's "Get in touch" do — used to land ~86px off, while in-page
 nav clicks were exact. This file blamed lazy images and prescribed
 giving them `width`/`height`. **That was wrong.** Every image now has
@@ -1494,7 +1547,7 @@ browser can reserve the right box before the bytes arrive. Previously none
 of the 83 images had them, which caused two visible problems:
 
 - the page visibly reflowed as photos loaded;
-- **the known cross-page anchor bug**: `index.html#callback` arriving cold
+- **the known cross-page anchor bug**: `/#callback` arriving cold
   (from a footer link or a room page) landed ~86px off, because the browser
   computed the fragment scroll while the hero was still collapsing. One fix,
   both symptoms. See "Fixed header and anchor links" — the warning there

@@ -1,0 +1,44 @@
+# Clean URLs: /rooms/twin instead of /rooms/twin.html
+#
+# Every link on the site has no ".html" (Sept 2026), so the server has to
+# serve the .html file when one is asked for without the extension. This is
+# for Apache, which is what cPanel shared hosting runs. Netlify, Cloudflare
+# Pages and GitHub Pages do this on their own and simply ignore this file;
+# nginx needs the equivalent `try_files $uri $uri.html $uri/ =404;`.
+#
+# If this replaces a WordPress site in public_html, this file REPLACES its
+# .htaccess. WordPress's rules send every request to index.php, which will
+# no longer exist, so leaving them in place breaks the whole site.
+
+Options -MultiViews
+DirectoryIndex index.html
+
+RewriteEngine On
+
+# 1. Someone asks for /index.html or /rooms/index.html directly: send them to
+#    the directory URL (/ and /rooms/). THE_REQUEST holds the browser's
+#    original request line, so this only fires on what the visitor actually
+#    asked for and never on Apache's own internal DirectoryIndex lookup, which
+#    is what would otherwise loop.
+RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
+RewriteRule ^ / [R=301,L]
+RewriteCond %{THE_REQUEST} \s/([^\s?]+)/index\.html[\s?] [NC]
+RewriteRule ^ /%1/ [R=301,L]
+
+# 2. Someone asks for /rooms/twin.html: send them to /rooms/twin, so each page
+#    has one URL rather than two (a duplicate-content problem for search).
+RewriteCond %{THE_REQUEST} \s/([^\s?]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 3. Serve /rooms/twin from rooms/twin.html. Skips real directories, so
+#    /rooms/ still falls through to its index.html.
+#
+#    The pattern refuses anything ending in "/" and that is load-bearing.
+#    For /thanks/ Apache resolves the file as "thanks" with a path-info of
+#    "/", so the .html check below passes, the URL is rewritten to
+#    "thanks/.html", that resolves the same way, and it repeats until Apache
+#    gives up with a 500. Excluding the trailing slash turns that into a
+#    plain 404.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*[^/])$ $1.html [L]
