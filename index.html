@@ -112,7 +112,7 @@
 
   <div class="shell hero-inner">
     <p class="hero-place js-rise" style="--d:0ms">Summerstrand, Gqeberha</p>
-    <h1 class="hero-title js-rise" style="--d:90ms">One block from the<br>beachfront, and quiet<br>enough to <em class="hero-title-accent">hear it.</em></h1>
+    <h1 class="hero-title js-rise" style="--d:90ms">One block from the<br>ocean, and quiet<br>enough to <em class="hero-title-accent">hear it.</em></h1>
     <p class="hero-lede js-rise" style="--d:180ms">
       A three-star bed and breakfast for business travellers, tourists and holiday makers.
       Six rooms, each with its own entrance and patio, set around an English rose garden.
@@ -138,6 +138,10 @@
     <div class="split-text">
       <p class="eyebrow eyebrow-rule">The house</p>
       <h2 class="h-sec">Welcome to On The Bay</h2>
+      <svg class="welcome-wave" viewBox="0 0 96 14" aria-hidden="true">
+        <path d="M2 9.5Q13.5 2.5 25 8.5T48 8.5T71 8.5T94 7"/>
+      </svg>
+      <p class="welcome-sub">A relaxed stay by the ocean</p>
       <p class="lede">
         We are perfectly situated in Summerstrand, just one block from Port Elizabeth&rsquo;s popular
         beachfront. The beach is a hive of activity and hosts major water and sporting events &mdash;
@@ -160,16 +164,44 @@
         patio. Secure on-site parking is available.
       </p>
 
-      <dl class="facts">
-        <div><dt>Grading</dt><dd>3-star bed and breakfast</dd></div>
-        <div><dt>Breakfast</dt><dd>R110 per person, on request</dd></div>
-        <div><dt>Parking</dt><dd>Secure, on site, no charge</dd></div>
-        <div><dt>Internet</dt><dd>Free Wi-Fi throughout</dd></div>
-      </dl>
+      <!-- A <ul>, not the <dl class="facts"> this replaced: the mockup drops the
+           labels ("Grading", "Breakfast", "Parking", "Internet") and leads with
+           the value, so "3-star / Bed & breakfast" is one phrase in two weights
+           rather than a term and its definition. Icons are the site's existing
+           ones, reused verbatim — bed from the room-card .spec list, cup and car
+           from #callback's .cb-facts, Wi-Fi from the amenities ribbon. -->
+      <ul class="welcome-facts">
+        <li>
+          <span class="welcome-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18.5V8"/><path d="M3 12.6h14.5a3.5 3.5 0 0 1 3.5 3.5v2.4"/><path d="M6.2 12.6v-1.9a1.6 1.6 0 0 1 1.6-1.6h2.9a1.6 1.6 0 0 1 1.6 1.6v1.9"/></svg></span>
+          <b>3-star</b>
+          <small>Bed &amp; breakfast</small>
+        </li>
+        <li>
+          <span class="welcome-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M7 4v2M11 4v2"/></svg></span>
+          <b>Breakfast</b>
+          <small>R130 per person</small>
+        </li>
+        <li>
+          <span class="welcome-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 14.2 5.7 9.6a2 2 0 0 1 1.9-1.4h8.8a2 2 0 0 1 1.9 1.4l1.5 4.6v3.2H4.2z"/><circle cx="7.9" cy="17.4" r="1.3"/><circle cx="16.1" cy="17.4" r="1.3"/></svg></span>
+          <b>On site</b>
+          <small>Secure parking</small>
+        </li>
+        <li>
+          <span class="welcome-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <b>Free Wi-Fi</b>
+          <small>Throughout</small>
+        </li>
+      </ul>
+
+      <!-- The mockup put a "Book Your Stay" button on this row, to the left of
+           the sign-off. The owner asked for it to be left out, so the sign-off
+           starts at the gutter and its rule runs out to the right instead.
+           Don't add a CTA back here without asking. -->
+      <p class="welcome-signoff">See you by the bay</p>
     </div>
 
     <figure class="split-fig">
-      <img src="images/garden.webp" width="1350" height="1800" alt="The English garden at On The Bay, planted with over ninety rose bushes" loading="lazy">
+      <img src="images/welcome.webp" width="1086" height="1448" alt="The English garden at On The Bay, planted with over ninety rose bushes" loading="lazy">
       <figcaption>Over ninety rose bushes, and the sound of the bay behind them.</figcaption>
     </figure>
 
@@ -459,8 +491,8 @@
           </li>
           <li>
             <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 5-10 5L2 8l10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></span>
-            <span class="dist-text"><b>Nelson Mandela University</b><small>Events, visits and campus access</small></span>
-            <span class="dist-value">9 km<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            <span class="dist-text"><b>Nelson Mandela University</b><small>South Campus &mdash; events, visits and campus access</small></span>
+            <span class="dist-value">2 km<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
           </li>
           <li>
             <span class="dist-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-3 4 3 4H6"/></svg></span>
@@ -479,7 +511,6 @@
       <div class="trips">
         <div class="trips-head">
           <h3 class="h-min">Worth the drive</h3>
-          <a class="trips-explore" href="#callback">Explore the area<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></a>
         </div>
         <p>
           Thirty minutes away is the world-famous, malaria-free Addo Elephant National Park, along with
@@ -651,7 +682,7 @@
             </div>
             <div>
               <dt><span class="cb-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8.5h11v4.8a4 4 0 0 1-4 4H8.5a4 4 0 0 1-4-4z"/><path d="M15.5 9.8h1.6a2.4 2.4 0 0 1 0 4.8h-1.6"/></svg></span>Breakfast</dt>
-              <dd>R110 per person, on request</dd>
+              <dd>R130 per person, on request</dd>
             </div>
             <div>
               <dt><span class="cb-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 14.2 5.7 9.6a2 2 0 0 1 1.9-1.4h8.8a2 2 0 0 1 1.9 1.4l1.5 4.6v3.2H4.2z"/><circle cx="7.9" cy="17.4" r="1.3"/><circle cx="16.1" cy="17.4" r="1.3"/></svg></span>Parking</dt>

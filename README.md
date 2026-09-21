@@ -30,7 +30,10 @@ printed faintly in the corner. Most are done now; one file still needs a real ph
 dropped in.
 
 **Done:**
-- `hero.jpg` and `garden.jpg` (now `garden.webp`) — real photos.
+- `hero.jpg` and the Welcome section's photo (now `images/welcome.webp`) — real photos.
+  The Welcome photo was re-supplied in Sept 2026 as a warmer grade of the same pergola
+  shot and renamed from `garden.webp` to match the section it sits in. Source kept in
+  `_originals/welcome.png`.
 - Five of the six room cards — each has its own folder of real photos under
   `images/rooms/<room>/1.webp, 2.webp, ...` (still `.jpg` for `garden-double`, which is
   still pending its reshoot — see CLAUDE.md). Each room card on the homepage links through
@@ -115,7 +118,7 @@ site is hosted on a different domain.
 ## 3. Things to confirm with the owner before going live
 
 I built this from the copy and details on the current site plus their public listings.
-Four items are worth a quick check:
+Three items are worth a quick check:
 
 - **Room copy vs. the real photos** — which photo folder belongs to which room type has
   been confirmed with the owner, but the written descriptions haven't been checked against
@@ -125,9 +128,13 @@ Four items are worth a quick check:
   CLAUDE.md for detail.
 - **Check-in from 14:00, check-out by 10:00** — taken from their booking listings, not
   their own site.
-- **Breakfast at R110 per person**, not served 16 December – 7 January.
 - **The fax number** is still on the contact list. Most guest houses have dropped theirs;
   worth asking whether to keep it.
+
+**Confirmed by the owner, don't "correct" these back:** breakfast is **R130 per person, on
+request** (Sept 2026 — it was R110, which is what their listings still say), and Nelson
+Mandela University is **2 km** away, not the 9 km taken from those same listings — NMU's
+South Campus is in Summerstrand itself. See CLAUDE.md § "Copy the owner has corrected".
 
 The COVID-19 section from the old site has been removed entirely, as asked.
 

@@ -47,9 +47,32 @@ them:
   re-derive from `hero-original.jpeg`, not from a re-export of `hero.jpg`
   itself — avoid compounding resample/recompress passes. Same logic applies
   to `hero-2.jpg` vs. `IMG_3459.HEIC`.
-- `images/garden.webp` — real pergola/garden photo (Sept 2026), replacing
-  the old `images/garden.jpg` placeholder (deleted). Used in the "Welcome"
-  section's `.split-fig`.
+- `images/welcome.webp` — the "Welcome" section's `.split-fig` photo: the
+  pergola with its purple creeper, the striped deckchair and the brick
+  paving. Owner-supplied re-grade (Sept 2026) of the shot that was there
+  before, **named for the section rather than its contents** because that
+  is what the owner calls it. Source `_originals/welcome.png`.
+  - It **replaced `images/garden.webp`** (1350×1800, 682KB), which was the
+    same scene, less saturated, with a paler sky. That file was deleted
+    rather than kept — it is in git if the old grade is ever wanted. The
+    placeholder before *that* was `images/garden.jpg`, also deleted.
+  - Another **1448px export**, like `hero-3.jpg`, `twin/1.webp` and
+    `compact-single/1.webp` — four files now, which makes it close to
+    certain this is a fixed setting on the owner's export rather than the
+    photos. Unlike those three, **it doesn't matter here**: `.split-fig`
+    renders about 474 CSS px wide at `--maxw`, so 1086px still covers a
+    2x screen with headroom, and the figure is not in the lightbox.
+  - Encoded **q82, no resample** — not the q86 the two room photos got.
+    q86 was a concession to those being resolution-starved at full-bleed
+    hero size; this one isn't, so the standard quality applies. It lands
+    at 424KB, over README's ~400KB guidance but inside the 300–450KB band
+    CLAUDE.md already documents for foliage-heavy shots, and still 258KB
+    lighter than the file it replaced. If that ever needs to come down,
+    the lever is resolution (950px would cover 2x exactly), not quality.
+  - **The alt text and figcaption both talk about rose bushes, which are
+    not in this photo** — they describe the garden as a whole. That
+    mismatch predates this swap and was left alone; worth raising with
+    the owner rather than silently rewriting their copy.
 - `images/bookbox-wave.webp` — real wave photo (Sept 2026), used as the
   background of every room page's `.bookbox-head` (see "Room cards → room
   detail pages" below for the full story, including why the resize recipe
@@ -382,6 +405,24 @@ site the card design was already ported from
     14:00** / **Check-out 10:00** (same for every room, confirmed from
     the booking listings — see README), follow after a solid `.row-stay`
     divider separating "what the room is" from "when you can have it".
+
+    **The `dd` values are serif at weight 500** (Sept 2026), matching
+    `.cb-card-value` in `#callback` rather than the bold sans they were.
+    At 700 the sans read as app UI next to the muted sans labels, and it
+    clashed with the serif "Check availability" heading sitting directly
+    above it in the same card. Two details in that rule are
+    load-bearing:
+    - **`text-wrap:balance`.** Two values are long enough to wrap in the
+      340px sidebar — `twin`'s "2 singles, or king + single" and
+      `family-unit`'s "King, double or twin beds". Right-aligned and
+      unbalanced, the first stranded "single" alone on line 2, which
+      reads as a mistake rather than a line break. Balance splits them
+      evenly instead. **Any new value past roughly 22 characters wraps
+      here too** — check it rather than assuming.
+    - **An explicit `line-height:1.3`.** The inherited body line-height
+      left a wrapped two-line value looking like two separate facts.
+
+    Verified across all six room pages at 1440/901/390.
     Below the facts: two full-width **pill** buttons (`.bookbox-btn`,
     `border-radius:100px` — deliberately not the sitewide `.btn` shape,
     same "this component gets its own rounder language" precedent as the
@@ -1119,17 +1160,19 @@ changed by the time this is read.
   There's a throwaway harness pattern for this worth rebuilding:
   a page showing each candidate at 18px, at ~58px, and dropped into a
   real `.dist` row, all at once.
-- **The chevron next to each "Close by" row's distance, and the arrow on
-  "Explore the area", are both decorative** — the `<li>`s aren't links
-  (no confirmed destination URL exists for "the beachfront" or "golf
-  courses and sports stadiums" as a single place), and it would be
-  inventing an unverified link to make them one just to match the
-  chevron's own affordance. Only **"Explore the area"** is a real link,
-  and deliberately not to a page this site doesn't have (there's no area-
-  guide page) — it points at `#callback`, since the adjacent lede text
-  itself already says "we're happy to advise on or arrange" these trips,
-  making the callback/WhatsApp form the honest destination for "tell me
-  more about the area" rather than a dead `href="#"`.
+- **The chevron next to each "Close by" row's distance is decorative** —
+  the `<li>`s aren't links (no confirmed destination URL exists for "the
+  beachfront" or "golf courses and sports stadiums" as a single place),
+  and it would be inventing an unverified link to make them one just to
+  match the chevron's own affordance.
+
+  **There are now no links at all in this section.** A small
+  `.trips-explore` link ("Explore the area" → `#callback`) used to sit
+  opposite the "Worth the drive" heading; it was **removed Sept 2026 at
+  the owner's request** and its CSS deleted with it. Don't reinstate it
+  — and if something like it is ever wanted again, note that the reason
+  it pointed at `#callback` was that this site has no area-guide page to
+  link to, so the same problem comes back with it.
 - **The chips pills are filled-on-light** (`background:var(--chalk)`, no
   border), changed from outline-on-dark when the band went light. Same
   `.chips`/`.chips-group`/`.chips-group-label` markup and grouping (main
@@ -1163,6 +1206,80 @@ changed by the time this is read.
     1.4em), which made each label read as a trailing caption on the
     group *above* it rather than a heading for the one below.
 
+## "Welcome" section (#stay)
+
+Rebuilt Sept 2026 to an owner-supplied mockup. Order in the text column:
+eyebrow → heading → **wave flourish** → **uppercase subtitle** → three
+body paragraphs → **4-up icon fact row** → **script sign-off**. The photo
+column (`.split-fig`) was untouched.
+
+**The mockup had a solid "Book Your Stay" button on the sign-off row and
+the owner asked for it to be left out.** Don't add a CTA back here without
+asking — the hero's "Check availability" and the header's "Book Now"
+already cover that intent higher up the page. A `<!-- -->` note sits where
+it would have gone.
+
+- **`.welcome-facts` replaced a `<dl class="facts">`, and is a `<ul>` on
+  purpose.** The mockup drops the labels ("Grading", "Breakfast",
+  "Parking", "Internet") and leads with the value, so "3-star / Bed &
+  breakfast" is one phrase in two weights rather than a term and its
+  definition. `.facts` is **not** dead — still 12 uses elsewhere
+  (`.cb-facts`, `rooms/index.html`'s `.guide`), so don't delete its rules.
+- Four columns above 620px, 2×2 below. The `@media` block **must stay
+  after** the `li:first-child` border reset: both selectors are
+  `(0,2,1)`-specific, and at equal specificity the later rule wins
+  regardless of the media query. That exact trap already bit `.cb-gk`
+  once (see "Callback form"). In the 2-column state the reset moves to
+  `li:nth-child(odd)`, so the border clears on the first cell of *every*
+  row rather than only the very first.
+- **The bed icon here is NOT the room-card `.spec` bed.** That one reads
+  fine at 15px beside the words "1 king bed", but alone in a 44px badge
+  at 21px it reads as a **flag** — its pillow rectangle and mattress box
+  merge into a bracket-and-pole shape. Redrawn as headboard post +
+  pillow + mattress curving down to the foot. Four candidates were
+  rendered at 21px in the real badge next to the cup/car/Wi-Fi icons
+  before picking; that harness is the one described under "Close by"
+  icons, and it is the only way this kind of failure shows up. The cup,
+  car and Wi-Fi icons ARE reused verbatim (from `.cb-facts` and the
+  amenities ribbon) and all three survive the size fine.
+- **`.welcome-sub` is deliberately not `.eyebrow`.** `.eyebrow` is the
+  small label *above* a heading and is reused on all six room cards and
+  the chips-group labels; giving it a second, larger role below a heading
+  would mean any future change to it silently hit those too.
+- **The heading is scaled up from the sitewide `.h-sec`**
+  (`clamp(2.15rem,4.95vw,3.55rem)` against `1.9rem/4.2vw/3rem`) so its
+  lines come out the same width as `.welcome-sub` below it, which the
+  owner asked for: at the top of the clamp "On The Bay" is ~253px
+  against the subtitle's 252px. **The two can only match at desktop** —
+  `.welcome-sub` is a fixed rem size with fixed letter-spacing, so it is
+  252px at *every* viewport, while the heading scales with its clamp. At
+  390px the heading lines are ~153px and the subtitle is still 252px.
+  Matching there too would need either a ~57px heading on a 350px column
+  or a subtitle too small to read, so it was left.
+- **`.split-text .h-sec{max-width:8.5ch}` forces the two-line break**
+  ("Welcome to / On The Bay"). Unconstrained the heading fits on one line
+  at every width the site reaches, so the cap is what creates the break,
+  and it is most of what gives the wave flourish below it the right
+  proportion. **8.5ch is measured, not eyeballed:** "Welcome to" is
+  7.41ch and "Welcome to On" is 9.69ch, and both numbers are identical at
+  every viewport because the text and the `ch` unit scale together with
+  the `h-sec` clamp — so one value holds from 360px to 1920px with ~15%
+  margin either side. 13ch was the first guess and broke after "On".
+  **Re-measure if the heading's wording changes**; the window moves with
+  the words. Being in `ch` is also what let the font-size change above
+  happen for free — `ch` scales with the font, so the break point came
+  along with it and needed no re-measuring.
+- **`.split-text .lede` is `1.15rem`**, off the type scale — the mockup
+  has the lede only fractionally larger than the body copy, not the 23%
+  jump `--t-1` gives. Same deliberate exception as `.around-top .lede`.
+- **`.welcome-signoff` needs `max-width:none`.** It's a `<p>`, and the
+  base `p` rule caps every paragraph at 66ch, which would stop its
+  trailing rule short of the column edge. It is the third near-identical
+  rule-flanked script line on the site (`.dist-more` trails right,
+  `.cb-signoff` is centred and flanked both sides); they're kept separate
+  rather than folded into a utility because each is tuned to its own
+  section's size and spacing.
+
 ## Section background colours
 
 The homepage alternates strictly, top to bottom: hero, then
@@ -1173,15 +1290,40 @@ ever added or reordered — two same-coloured bands in a row have no
 visible seam *and* double their `padding-block` where they meet (the
 mistake already documented for `rooms/index.html`'s intro).
 
-**`--chalk` is warm linen `#F1ECE1`** (was `#EFF2EA`, a cool grey-green,
-changed Sept 2026 — the owner didn't like it). Two things made the old
-value weak, both measurable rather than matters of taste: every other
-accent on the site is warm (`--rose` gold, `--sand`, `--rose-tint`), so
-the cool grey-green was the single cold note; and it sat almost exactly
-level with `--rose-tint` in luminance (ΔL 0.016), so that seam barely
-registered. The new value separates from both neighbours (ΔL 0.10 from
-`--paper`, 0.02 from `--rose-tint`) and keeps 10.5:1 contrast for
-`--ink` text.
+**`--chalk` is warm linen `#F1ECE1`.** Two things made the value before
+it (`#EFF2EA`, a cool grey-green) weak, both measurable rather than
+matters of taste: every other accent on the site is warm (`--rose` gold,
+`--sand`, `--rose-tint`), so the cool grey-green was the single cold
+note; and it sat almost exactly level with `--rose-tint` in luminance
+(ΔL 0.016), so that seam barely registered. `#F1ECE1` separates from
+both neighbours (ΔL 0.101 from `--paper`, 0.021 from `--rose-tint`) and
+keeps **10.49:1** contrast for `--ink` text.
+
+**Four replacements were tried in one sitting (Sept 2026) and all four
+were reverted back to this.** Worth reading before proposing a fifth —
+each failed for a different, reusable reason:
+
+| Tried | Why it went |
+|---|---|
+| `#CED8E8` | hue **217°** — the periwinkle end of blue; reads lavender, not ocean |
+| `#E2EFF3` | a correct soft ocean blue (hue 194°, between true blue and the site's `--sea` at 176°); dropped when the brief changed to yellow |
+| `#F5ECBC` | hue **51°** — the green side of yellow; "too lemony" |
+| `#FCE8AC` | hue 45°, the owner's own `#FEE18A` softened; correct to the brief, but the owner preferred the original linen |
+
+The transferable parts:
+- **Judge a candidate by hue first.** For a yellow here, `--rose` (the
+  B&B's gold) is 42° and reads as the reference point: past ~48° goes
+  lemon, under ~40° goes orange. For a blue, past ~205° goes violet.
+- **A yellow `--chalk` adds a constraint a neutral one doesn't have:**
+  `.btn` / "Book Now" is `--rose` gold, so a gold button on a chalk band
+  is then separated by lightness alone. `#FCE8AC` kept ΔL 0.177 there.
+- **`rooms/index.html` stacks `.band-chalk` directly on `.band-rose`, so
+  check that seam by RENDERING it, never by comparing luminance.** The
+  blue values sat ΔL 0.018 from `--rose-tint` — which the paragraph
+  above would call invisible — and the seam read perfectly well, because
+  cool-meets-warm is a hue boundary. A same-hue yellow has no such
+  escape route, and two of the yellow candidates genuinely did fade out
+  there.
 
 **`--chalk` is NOT only a background.** It is also:
 - the light **text** colour on `.site-foot` and `.band-deep`;
@@ -1326,9 +1468,22 @@ treat this list as the authority rather than "fixing" the page back.
   reads "we arrange activities for guests on request — safaris, sea
   trips, scuba diving and other outdoor adventures." It previously
   hedged ("happy to advise on or arrange"); the owner confirmed they
-  genuinely arrange these, so the hedge went. This is also what makes
-  `.trips-explore` ("Explore the area") honest in pointing at
-  `#callback` rather than a non-existent area-guide page.
+  genuinely arrange these, so the hedge went.
+- **Breakfast is R130 per person, on request** (Sept 2026, up from R110).
+  Stated in **two** places on `index.html` and easy to half-fix: the
+  `.facts` list in the Welcome section, and the `.cb-facts` "Good to know"
+  list in `#callback`. Their own public booking listings still say R110,
+  so an audit against those will look like it has found a bug here.
+  README.md § 3 used to carry this as an unconfirmed item; it isn't one
+  any more.
+- **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
+  9 km came from the old site / listings, which presumably measured to a
+  different campus — **NMU's South Campus is in Summerstrand itself**,
+  about 2 km from the house by road. The `.dist` row's `<small>` now says
+  "South Campus" for exactly this reason: NMU also has a Missionvale
+  campus ~20 km away, and an unqualified "Nelson Mandela University —
+  2 km" would be wrong for anyone heading there. If the distance is ever
+  revisited, name the campus rather than averaging them.
 
 ## Image dimensions, and `_originals/`
 

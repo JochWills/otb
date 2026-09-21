@@ -18,8 +18,9 @@
      neighbours — ΔL 0.10 from --paper, 0.02 from --rose-tint — while
      keeping 10.5:1 contrast for --ink text.
      NOTE this token is not only a background: it is also the light TEXT
-     colour on the dark footer and .band-deep, and the fill of the .chips
-     pills. Check all four when changing it. */
+     colour on the dark footer and .band-deep, the fill of the .chips
+     pills and the .cb-card contact cards, and the .nav-dropdown
+     hover/current background. Check all five when changing it. */
   --chalk:      #F1ECE1;
   --paper:      #F8F9F4;
   --sand:       #E7DCCA;
@@ -396,6 +397,125 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   border-left:2px solid var(--rose); padding-left:12px; max-width:34ch;
 }
 
+/* ---- Welcome (#stay) text column ---- */
+/* Rebuilt Sept 2026 to an owner-supplied mockup: heading, a wave flourish,
+   an uppercase subtitle, the body copy, a 4-up icon fact row, and a script
+   sign-off. The mockup also carried a solid "Book Your Stay" button on the
+   sign-off row; the owner asked for it to be dropped, so the sign-off is
+   the section's last element and starts at the gutter. */
+
+/* One ripple under the heading, same motif as .bookbox-head-waves on the
+   room pages. The stroke is rgba rather than var(--line) on purpose: at
+   .15 alpha a 2px stroke all but disappears, and this is meant to read as
+   a drawn flourish, not as the hairline rules that .eyebrow-rule and
+   .welcome-signoff draw with --line further down this same column. */
+.welcome-wave{
+  display:block; width:96px; height:auto; margin:.5em 0 1.45em;
+  fill:none; stroke:rgba(28,58,49,.32); stroke-width:2;
+  stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* Deliberately NOT .eyebrow, even though it looks like one. That class is
+   the small label ABOVE a heading and is reused on all six room cards and
+   the chips-group labels (see CLAUDE.md § Section eyebrows) — giving it a
+   second, larger role below a heading would mean any future change to
+   .eyebrow silently hit those too. */
+.welcome-sub{
+  margin:0 0 1.5em;
+  font:700 .78rem/1.5 var(--sans); letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-soft);
+}
+
+/* The mockup breaks the heading over two lines ("Welcome to / On The Bay"),
+   which is most of what gives the wave flourish below it the right
+   proportion. Unconstrained it fits on one line at every width the site
+   reaches, so the cap is what creates the break.
+
+   8.5ch is measured, not eyeballed: "Welcome to" is 7.41ch and "Welcome to
+   On" is 9.69ch, and those two numbers are the SAME at every viewport
+   (both the text and the ch unit scale with the h-sec clamp), so one value
+   holds from 360px to 1920px with ~15% margin either side. 13ch was the
+   first guess and it broke after "On" instead. If this heading's wording
+   ever changes, re-measure — the window moves with the words. */
+.split-text .h-sec{
+  /* Scaled up from the sitewide .h-sec clamp (1.9/4.2vw/3rem) so the
+     heading's lines come out the same width as the .welcome-sub line
+     below it, which the owner asked for. At the top of the clamp
+     "On The Bay" measures ~253px against the subtitle's 252px.
+
+     Note the two can only match at desktop: .welcome-sub is a fixed rem
+     size with fixed letter-spacing, so it is 252px at EVERY viewport,
+     while the heading scales. At 390px the heading lines are ~153px and
+     the subtitle is still 252px. Matching there too would mean either a
+     ~57px heading on a 350px column or a subtitle too small to read.
+
+     max-width is in ch, which scales with this font-size — so the
+     "Welcome to / On The Bay" break survives this change with no
+     re-measuring. See the note below for where 8.5 comes from. */
+  font-size:clamp(2.15rem, 4.95vw, 3.55rem);
+  max-width:8.5ch;
+}
+
+/* The mockup has the lede only fractionally larger than the body copy, not
+   the 23% jump --t-1 (1.3125rem) gives over --t-0. Same deliberate
+   off-the-scale exception as .around-top .lede — if the type scale is ever
+   revised, these two are exceptions, not oversights. */
+.split-text .lede{ font-size:1.15rem; }
+
+/* Four feature callouts, replacing the <dl class="facts"> that was here.
+   minmax(0,1fr) rather than a bare 1fr for the reason documented on
+   .roomlayout and .cb-cols: a grid item's default min-width is auto, so a
+   bare 1fr lets a long word push the track — and the page — wider than the
+   viewport instead of wrapping. */
+.welcome-facts{
+  list-style:none; margin:2.5em 0 0; padding:0;
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.welcome-facts li{
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  padding:0 12px; border-left:1px solid var(--line);
+}
+.welcome-facts li:first-child{ border-left:0; padding-left:0; }
+/* Explicit margins rather than a flex `gap`: the icon needs more air below
+   it than the two text lines need between them, and one gap can't do both. */
+.welcome-fact-icon{
+  display:grid; place-items:center; width:44px; height:44px; margin-bottom:13px;
+  /* the same circle badge as .dist-icon, .bookbox-icon and .cb-fact-icon */
+  border-radius:50%; background:rgba(28,58,49,.08); color:var(--ink);
+}
+.welcome-fact-icon svg{ width:21px; height:21px; }
+.welcome-facts b{
+  margin-bottom:5px;
+  font:700 .72rem/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink);
+}
+.welcome-facts small{ font-size:var(--t--1); line-height:1.35; color:var(--ink-mute); }
+
+/* Two per row once four would be ~85px each. This query MUST stay below the
+   :first-child rule above — the two selectors are equally specific, so at
+   equal specificity the later one wins no matter which sits in a media
+   query. That exact trap already bit .cb-gk once; see CLAUDE.md. */
+@media (max-width:620px){
+  .welcome-facts{ grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:28px; }
+  /* With two columns the border has to clear on the first cell of EVERY
+     row, not just the very first — nth-child(odd) is the left column. */
+  .welcome-facts li:nth-child(odd){ border-left:0; padding-left:0; }
+}
+
+/* Same construction as .dist-more (script line, rule trailing off right) and
+   .cb-signoff (same, but centred and rule-flanked on both sides). Three
+   near-identical rules now; kept separate rather than folded into a shared
+   utility because each is tuned to its own section's size and spacing.
+   max-width:none is load-bearing — it's a <p>, and the base `p` rule caps
+   every paragraph at 66ch, which would stop the rule short of the column. */
+.welcome-signoff{
+  display:flex; align-items:center; gap:clamp(14px,2.2vw,22px);
+  margin:2.6em 0 0; max-width:none;
+  font-family:var(--script); font-size:clamp(1.3rem,2vw,1.6rem);
+  color:var(--ink-soft);
+}
+.welcome-signoff::after{ content:""; flex:1 1 auto; height:1px; background:var(--line); }
+
 .facts{ margin:2.2em 0 0; display:grid; gap:0; border-top:1px solid var(--line); }
 .facts > div{
   display:flex; justify-content:space-between; gap:20px;
@@ -684,7 +804,22 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   border-radius:50%; background:rgba(28,58,49,.08); color:var(--ink);
 }
 .bookbox-icon svg{ width:16px; height:16px; }
-.bookbox-facts dd{ margin:0; font-weight:700; font-size:var(--t-0); color:var(--ink); text-align:right; }
+/* Values are serif at weight 500, matching .cb-card-value in #callback
+   rather than the bold sans they used to be: at 700 the sans read as app
+   UI sitting next to the muted sans labels, and serif is what the rest of
+   the site reaches for when the value is the thing worth looking at.
+
+   text-wrap:balance is the substantive fix here. "2 singles, or king +
+   single" (twin) is the only value long enough to wrap in the 340px
+   sidebar, and right-aligned it stranded "single" alone on the second
+   line, which read as a mistake. Balance splits it evenly instead.
+   line-height has to come down with it — the inherited body line-height
+   left a two-line value looking like two separate facts. */
+.bookbox-facts dd{
+  margin:0; text-align:right; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:var(--t-0);
+  line-height:1.3; text-wrap:balance;
+}
 /* a light rule ahead of the check-in row, separating "what the room is"
    facts from "when you can have it" facts */
 .bookbox-facts .row-stay{ padding-top:.85em; border-top:1px solid var(--line); }
@@ -883,16 +1018,13 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 }
 .dist-more::after{ content:""; flex:1 1 auto; height:1px; background:var(--line); }
 
+/* Only wraps the <h3> now — the "Explore the area" link that used to sit
+   opposite it was removed (Sept 2026, owner's request). Kept rather than
+   unwrapped because `.h-min`'s margin-bottom:0 here is what leaves the
+   spacing below the heading to `.trips p`'s own margin-top; drop the
+   wrapper and the two margins start stacking. */
 .trips-head{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; }
 .trips-head .h-min{ margin-bottom:0; }
-.trips-explore{
-  display:inline-flex; align-items:center; gap:.5em;
-  font:700 .72rem/1 var(--sans); letter-spacing:.1em; text-transform:uppercase;
-  color:var(--ink-mute); text-decoration:none; white-space:nowrap;
-}
-.trips-explore svg{ width:15px; height:15px; transition:transform .2s ease; }
-.trips-explore:hover{ color:var(--ink); }
-.trips-explore:hover svg{ transform:translateX(3px); }
 .trips p{ margin-top:1em; color:var(--ink-soft); }
 /* Each group's label needs to sit clearly closer to ITS OWN chips than
    to the group above — it was `margin-top:1.6em` against the chips'

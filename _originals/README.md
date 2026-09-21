@@ -27,6 +27,7 @@ Upload everything **except this folder**.
 | `heronewtest.png` | `images/hero-3.jpg`, the live hero, and `images/og-image.jpg` |
 | `IMG_3459.HEIC`, `hero-original.jpeg`, `hero (1).jpeg`, `hero.jpeg`, `hero.jpg`, `hero-2.jpg` | superseded heroes, kept so the owner can revert |
 | `aroundus.jpg` | `images/aroundus.webp` |
+| `welcome.png` | `images/welcome.webp`, the Welcome section's pergola photo |
 | `adventuretext.png` | `images/adventuretext.webp` |
 | `asideimage.png` | `images/bookbox-wave.webp` |
 | `LookAround/` | `images/gallery-1..14.webp` |
