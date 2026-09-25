@@ -158,7 +158,7 @@
 
   /* re-apply a fragment scroll once webfonts have settled.
 
-     Landing on /#callback cold — which is what the footer links
+     Landing on /#contact cold — which is what the footer links
      and every room page's "Get in touch" do — used to leave the section
      ~86px above where it belongs. The cause is NOT scroll maths and NOT
      lazy images (every <img> now carries width/height, and fixing that

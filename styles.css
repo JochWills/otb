@@ -377,7 +377,15 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 /* ============================================================
    BANDS
    ============================================================ */
-.band{ padding-block:var(--band); }
+/* Top padding is deliberately smaller than the bottom (was equal, both
+   var(--band)) — the gap above a section's eyebrow reads better tighter
+   than the gap a section leaves below its own content before the next
+   band starts. Matches the value #around already used for the same
+   reason (see its own comment below); that section's own override is
+   now redundant with this default but is left in place since its
+   min-height reservation math quotes this value verbatim and needs an
+   explicit, easy-to-find source for it. */
+.band{ padding-top:clamp(44px,5.2vw,72px); padding-bottom:var(--band); }
 .band-chalk{ background:var(--chalk); }
 .band-paper{ background:var(--paper); }
 .band-sand{ background:var(--sand); }
@@ -802,7 +810,7 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   border-radius:50%; background:rgba(28,58,49,.08); color:var(--ink);
 }
 .bookbox-icon svg{ width:16px; height:16px; }
-/* Values are serif at weight 500, matching .cb-card-value in #callback
+/* Values are serif at weight 500, matching .cb-card-value in #contact
    rather than the bold sans they used to be: at 700 the sans read as app
    UI sitting next to the muted sans labels, and serif is what the rest of
    the site reaches for when the value is the thing worth looking at.
@@ -863,13 +871,18 @@ p{ margin:0 0 1.05em; max-width:66ch; }
    case a future section wants a dark band again, but neither is used
    here any more), an eyebrow + wavy-clipped photo panel above the
    existing two-column facts/chips grid. */
-/* This section opens tighter than the rest of the site on purpose: the
-   photo panel is flush with the very top of the band (see below), so the
-   usual full `--band` of top padding above the eyebrow left the text
-   stranded a long way down the photo. Roughly half of --band, still
-   scaling with it. The bottom keeps the standard --band. */
+/* This override is now redundant with .band's own default top padding
+   (both are this same clamp — see "BANDS" above) but is kept explicit
+   rather than deleted: the min-height reservation below quotes this
+   exact value verbatim, and that comment needs something concrete to
+   point at rather than an inherited default. Originally this was
+   .around's own exception — the photo panel is flush with the very top
+   of the band (see below), so the site's old full `--band` top padding
+   left the text stranded a long way down the photo — until the smaller
+   value became the sitewide default for every section's eyebrow gap.
+   The bottom keeps the standard --band. */
 .around{
-  position:relative; padding-top:clamp(36px,4.5vw,62px);
+  position:relative; padding-top:clamp(44px,5.2vw,72px);
   /* The gap between the "Close by" and "Worth the drive" columns. It's a
      variable because the lede above them is width-matched to the "Close
      by" column, and that match is computed from this value — see
@@ -898,7 +911,7 @@ p{ margin:0 0 1.05em; max-width:66ch; }
      tracks both automatically. The +8px is just air.
      KEEP THE TWO CLAMPS BELOW IDENTICAL to .around-photo's height and
      .around's padding-top. */
-  min-height:calc(clamp(170px,16.5vw,360px) - clamp(36px,4.5vw,62px) + 8px);
+  min-height:calc(clamp(170px,16.5vw,360px) - clamp(44px,5.2vw,72px) + 8px);
   /* Width-matched to the "Close by" column below it, and DERIVED from
      .around-grid's own track sizing rather than eyeballed: that grid is
      `.9fr 1.1fr` with --around-gap between, so its left column is
@@ -1170,9 +1183,10 @@ p{ margin:0 0 1.05em; max-width:66ch; }
 /* This section closes with .cb-signoff, which already sits a long way
    down (see its margin-top). A full --band of padding *underneath* that
    as well left an obvious slab of empty colour at the bottom, so the
-   bottom padding is roughly halved here. The top padding stays --band so
-   the section still opens in the same rhythm as every other one —
-   they're deliberately not symmetrical. */
+   bottom padding is roughly halved here, same as .band's own bottom
+   default everywhere else — they're deliberately not symmetrical. Top
+   padding is untouched, so it opens with the same (now sitewide-default)
+   eyebrow gap as every other section — see "BANDS" above. */
 .cb-band{ padding-bottom:clamp(40px,5vw,70px); }
 .cb{ display:grid; grid-template-columns:1fr; align-items:start; }
 /* Left-aligned and full-width, NOT the centred 800px block this was —

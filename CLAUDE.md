@@ -407,7 +407,7 @@ site the card design was already ported from
     divider separating "what the room is" from "when you can have it".
 
     **The `dd` values are serif at weight 500** (Sept 2026), matching
-    `.cb-card-value` in `#callback` rather than the bold sans they were.
+    `.cb-card-value` in `#contact` rather than the bold sans they were.
     At 700 the sans read as app UI next to the muted sans labels, and it
     clashed with the serif "Check availability" heading sitting directly
     above it in the same card. Two details in that rule are
@@ -666,7 +666,7 @@ changed. Shapes to use:
 | Target | From the root | From `rooms/` |
 |---|---|---|
 | Home | `./` | `../` |
-| Home section | `#callback` | `../#callback` |
+| Home section | `#contact` | `../#contact` |
 | Rooms listing | `rooms/` | `./` |
 | A room | `rooms/twin` | `twin` |
 
@@ -717,14 +717,14 @@ an anchor nav doesn't jump around relative to the page.
 **The phone number is gone from the header** (Sept 2026, owner's
 request) — `.head-tel` and its mobile `display:none` override were
 deleted from styles.css too, not left as dead rules. The number still
-appears in the `#callback` section's contact card, the footer and the
+appears in the `#contact` section's contact card, the footer and the
 JSON-LD.
 
-**"Get in touch" → `#callback` was added in its place**, matching the
+**"Get in touch" → `#contact` was added in its place**, matching the
 wording the footer and room pages already used for that section. Like
 everything else in this header, it is **hand-written on all 9 pages**
 (index + the 8 under `rooms/`) with no shared source — and the path
-differs by location: `#callback` on index.html, `../#callback`
+differs by location: `#contact` on index.html, `../#contact`
 everywhere under `rooms/`.
 
 **Watch the width when adding another item.** Per the note on the
@@ -755,7 +755,7 @@ removed**, on top of the "three places" already listed above for cards:
 the `.nav-dropdown` list is hand-written on **all 8 pages**, not
 generated — there's no shared data source for it either.
 
-## Contact section (`#callback`) — there is no form
+## Contact section (`#contact`) — there is no form
 
 **The callback form was scrapped for good (Sept 2026, owner's request —
 "we won't need it").** It had been hidden since earlier that month and was
@@ -769,10 +769,16 @@ ever wanted, but note it posted to FormSubmit, which was never activated
 (that needs a one-time email confirmation), so it never actually delivered
 anything.
 
-The section keeps its **`id="callback"`** even though nothing is called back:
-the nav, every footer and every room page link to `#callback`, and renaming
-it would mean touching all 9 pages for no visible gain. The visible wording
-is already "Get in touch".
+**The section's id was renamed `callback` → `contact`** (Sept 2026, owner's
+request). For a while after the form was scrapped it deliberately kept
+`id="callback"` even though nothing was called back any more — the nav,
+every footer and every room page link to it, and renaming meant touching
+all 9 pages for no visible gain, so it was left alone as churn nobody had
+asked for. The owner then asked for it anyway, so it's `id="contact"` now,
+and all 9 pages' `href="#contact"` / `href="../#contact"` were updated with
+it. **If this file still says `#callback` anywhere else, that's stale** —
+the id and every link to it were changed in one pass, nothing was meant to
+be left half-migrated.
 
 `.cb-intro` (the contact cards + "Good to know" facts) is the section's only
 content. The contact list and the facts (a `<ul class="cb-direct">` and a
@@ -1250,11 +1256,11 @@ changed by the time this is read.
   match the chevron's own affordance.
 
   **There are now no links at all in this section.** A small
-  `.trips-explore` link ("Explore the area" → `#callback`) used to sit
+  `.trips-explore` link ("Explore the area" → `#contact`) used to sit
   opposite the "Worth the drive" heading; it was **removed Sept 2026 at
   the owner's request** and its CSS deleted with it. Don't reinstate it
   — and if something like it is ever wanted again, note that the reason
-  it pointed at `#callback` was that this site has no area-guide page to
+  it pointed at `#contact` was that this site has no area-guide page to
   link to, so the same problem comes back with it.
 - **The chips pills are filled-on-light** (`background:var(--chalk)`, no
   border), changed from outline-on-dark when the band went light. Same
@@ -1381,7 +1387,7 @@ it would have gone.
 The homepage alternates strictly, top to bottom: hero, then
 **paper / linen / paper / linen / paper / linen**, then the dark footer.
 `#stay` paper, `#rooms` linen, `#around` paper, `#gallery` linen,
-`#callback` paper, `#find` linen. Keep it alternating if a section is
+`#contact` paper, `#find` linen. Keep it alternating if a section is
 ever added or reordered — two same-coloured bands in a row have no
 visible seam *and* double their `padding-block` where they meet (the
 mistake already documented for `rooms/index.html`'s intro).
@@ -1433,7 +1439,7 @@ three markup files) was deliberately left alone as churn the owner
 didn't ask for, but it's the obvious tidy-up if this area is touched
 again.
 
-**`#callback` moved from `.band-rose` to `.band-paper` and `#find` from
+**`#contact` moved from `.band-rose` to `.band-paper` and `#find` from
 `.band-paper` to `.band-chalk`** at the same time, which is what makes
 the alternation above come out even. `.band-rose` is **not** dead —
 `rooms/index.html`'s closing CTA still uses it. Knock-on: `.cb-card`'s
@@ -1449,7 +1455,7 @@ Every section heading on the homepage opens with a small uppercase label
 and a short trailing rule — `<p class="eyebrow eyebrow-rule">`. Current
 labels: **The house** (`#stay`), **Accommodation** (`#rooms`),
 **Location** (`#around`), **Gallery** (`#gallery`), **Contact**
-(`#callback`), **Directions** (`#find`). The hero is deliberately left
+(`#contact`), **Directions** (`#find`). The hero is deliberately left
 out: its `.hero-place` ("Summerstrand, Gqeberha") already does the same
 orienting job in the same position.
 
@@ -1463,7 +1469,7 @@ would put a trailing line inside every room card. Verified after the
 change: 6 section eyebrows have the rule, and the 6 card labels + 2
 chips labels do not.
 
-Two of the six sections (`#stay`, `#callback`) have no `.sec-head`
+Two of the six sections (`#stay`, `#contact`) have no `.sec-head`
 wrapper — their heading sits directly in `.split-text` / `.cb-intro` —
 which is the other reason the class is applied per-element rather than
 inherited from a wrapper.
@@ -1503,7 +1509,7 @@ content clear.
 **Anchors arriving from another page: FIXED (Sept 2026), and the cause
 was not what this file previously said it was.**
 
-Loading `/#callback` cold — what the footer links and every
+Loading `/#contact` cold — what the footer links and every
 room page's "Get in touch" do — used to land ~86px off, while in-page
 nav clicks were exact. This file blamed lazy images and prescribed
 giving them `width`/`height`. **That was wrong.** Every image now has
@@ -1531,7 +1537,7 @@ there are load-bearing:
 - **It suspends `scroll-behavior:smooth`** around the call. Left on, the
   correction animates several hundred px and reads as a glitch.
 
-Verified flush (0px) for `#callback`/`#find`/`#rooms`/`#around`/
+Verified flush (0px) for `#contact`/`#find`/`#rooms`/`#around`/
 `#gallery` cold at 390/900/1440, **and** in-page clicks still flush at
 390/1440 — check both, since this bug is exactly the kind that gets
 "fixed" by breaking the other path. Do not pad `--head-h`.
@@ -1580,7 +1586,7 @@ treat this list as the authority rather than "fixing" the page back.
 - **Breakfast is R130 per person, on request** (Sept 2026, up from R110).
   Stated in **two** places on `index.html` and easy to half-fix: the
   `.facts` list in the Welcome section, and the `.cb-facts` "Good to know"
-  list in `#callback`. Their own public booking listings still say R110,
+  list in `#contact`. Their own public booking listings still say R110,
   so an audit against those will look like it has found a bug here.
   README.md § 2 used to carry this as an unconfirmed item; it isn't one
   any more.
@@ -1602,7 +1608,7 @@ browser can reserve the right box before the bytes arrive. Previously none
 of the 83 images had them, which caused two visible problems:
 
 - the page visibly reflowed as photos loaded;
-- **the known cross-page anchor bug**: `/#callback` arriving cold
+- **the known cross-page anchor bug**: `/#contact` arriving cold
   (from a footer link or a room page) landed ~86px off, because the browser
   computed the fragment scroll while the hero was still collapsing. One fix,
   both symptoms. See "Fixed header and anchor links" — the warning there
