@@ -530,7 +530,7 @@ site the card design was already ported from
   king-sofa and garden-double show a unit), the **separate bath in
   king-sofa** (its spec only says "En-suite shower"), the family unit's
   second-bedroom wash basin, twin's coffee plunger, self-catering's
-  capsule coffee machine and walled courtyard with deckchairs, and the
+  Nespresso machine (owner-confirmed brand) and walled courtyard with deckchairs, and the
   induction hob in king-sofa. **When a room's photos change, re-check its
   About copy against them.**
 - Below `.roomlayout`, in its own section: the other five rooms as plain
@@ -1660,6 +1660,9 @@ treat this list as the authority rather than "fixing" the page back.
   owner). Listed in "In the room" on the other four room pages only. If
   those two rooms get USB outlets later, add the line to them too; don't
   add it to the homepage "In every room" list while it isn't every room.
+- **Self-catering room is a double bed only — no twin option** (Sept 2026,
+  owner). Was "Double or twin beds"; now "1 double bed" (garden-double's
+  wording) on both cards, the bookbox and the Sleeping list.
 - **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
   9 km came from the old site / listings, which presumably measured to a
   different campus — **NMU's South Campus is in Summerstrand itself**,
