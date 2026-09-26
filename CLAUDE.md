@@ -90,12 +90,23 @@ them:
   were deleted after processing, at the owner's request each time — there
   is no archival source for these like `hero-original.jpeg`; a different
   crop/photo needs a fresh export from the owner's phone/cloud backup.
-- **`garden-double` was NOT reshot in either pass** — its `Room 4` folder
-  was uploaded empty both times, so it still has the pre-Sept-2026 photo set
-  (JPEG, `images/rooms/garden-double/1.jpg`…`4.jpg`). A fresh shoot for this
-  room is still pending; when photos do arrive, process them the same way
-  as the other five (see "Photo processing conventions") and update both
-  the homepage card and `rooms/garden-double.html` (see below).
+- **`garden-double` was reshot separately, on 26 Sept 2026.** Its `Room 4`
+  folder was empty in both earlier passes, so until then it ran on the
+  pre-launch JPEG set (`1.jpg`…`4.jpg`, deleted and still in git). The
+  owner dropped 7 photos into `_originals/Room 4/`, each supplied **twice**:
+  as `N.HEIC` and as an `N.jpeg` re-export at the same 8064×6048. The
+  **HEICs were used**, since the JPEGs are an extra lossy generation of the
+  same pixels. Both copies are kept there as the archive, unlike the
+  earlier room dumps.
+  - Same pipeline as the other rooms: HEIC → PNG via `sips`, 2000px long
+    edge, WebP q82 `method=6`. **`6.webp` (the bathroom) came through
+    sideways** and needed `rotate(-90)`. It is the only portrait photo in
+    the set (1500×2000).
+  - **`7.webp` (the lattice courtyard) is 728KB**, well over the usual
+    band. It was left at q82 on purpose, because the owner asked for high
+    quality. Dropping quality barely helps: q75 only saves about 165KB and
+    raises mean error from 3.2 to 4.1. The detail really is in the dense
+    foliage and brick. It is the last gallery tile, so it only loads lazily.
 - `images/gallery-1.webp` … `gallery-6.webp` — the homepage's `#gallery`
   ("A look around") grid, replacing the six soft-gradient placeholders
   (Sept 2026). Source: `images/LookAround/LookAround1.jpg`…`6.jpeg` (owner-
@@ -515,10 +526,10 @@ card instances and the one generator script that originally wrote them
 the same data at the same time, not because anything enforces it going
 forward.
 
-- Photos live under `images/rooms/<slug>/1.webp, 2.webp, ...` (still `.jpg`
-  for `garden-double`, see above) — one folder per room type, numbered in
-  display order. Current counts: `king-sofa` 9, `twin` 6, `family-unit` 11,
-  `garden-double` 4, `self-catering` 7, `compact-single` 4.
+- Photos live under `images/rooms/<slug>/1.webp, 2.webp, ...` — one folder
+  per room type, numbered in display order, all WebP now. Current counts:
+  `king-sofa` 9, `twin` 6, `family-unit` 11, `garden-double` 7,
+  `self-catering` 7, `compact-single` 4.
 
   **`twin/1.webp` and `compact-single/1.webp` are below the 2000px
   convention.** Both were replaced Sept 2026 from owner-supplied `1.png`
@@ -604,6 +615,8 @@ forward.
   **The owner refers to rooms by `Room N`, not by slug**, so a request
   like "replace Room 1's photo" needs that mapping. Confirmed so far:
   - **`Room 1` = `twin`**
+  - **`Room 4` = `garden-double`** (checked against a contact sheet, Sept
+    2026, when its reshoot arrived: same aloe painting, same kitchenette)
   - **`Room 6` = `compact-single`**
 
   Both were confirmed Sept 2026 by rendering a contact sheet of all six
@@ -1644,17 +1657,20 @@ it**, so a broken-link check is what proves a move like this was safe.
 
 ## Worth flagging to the owner
 
-Room copy vs. photos don't fully line up and are worth a quick owner check
-before launch (separate from the four items already listed in the README):
-- The **Garden double** card's copy doesn't mention a kitchenette, but its
-  (still-unreplaced) photos show a full kitchenette with sink and stovetop.
-- The **King with sofa bed** card's copy doesn't mention a kitchenette
-  either, but its real photos (`images/rooms/king-sofa/5.webp`) show a full
-  kitchenette with an induction stovetop and sink — same mismatch as
-  garden-double.
-- The **Self-catering room** card's photos do show a kitchenette nook
-  (microwave, kettle, sink) consistent with its "light meal" copy — no
-  action needed, just noting it's confirmed rather than assumed.
+**Resolved (Sept 2026): the kitchenette mismatch.** The **Garden double**
+and **King with sofa bed** copy didn't mention a kitchenette, although
+both rooms' photos clearly show one. Both now say so everywhere they're
+described: both card sets, the room page's body text, `meta description`
+and `og:description`, plus a **Kitchen / Included** row in `.bookbox-facts`,
+placed between Sleeps and Bathroom to match `family-unit`. On the cards the
+kitchenette went into the body sentence, **not** a fourth `.spec` line.
+A fourth line on one card stretches its whole grid row (see "All 6 cards
+are meant to end up roughly the same height"). Both rows were measured
+afterwards and stayed level.
+
+Also resolved: the Welcome photo's alt text and figcaption described
+"over ninety rose bushes", which are not in that photo. Both now describe
+what is actually shown.
 
 ## Photo processing conventions
 
@@ -1692,9 +1708,8 @@ in both batches so far, applied before the resize/WebP-encode step (not as
 a re-rotation of an already-encoded WebP, to avoid a second lossy pass).
 Re-check with a fresh contact sheet after fixing.
 
-For anything still going out as plain JPEG (there's currently nothing left
-that is, but if `garden-double` gets reshot before someone updates this
-pipeline for it too): capped at 1100px long edge, sips `formatOptions
+For anything going out as plain JPEG (nothing on the site is any more):
+capped at 1100px long edge, sips `formatOptions
 normal`, targeting 40–115KB. `sips -Z <N>` scales to fit *and* upscales if
 the source is smaller than `<N>` — check source dimensions first.
 
