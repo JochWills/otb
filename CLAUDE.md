@@ -424,8 +424,8 @@ site the card design was already ported from
     above it in the same card. Two details in that rule are
     load-bearing:
     - **`text-wrap:balance`.** Values past a certain length wrap in the
-      340px sidebar — currently `family-unit`'s "King, double or twin
-      beds". (`twin`'s old "2 singles, or king + single" was the case
+      340px sidebar — none currently do (`family-unit` was split into
+      Bedroom 1 / Bedroom 2 rows rather than wrap). (`twin`'s old "2 singles, or king + single" was the case
       that exposed this: right-aligned and unbalanced, it stranded
       "single" alone on line 2, which reads as a mistake rather than a
       line break.) Balance splits them
@@ -509,8 +509,11 @@ site the card design was already ported from
   modifier class the same way rather than adding more unscoped
   `.gal-item:nth-child(n)` rules.
 - **The "About the room" block was expanded (Sept 2026)** from one
-  paragraph into: an `h2.room-about-title`, the old paragraph kept as
-  `.room-about-lede`, two descriptive paragraphs, a 2×2 `.room-feat` grid
+  paragraph into: an `h2.room-about-title`, **exactly two body paragraphs
+  at normal size** (owner: keep it to one or two, uniform styling — an
+  earlier version had a larger `.room-about-lede` intro above them, since
+  removed; its facts were folded into the two paragraphs), a 2×2
+  `.room-feat` grid
   (Sleeping / Bathroom / Kitchen(ette) or Tea & coffee / In the room,
   stacking to one column under 620px) and a `.room-about-note` with the
   breakfast price and check-in/out times. Hand-written per page.
@@ -1637,6 +1640,15 @@ treat this list as the authority rather than "fixing" the page back.
   now say "Sleeps up to 4" / "Up to 4"; the description carries the
   under-12 / 12+ detail, since "up to 4" alone would imply four adults.
   The rooms page guide row reads "Bringing one or two children".
+- **Family unit beds: the main bedroom is a king OR two singles; the
+  second bedroom is only a double** (Sept 2026, owner's correction). It
+  used to say "King, double or twin beds", which reads as any mix. Card
+  spec is now "King or 2 singles + double" — kept to 26 characters on
+  purpose: the longer "King or 2 singles, plus a double" pushed "View
+  room" onto its own line and made the whole card row 51px taller. The
+  bookbox splits it into **Bedroom 1 / Bedroom 2** rows (bed icon on
+  both), and the card, page lede, About text, Sleeping list and meta
+  descriptions all say which bedroom has which.
 - **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
   9 km came from the old site / listings, which presumably measured to a
   different campus — **NMU's South Campus is in Summerstrand itself**,

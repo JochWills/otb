@@ -736,7 +736,6 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   font-size:clamp(1.6rem,2.6vw,var(--t-3)); line-height:1.15; letter-spacing:-.01em;
   margin:.35em 0 .55em;
 }
-.roomlayout-main .room-about-lede{ font-size:var(--t-1); line-height:1.5; color:var(--ink); }
 .room-feat{
   display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;
   margin:2em 0 1.5em;
