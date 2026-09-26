@@ -207,6 +207,19 @@
     }
   }
 
+  /* whatsapp float: the close button minimises it to the icon, remembered
+     per browser (storage can throw in private windows, so it's guarded) */
+  var wa = document.querySelector('.wa-float');
+  if (wa) {
+    var WA_KEY = 'otb-wa-min';
+    try { if (localStorage.getItem(WA_KEY)) wa.classList.add('is-min'); } catch (e) {}
+    var waClose = wa.querySelector('.wa-float-close');
+    if (waClose) waClose.addEventListener('click', function () {
+      wa.classList.add('is-min');
+      try { localStorage.setItem(WA_KEY, '1'); } catch (e) {}
+    });
+  }
+
   /* footer year */
   var yr = document.getElementById('yr');
   if (yr) yr.textContent = new Date().getFullYear();

@@ -16,7 +16,17 @@ filename printed faintly in the corner — that's the tell). Progress replacing
 them:
 
 **Done (real photos):**
-- **`images/hero-3.jpg` is the hero the page actually loads** (1448×1086,
+- **`images/hero-final.webp` is the hero the page actually loads** (Sept
+  2026). Source `_originals/herofinal.jpg` (owner-supplied, 1448×1086) —
+  the same garden-path photo as `hero-3.jpg` with a cooler re-grade (bluer
+  sky). WebP **q88, no resample**: 406KB against the 704KB JPEG. q88 not
+  q82 because this is the LCP image and already upscaled on wide screens;
+  q82 only saved ~87KB for measurably more error. `hero-3.jpg` moved to
+  `_originals/` with the other superseded heroes. **`og-image.jpg` was NOT
+  rebuilt** and still carries the old grade; rebuild it from
+  `herofinal.jpg` the same way (1448×760 slice at top=210 → 1200×630) if
+  the share preview should match.
+- *(superseded)* `images/hero-3.jpg` was the hero before that (1448×1086,
   derived from the owner-supplied `images/heronewtest.png` at the same
   size). This entry used to name `hero-2.jpg` and was stale — **check
   `index.html`'s `.hero-img` `src` rather than trusting this list**, since
@@ -137,6 +147,18 @@ them:
   pattern note just below that for how they still get the same wide/narrow
   treatment as photos 1–6 despite arriving after the original six-photo
   mosaic was hand-tuned.
+- `images/gallery-15.webp`, `gallery-16.webp`, `gallery-17.webp` — three
+  breakfast shots (Sept 2026; `_originals/LookAround/LookAround15–17.jpg`).
+  **They're the last row and are three equal tiles**, not the wide/narrow
+  mosaic: each carries `.gal-item--trio`, which resets them to one column
+  and 4:3. That only works because the row before (tiles 13 wide + 14
+  narrow) is full, so the trio starts a fresh row — adding or removing a
+  photo before them breaks that. **Small sources: 1000×750, 750×1000 and
+  750×1000**, so they were encoded at native size
+  (q82, no upscale) and look softer in the lightbox than the 1620px set.
+  A bigger export from the owner would fix that. DOM order is 16, 15, 17
+  (portrait, landscape, portrait), left over from before the trio existed;
+  harmless now that all three tiles are the same shape.
 - `images/adventuretext.webp` — the "What's around us" photo caption, as
   **owner-supplied lettering artwork rather than live text** (Sept 2026).
   Source `images/adventuretext.png` kept as the archival original. See
@@ -156,13 +178,13 @@ tile-per-row rhythm no matter how many photos get revealed, instead of
 every tile past 6 falling back to a flat, un-mosaicked grid.
 
 **"See more photos" — the homepage gallery only shows 6 photos up front.**
-All 14 `.gal-item` buttons are in the DOM from page load (`index.html`'s
+All 17 `.gal-item` buttons are in the DOM from page load (`index.html`'s
 `#gal`), but the 8 that aren't among the first 6 carry a plain `hidden`
 attribute in the markup, and a `<button id="galMore">See more photos</button>`
 sits in a `.gal-more-row` right after the grid. `script.js`'s `#galMore`
 click handler un-hides the next 4 still-hidden `.gal-item`s each time it's
 clicked (`#gal .gal-item[hidden]`, sliced to 4), and hides the button
-itself once none are left. Two clicks exhausts 8 photos (4 + 4). A photo
+itself once none are left. Three clicks exhausts the 11 hidden photos (4 + 4 + 3) — the last click reveals the breakfast trio together. A photo
 count that isn't a multiple of 4 still works fine — the last click just
 reveals whatever's left, same as the loop's own `.slice(0, 4)` naturally
 handles a shorter remainder.
@@ -172,7 +194,7 @@ Two things worth knowing if this needs touching again:
   `.gal-item` in the DOM, hidden or not** (`document.querySelectorAll
   ('.gal-item')` doesn't care about the `hidden` attribute or `display`).
   So opening the lightbox on photo 1 and clicking "previous" wraps
-  straight to photo 14/14, even if "See more photos" was never clicked —
+  straight to the last photo (17/17), even if "See more photos" was never clicked —
   this is intentional, not a bug to "fix" by scoping the lightbox to only
   visible tiles. It means the lightbox and the on-page reveal are two
   independent ways to reach the same photos, not one gating the other.
@@ -793,6 +815,27 @@ panel. **Two more places to update if a room is ever renamed/added/
 removed**, on top of the "three places" already listed above for cards:
 the `.nav-dropdown` list is hand-written on **all 8 pages**, not
 generated — there's no shared data source for it either.
+
+## Floating WhatsApp button (`.wa-float`)
+
+Redesigned Sept 2026 from a bare 52px icon into a labelled pill, loosely
+after an owner-supplied reference but in the site's own language (paper
+pill, `--ink` badge that turns `--sea` on hover, serif title, small line
+below). Wording is the owner's own: **"Book direct" / "Message us to save
+on rates"** — the saving claim is theirs to make (it replaced a neutral
+"Chat with us" / "Availability & rates on WhatsApp"). Hand-written on all 8 pages
+(`div.wa-float` > `a.wa-float-link` + `button.wa-float-close`, top-right corner).
+
+- The **× minimises, it doesn't dismiss**: `.is-min` hides the label and
+  close button, leaving a 54px round icon that still links to WhatsApp.
+  `script.js` stores that in `localStorage` (`otb-wa-min`, try/catch
+  guarded), so it stays small for that visitor on every page.
+- The visible label is `aria-hidden`; the link's `aria-label` carries the
+  same words, because it has to keep working once the label is hidden.
+- It rises in after ~0.9s (`wa-in`), off under `prefers-reduced-motion`.
+- On phones the open pill covers the bottom-right of whatever is behind it
+  (e.g. the hero's amenities ribbon) — that's the trade-off of a labelled
+  button, and why minimising is remembered.
 
 ## Contact section (`#contact`) — there is no form
 
@@ -1722,7 +1765,7 @@ it**, so a broken-link check is what proves a move like this was safe.
 and **King with sofa bed** copy didn't mention a kitchenette, although
 both rooms' photos clearly show one. Both now say so everywhere they're
 described: both card sets, the room page's body text, `meta description`
-and `og:description`, plus a **Kitchen / Included** row in `.bookbox-facts`,
+and `og:description`, plus a **Kitchen / Kitchenette** row in `.bookbox-facts`,
 placed between Sleeps and Bathroom to match `family-unit`. On the cards the
 kitchenette went into the body sentence, **not** a fourth `.spec` line.
 A fourth line on one card stretches its whole grid row (see "All 6 cards
@@ -1731,7 +1774,7 @@ afterwards and stayed level.
 
 **King with sofa bed has a *full kitchen*, not a kitchenette** (owner's
 correction, Sept 2026). Its copy says "plus a full kitchen" and its bookbox
-row reads **Kitchen / Full**, where the kitchenette rooms say *Included*.
+row reads **Kitchen / Full**, where the kitchenette rooms say *Kitchenette*.
 Garden double stays "kitchenette". Don't normalise the two back into one
 word.
 

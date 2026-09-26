@@ -24,13 +24,14 @@ Upload everything **except this folder**.
 
 | File(s) | Rebuilds |
 |---|---|
-| `heronewtest.png` | `images/hero-3.jpg`, the live hero, and `images/og-image.jpg` |
+| `herofinal.jpg` | `images/hero-final.webp`, the live hero (WebP q88, no resample) |
+| `heronewtest.png` | `images/og-image.jpg`; also the source of the superseded `hero-3.jpg` (now in this folder) |
 | `IMG_3459.HEIC`, `hero-original.jpeg`, `hero (1).jpeg`, `hero.jpeg`, `hero.jpg`, `hero-2.jpg` | superseded heroes, kept so the owner can revert |
 | `aroundus.jpg` | `images/aroundus.webp` |
 | `welcome.png` | `images/welcome.webp`, the Welcome section's pergola photo |
 | `adventuretext.png` | `images/adventuretext.webp` |
 | `asideimage.png` | `images/bookbox-wave.webp` |
-| `LookAround/` | `images/gallery-1..14.webp` |
+| `LookAround/` | `images/gallery-1..17.webp` (15–17 are small, 1000px exports) |
 | `Room 1/` … `Room6/` | the original (pre-reshoot) room photo sets |
 | `Room 4/1..7.HEIC` | `images/rooms/garden-double/1..7.webp`, the Sept 2026 reshoot (`6.HEIC` needs rotating 90° clockwise). The matching `N.jpeg` files are the owner's re-exports of the same pixels, so rebuild from the HEICs |
 | `Room6/compact-single-1-original.HEIC` | `images/rooms/compact-single/banner.webp`, the Compact room's hero: the 48MP original, rotated 90° clockwise then cropped 2:1 from 26% down |
