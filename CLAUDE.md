@@ -519,7 +519,7 @@ site the card design was already ported from
   (In the room), all drawn for this and checked at badge size — and a
   tick list on the right. Columns are `auto-fit, minmax(300px,1fr)`, so it
   is two-up only where the column is wide enough — one-up at ~1100px and
-  on phones; the badge drops to 44px under 480px)
+  on phones; the badge is 46px, dropping to 40px under 480px; list text .9375rem)
   (Sleeping / Bathroom / Kitchen(ette) or Tea & coffee / In the room,
   stacking to one column under 620px) and a `.room-about-note` with the
   breakfast price and check-in/out times. Hand-written per page.
@@ -1655,6 +1655,11 @@ treat this list as the authority rather than "fixing" the page back.
   bookbox splits it into **Bedroom 1 / Bedroom 2** rows (bed icon on
   both), and the card, page lede, About text, Sleeping list and meta
   descriptions all say which bedroom has which.
+- **USB charging ports on the plug points in every room EXCEPT Room 1
+  (`twin`) and Room 6 (`compact-single` / Compact room)** (Sept 2026,
+  owner). Listed in "In the room" on the other four room pages only. If
+  those two rooms get USB outlets later, add the line to them too; don't
+  add it to the homepage "In every room" list while it isn't every room.
 - **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
   9 km came from the old site / listings, which presumably measured to a
   different campus — **NMU's South Campus is in Summerstrand itself**,
