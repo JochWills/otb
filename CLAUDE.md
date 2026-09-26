@@ -1660,9 +1660,10 @@ treat this list as the authority rather than "fixing" the page back.
   owner). Listed in "In the room" on the other four room pages only. If
   those two rooms get USB outlets later, add the line to them too; don't
   add it to the homepage "In every room" list while it isn't every room.
-- **Self-catering room is a double bed only — no twin option** (Sept 2026,
-  owner). Was "Double or twin beds"; now "1 double bed" (garden-double's
-  wording) on both cards, the bookbox and the Sleeping list.
+- **Self-catering room has one queen bed — no twin option** (Sept 2026,
+  owner). Was "Double or twin beds"; now "1 queen bed" on both cards, the
+  bookbox and the Sleeping list. Garden double and Compact room are still
+  "1 double bed" — don't normalise them together.
 - **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
   9 km came from the old site / listings, which presumably measured to a
   different campus — **NMU's South Campus is in Summerstrand itself**,
