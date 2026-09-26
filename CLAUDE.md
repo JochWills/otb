@@ -289,7 +289,7 @@ short, defensible, feature-based lines the owner should feel free to
 edit — **not** verified marketing claims like "most popular" (no booking
 data backs that up), so each one describes something already true of the
 room's own spec instead: king-sofa "Private patio", twin "Flexible
-option" (it really does convert between 2 singles and a king+single),
+option" (it really does convert between 2 singles and a king),
 family-unit "Great for families", garden-double "Garden views",
 self-catering "Self-catering", compact-single "Solo & short stays".
 
@@ -423,11 +423,12 @@ site the card design was already ported from
     clashed with the serif "Check availability" heading sitting directly
     above it in the same card. Two details in that rule are
     load-bearing:
-    - **`text-wrap:balance`.** Two values are long enough to wrap in the
-      340px sidebar — `twin`'s "2 singles, or king + single" and
-      `family-unit`'s "King, double or twin beds". Right-aligned and
-      unbalanced, the first stranded "single" alone on line 2, which
-      reads as a mistake rather than a line break. Balance splits them
+    - **`text-wrap:balance`.** Values past a certain length wrap in the
+      340px sidebar — currently `family-unit`'s "King, double or twin
+      beds". (`twin`'s old "2 singles, or king + single" was the case
+      that exposed this: right-aligned and unbalanced, it stranded
+      "single" alone on line 2, which reads as a mistake rather than a
+      line break.) Balance splits them
       evenly instead. **Any new value past roughly 22 characters wraps
       here too** — check it rather than assuming.
     - **An explicit `line-height:1.3`.** The inherited body line-height
@@ -507,6 +508,22 @@ site the card design was already ported from
   fight). If a third gallery layout is ever needed, give it its own
   modifier class the same way rather than adding more unscoped
   `.gal-item:nth-child(n)` rules.
+- **The "About the room" block was expanded (Sept 2026)** from one
+  paragraph into: an `h2.room-about-title`, the old paragraph kept as
+  `.room-about-lede`, two descriptive paragraphs, a 2×2 `.room-feat` grid
+  (Sleeping / Bathroom / Kitchen(ette) or Tea & coffee / In the room,
+  stacking to one column under 620px) and a `.room-about-note` with the
+  breakfast price and check-in/out times. Hand-written per page.
+  **Sourcing rule:** every claim is either already stated elsewhere on the
+  site (room spec, "In every room" list, breakfast price, check-in/out
+  times) or visible in that room's own gallery. Details that came only
+  from the photos, and are worth an owner check: air conditioning (only
+  king-sofa and garden-double show a unit), the **separate bath in
+  king-sofa** (its spec only says "En-suite shower"), the family unit's
+  second-bedroom wash basin, twin's coffee plunger, self-catering's
+  capsule coffee machine and walled courtyard with deckchairs, and the
+  induction hob in king-sofa. **When a room's photos change, re-check its
+  About copy against them.**
 - Below `.roomlayout`, in its own section: the other five rooms as plain
   link pills (`.room-more`/`.room-more-link`), unchanged by this redesign.
 
@@ -1603,6 +1620,23 @@ treat this list as the authority rather than "fixing" the page back.
   so an audit against those will look like it has found a bug here.
   README.md § 2 used to carry this as an unconfirmed item; it isn't one
   any more.
+- **Room 1 is the "Twin room" and sleeps 2 — there is no extra single**
+  (Sept 2026, owner's correction). It was "Twin with extra single": two
+  singles plus a child's single, or a king plus a child's single, sleeping
+  2 + 1 child. The owner said it is either two singles or a king, nothing
+  more. Briefly "Twin or king", then named **"Twin room"** at the
+  owner's request. Renamed everywhere (titles, headings, breadcrumb, both card sets,
+  the Rooms dropdown and "other rooms" pills on all 8 pages, alt text,
+  carousel `aria-label`s), spec now "2 singles or 1 king", Sleeps "2".
+  The slug and URL stay `twin`. **King with sofa bed keeps its child
+  places** — see the next entry. Old
+  listings will still say "extra single"; don't restore it from them.
+- **King with sofa bed sleeps up to 4** (Sept 2026, owner's correction).
+  The sofa bed takes **two children under 12, or one child aged 12+** — it
+  used to say one child under 12, "Sleeps 2 + 1 child". Cards and bookbox
+  now say "Sleeps up to 4" / "Up to 4"; the description carries the
+  under-12 / 12+ detail, since "up to 4" alone would imply four adults.
+  The rooms page guide row reads "Bringing one or two children".
 - **Nelson Mandela University is 2 km away, not 9 km** (Sept 2026). The
   9 km came from the old site / listings, which presumably measured to a
   different campus — **NMU's South Campus is in Summerstrand itself**,
@@ -1667,6 +1701,12 @@ kitchenette went into the body sentence, **not** a fourth `.spec` line.
 A fourth line on one card stretches its whole grid row (see "All 6 cards
 are meant to end up roughly the same height"). Both rows were measured
 afterwards and stayed level.
+
+**King with sofa bed has a *full kitchen*, not a kitchenette** (owner's
+correction, Sept 2026). Its copy says "plus a full kitchen" and its bookbox
+row reads **Kitchen / Full**, where the kitchenette rooms say *Included*.
+Garden double stays "kitchenette". Don't normalise the two back into one
+word.
 
 Also resolved: the Welcome photo's alt text and figcaption described
 "over ninety rose bushes", which are not in that photo. Both now describe

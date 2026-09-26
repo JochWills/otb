@@ -726,6 +726,43 @@ p{ margin:0 0 1.05em; max-width:66ch; }
   gap:clamp(28px,5vw,56px); align-items:start;
 }
 .roomlayout-main p{ color:var(--ink-soft); }
+
+/* Room "About" section. Every claim in the prose and the feature lists is
+   either already stated elsewhere on the site (spec, "In every room",
+   breakfast price) or visible in that room's own photos — nothing is
+   inferred beyond what a guest could check against the gallery below. */
+.room-about-title{
+  font-family:var(--serif); font-weight:400; color:var(--ink);
+  font-size:clamp(1.6rem,2.6vw,var(--t-3)); line-height:1.15; letter-spacing:-.01em;
+  margin:.35em 0 .55em;
+}
+.roomlayout-main .room-about-lede{ font-size:var(--t-1); line-height:1.5; color:var(--ink); }
+.room-feat{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;
+  margin:2em 0 1.5em;
+}
+.room-feat-group{ background:var(--chalk); border-radius:14px; padding:18px 20px 16px; }
+.room-feat-h{
+  font:700 12px/1 var(--sans); letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink); margin:0 0 .9em;
+}
+.room-feat ul{ list-style:none; margin:0; padding:0; }
+.room-feat li{
+  position:relative; padding-left:1.5em; color:var(--ink-soft);
+  font-size:.975rem; line-height:1.45;
+}
+.room-feat li + li{ margin-top:.5em; }
+/* a drawn tick rather than an icon per line: one shape, inherits nothing,
+   and stays crisp at this size */
+.room-feat li::before{
+  content:""; position:absolute; left:.2em; top:.28em;
+  width:.34em; height:.66em; border:solid var(--sea); border-width:0 2px 2px 0;
+  transform:rotate(45deg);
+}
+.roomlayout-main .room-about-note{ font-size:var(--t--1); color:var(--ink-mute); }
+@media (max-width:620px){
+  .room-feat{ grid-template-columns:minmax(0,1fr); }
+}
 .roomlayout-aside{ position:sticky; top:116px; }
 
 .bookbox{
