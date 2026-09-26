@@ -513,7 +513,13 @@ site the card design was already ported from
   at normal size** (owner: keep it to one or two, uniform styling — an
   earlier version had a larger `.room-about-lede` intro above them, since
   removed; its facts were folded into the two paragraphs), a 2×2
-  `.room-feat` grid
+  `.room-feat` grid (restyled Sept 2026 to an owner mockup: each group is
+  a bordered card with a 56px `.room-feat-icon` circle badge on the left —
+  bed / shower / cup (Tea & coffee) / pot (Kitchen, Kitchenette) / armchair
+  (In the room), all drawn for this and checked at badge size — and a
+  tick list on the right. Columns are `auto-fit, minmax(300px,1fr)`, so it
+  is two-up only where the column is wide enough — one-up at ~1100px and
+  on phones; the badge drops to 44px under 480px)
   (Sleeping / Bathroom / Kitchen(ette) or Tea & coffee / In the room,
   stacking to one column under 620px) and a `.room-about-note` with the
   breakfast price and check-in/out times. Hand-written per page.
